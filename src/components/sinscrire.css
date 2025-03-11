@@ -1,0 +1,184 @@
+.sinscrire-container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+  color: #2E5077;
+  font-family: 'Poppins', sans-serif;
+}
+
+.sinscrire-info {
+  width: 50%;
+  background: linear-gradient(to bottom, #fff, #50A3AB);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px;
+  padding-top: 50px;
+}
+
+.sinscrireLogo {
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+.sinscrire-info p {
+  text-align: center;
+  line-height: 1.6;
+}
+
+.sinscrire-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 40px;
+}
+
+.sinscrire-form form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sinscrire-form h2 {
+  margin-bottom: 20px;
+}
+
+.sinscrire-form input {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 18px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.roles {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.roles label {
+  display: flex;
+  align-items: center;
+}
+
+.roles input[type='radio'] {
+  margin: 0;
+  padding: 0;
+}
+
+
+.sinscrire-button  {
+  width: 100%;
+  max-width: 200px;
+  padding: 10px;
+  background: #4BA0A8;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.sinscrire-button:hover {
+  background-color: #79D7BE;
+}
+
+.connexion-link {
+  margin-top: 10px;
+  text-decoration: none;
+  color: #2E5077;
+  cursor: pointer;
+}
+
+.connexion-link:hover {
+  text-decoration: underline;
+}
+
+.seConnInscrir-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+
+.seConnInscrir-div a {
+  margin-left: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sinscrire-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sinscrire-info {
+    width: 100%;
+    padding: 20px;
+    padding-top: 30px;
+  }
+
+  .sinscrire-form {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .sinscrire-form h2 {
+    margin-bottom: 15px;
+  }
+
+  .roles {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .roles label {
+    margin-bottom: 10px;
+  }
+
+  .seConnInscrir-div {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .seConnInscrir-div a {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+
+  .sinscrire-button {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .sinscrire-info p {
+    font-size: 14px;
+  }
+
+  .sinscrire-form input {
+    padding: 10px;
+  }
+
+  .roles label {
+    font-size: 14px;
+  }
+
+  .sinscrire-button {
+    font-size: 0.9rem;
+  }
+}
