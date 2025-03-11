@@ -1,0 +1,201 @@
+.seConnecter-container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+  color: #2E5077;
+  font-family: 'Poppins', sans-serif;
+}
+
+.seConnecter-info {
+  width: 50%;
+  background: linear-gradient(to bottom, #fff, #50A3AB);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px;
+  padding-top: 50px;
+}
+
+.seConnecterLogo {
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+.seConnecter-info p {
+  text-align: center;
+  line-height: 1.6;
+}
+
+.seConnecter-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 40px;
+}
+
+.seConnecter-form h2 {
+  margin-bottom: 70px;
+}
+
+.seConnecter-form label {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.seConnecter-form input {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 18px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.seConnecter-form .options {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  justify-content: space-between;
+}
+
+.options input[type="checkbox"] {
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.options span {
+  font-size: 16px;
+  font-weight: 500;
+
+}
+
+.options a {
+  font-weight: bold;
+  color: #2E5077;
+  font-size: 15px;
+  margin-left: 65px;
+  white-space: nowrap;
+}
+
+.forget-password {
+  text-decoration: none;
+}
+
+.forget-password:hover {
+  text-decoration: underline;
+}
+
+.seConnecter-button  {
+  width: 100%;
+  max-width: 200px;
+  padding: 10px;
+  background: #4BA0A8;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.seConnecter-button:hover {
+  background: #79D7BE;
+}
+
+.seConnecter-form p a {
+  text-decoration: none;
+  color: #2E5077;
+}
+
+.seConnecter-form p a:hover {
+  text-decoration: underline;
+}
+
+.seConnInscrir-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .seConnecter-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .seConnecter-info {
+    width: 100%;
+    padding: 20px;
+    padding-top: 30px;
+  }
+
+  .seConnecter-form {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .seConnecter-form h2 {
+    margin-bottom: 30px;
+  }
+
+  .seConnecter-form .options {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .seConnecter-form .options a {
+    margin-left: 20px;
+    margin-top: 0px;
+
+  }
+  .seConnecter-form .options input {
+    margin-left: 0px;
+    margin-top: 4px;
+
+  }
+
+  .seConnInscrir-div {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .seConnecter-button  {
+    max-width: 100%;
+    padding: 10px;
+    margin: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .seConnecter-info p {
+    font-size: 14px;
+  }
+
+  .seConnecter-form input {
+    padding: 10px;
+  }
+
+  .options span {
+    font-size: 14px;
+  }
+
+  .seConnecter-form .options a {
+    font-size: 14px;
+  }
+
+  .seConnecter-button button {
+    font-size: 0.9rem;
+  }
+}
