@@ -81,9 +81,10 @@ const seConnecter = () => {
               onChange={handleChange}
             />
             <span>Se souvenir de moi</span>
-            <a href="/" className="forget-password">
-              Mots de passe oublié ?
-            </a>
+            <a href='#' className='forget-password' onClick={(e) => {
+                e.preventDefault(); // Empêche le rechargement de la page
+                navigate("/forgot-password"); // Redirige vers Forgot_Password
+             }}> Mots de passe oublié ?</a>
           </div>
           <div className="seConnInscrir-div">
             <button type="submit" className="seConnecter-button">
