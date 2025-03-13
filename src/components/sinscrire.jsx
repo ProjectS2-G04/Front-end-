@@ -8,7 +8,6 @@ const sinscrire = () => {
   const [formData, setFormData] = useState({
     nom: "",
     prenom: "",
-    username: "",
     email: "",
     password: "",
     role: "",
@@ -26,7 +25,6 @@ const sinscrire = () => {
     if (
       !formData.nom ||
       !formData.prenom ||
-      !formData.username ||
       !formData.email ||
       !formData.password ||
       formData.role.length === 0
@@ -78,14 +76,6 @@ const sinscrire = () => {
             name="prenom"
             placeholder="Prénom"
             value={formData.prenom}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="username"
-            placeholder="Nom_Utilisateur"
-            value={formData.username}
             onChange={handleChange}
             required
           />
