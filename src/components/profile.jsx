@@ -1,32 +1,51 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './profile.css'
-import profileUser from "../assets/user.png"
-import profileLogo from "../assets/logo.png"
+import profileLogo from "../assets/logo.png";
+import profileUser from "../assets/user.png";
+import './profile.css';
 
 const profile = () => {
     const navigate = useNavigate();
     const [currentPassword] = useState('xxxxx');
     const [newPassword, setNewPassword] = useState('');
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
+    
         const isPasswordChanged = newPassword !== '';
-         if (!isPasswordChanged) {
-          alert('Pas de changements.');
-         return;
-         }
-         if (newPassword.length < 8 && isPasswordChanged) {
-          alert("Le mot de passe doit contenir au moins 8 caractères.");
-          return;
-          }
-         alert('Mot de passe sauvegardé.');
-
-       
-        // Reset the password field after saving
+        if (!isPasswordChanged) {
+            alert('Pas de changements.');
+            return;
+        }
+    
+        if (newPassword.length < 8 && isPasswordChanged) {
+            alert("Le mot de passe doit contenir au moins 8 caractères.");
+            return;
+        }
+    
+        const response = await fetch('/api/change-password/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`, 
+            },
+            body: JSON.stringify({
+                current_password: currentPassword,
+                new_password: newPassword,
+            }),
+        });
+    
+        const data = await response.json();
+    
+        if (response.ok) {
+            alert(data.message);
+        } else {
+            alert('Erreur : ' + data.detail || 'Une erreur s\'est produite.');
+        }
+    
         setNewPassword('');
     }
-
+    
     return (
         <div className='profile-container'>
             <header className='profile-header'>

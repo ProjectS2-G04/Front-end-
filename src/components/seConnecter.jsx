@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import "./seConnecter.css";
 import seConnecterLogo from "../assets/logo.png";
+import "./seConnecter.css";
 
 
 const seConnecter = () => {
@@ -81,9 +81,12 @@ const seConnecter = () => {
               onChange={handleChange}
             />
             <span>Se souvenir de moi</span>
-            <a href="/" className="forget-password">
-              Mots de passe oublié ?
-            </a>
+            <a href='#' className='forget-password' onClick={(e) => {
+                e.preventDefault(); 
+                navigate("/forgot-password"); 
+            }}> Mots de passe oublié ?</a>
+              
+            
           </div>
           <div className="seConnInscrir-div">
             <button type="submit" className="seConnecter-button">

@@ -1,29 +1,45 @@
 
-import React from 'react'
-import { useNavigate  } from "react-router-dom";
-import { useState } from 'react';
-import './Forgot_Password.css'
+import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import './Forgot_Password.css';
 import OnlineDoctoramico from "/src/assets/OnlineDoctor-amico.svg";
 
-import logo from '../assets/logo.png'
-import { MdEmail } from "react-icons/md";
 import { IoArrowBackCircle } from "react-icons/io5";
+import { MdEmail } from "react-icons/md";
+import logo from '../assets/logo.png';
 function Forgot_Password() {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault();
-  
-      // Vérifier si l'email est valide
+    
       const emailRegex = /^[a-z]{1,3}\.[a-z]+@esi-sba\.dz$/;
       if (!emailRegex.test(email)) {
         alert("Veuillez entrer un email valide au format nom(3ch).prenom@esi-sba.dz");
         return;
       }
-  
-      // Si l'email est valide, passer à la page "enter-code"
-      navigate("/enter-code");
+    
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/send-reset-code/", {
+
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+    
+        const data = await response.json();
+        if (response.ok) {
+          localStorage.setItem("resetEmail", email); 
+          alert(data.message);
+          navigate("/enter-code");
+        } else {
+          alert(data.error || "Une erreur est survenue.");
+        }
+      } catch (error) {
+        alert("Erreur de connexion au serveur.");
+      }
     };
+    
       
   return (
     <div className="container-Forgot-password">
@@ -42,7 +58,7 @@ function Forgot_Password() {
     <input type="email"placeholder="Entrer votre email" 
       name="email" 
       value={email}
-      onChange={(e) => setEmail(e.target.value)} // Mise à jour de l'email
+      onChange={(e) => setEmail(e.target.value)} 
       required
       />
     </div>
