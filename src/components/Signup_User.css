@@ -1,0 +1,245 @@
+.container-SignupUser{
+    background: linear-gradient( to bottom, #fff,#F8FBFC , #50A3AB);
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    overflow: hidden;
+}
+.logoandtitleSignupUser {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.logo-signupuser{
+   height: 200px;
+   width: 200px;
+   padding: 13px;
+   margin-right: 10px;
+}
+.logo-signupuser img {
+    height: 150px;
+    width: auto;
+}
+.title-signup {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+.title-signup h1 {
+    font-weight: bolder;
+    color: #2E5077;
+}
+.title-signup p {
+    color: #2E5077;
+    font-weight: 500;
+}
+.form-signupUser {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    place-self: center;
+    gap: 10px;
+    max-width: 100vw;
+    width: 50%;
+} 
+.inputuser {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 5px;
+    max-width: 100vw;
+    width: 100%;
+} 
+.inputuser label {
+    margin-left: 15px;
+    font-size: 20px;
+    font-weight: bold;
+}
+.inputuser input {
+    padding: 10px;
+    height: 50px;
+    width: 90%;
+    outline: none;
+    border: 1px solid #50A3AB;
+    border-radius: 5px;
+    color: #2E4D72;
+    font-size: 23px;
+    font-weight: 500;
+}
+.chooseuser {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    place-self: center;
+}
+.chooseuser label {
+    font-size: center;
+    font-weight: 500;
+}
+.add-ruturn {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 100vw;
+    width: 100%;
+    
+} 
+.add-signup {
+    padding: 13px ;
+    width: 250px;
+    border-radius: 9px;
+    border: none;
+    background-color:#2E5077;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+   margin-top: 15px;
+    margin-left: 10px;
+    transition: 0.3s ease
+}
+.add-signup:hover {
+    background-color: #90e7d0;
+    transform: scale(1.1);
+}
+.Return-signup {
+display: flex;
+flex-direction: row;
+align-items: center;
+gap: 5px;
+} 
+.Return-signup button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    margin-bottom: 5px;
+
+}
+.Return-signup .ioArrowBackCircle {
+    width: 40px;
+    height: 40px;
+    color: #2E4D72;
+    margin-top: 3px;
+}
+.Return-signup p {
+    font-weight: 500;
+}
+@media screen and (max-width: 1024px) {
+    .form-signupUser {
+        width: 70%;
+    }
+    .inputuser input {
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .logoandtitleSignupUser {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo-signupuser {
+        height: 150px;
+        width: 150px;
+    }
+
+    .logo-signupuser img {
+        height: 120px;
+    }
+
+    .form-signupUser {
+        width: 80%;
+    }
+
+    .inputuser input {
+        width: 100%;
+        font-size: 18px;
+    }
+
+    .chooseuser {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .add-ruturn {
+        display: flex;
+        flex-direction: row; /* Toujours en ligne */
+        justify-content: space-between; /* Espacement équilibré */
+        align-items: center;
+        width: 100%;
+    }
+
+    .Return-signup {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .Return-signup button {
+        width: 35px; /* Ajustement de la taille */
+        height: 35px;
+    }
+
+    .Return-signup .ioArrowBackCircle {
+        width: 35px;
+        height: 35px;
+    }
+
+    .Return-signup p {
+        font-size: 14px;
+    }
+
+    .add-signup {
+        width: 180px; /* Ajustement du bouton Ajouter */
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .container-SignupUser {
+        height: auto;
+        padding: 20px 10px;
+    }
+
+    .form-signupUser {
+        width: 90%;
+    }
+
+    .inputuser label {
+        font-size: 16px;
+    }
+
+    .inputuser input {
+        font-size: 16px;
+        height: 40px;
+    }
+
+    .chooseuser label {
+        font-size: 14px;
+    }
+
+    .add-signup {
+        width: 180px;
+        font-size: 14px;
+    }
+
+    .Return-signup {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .Return-signup p {
+        font-size: 14px;
+    }
+}

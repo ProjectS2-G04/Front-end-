@@ -7,9 +7,11 @@ import Profile from "./components/profile"
 import Home from "./components/home"
 import Forgot_Password1 from './components/Forgot_Password1';
 import Forgot_Password2 from './components/Forgot_Password2';
+import Signup_User from './components/Signup_User';
 
 const App = () => {
   return (
+    <>
     <Router> 
     <Routes>
       <Route path="/" element={<SeConnecter />} /> 
@@ -21,6 +23,8 @@ const App = () => {
       <Route path="/reset-password" element ={<Forgot_Password2/>}></Route>
     </Routes>
   </Router>
+  <Signup_User/>
+  </>
   )
 }
 
