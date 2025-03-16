@@ -92,9 +92,7 @@ const seConnecter = () => {
             <button type="submit" className="seConnecter-button">
               Se connecter
             </button>
-            <p>
-              <a onClick={() => navigate('/sinscrire')} >Créer un compte</a>
-            </p>
+              <a className='creer-compte-button' onClick={() => navigate('/sinscrire')} >Créer un compte</a>
           </div>
         </form>
       </div>

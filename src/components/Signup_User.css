@@ -107,31 +107,10 @@
     background-color: #90e7d0;
     transform: scale(1.1);
 }
-.Return-signup {
-display: flex;
-flex-direction: row;
-align-items: center;
-gap: 5px;
-} 
-.Return-signup button {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    outline: none;
-    background-color: transparent;
-    margin-bottom: 5px;
 
-}
-.Return-signup .ioArrowBackCircle {
-    width: 40px;
-    height: 40px;
-    color: #2E4D72;
-    margin-top: 3px;
-}
-.Return-signup p {
-    font-weight: 500;
-}
+
+
+
 @media screen and (max-width: 1024px) {
     .form-signupUser {
         width: 70%;
@@ -190,14 +169,7 @@ gap: 5px;
         height: 35px;
     }
 
-    .Return-signup .ioArrowBackCircle {
-        width: 35px;
-        height: 35px;
-    }
-
-    .Return-signup p {
-        font-size: 14px;
-    }
+   
 
     .add-signup {
         width: 180px; /* Ajustement du bouton Ajouter */
@@ -234,12 +206,5 @@ gap: 5px;
         font-size: 14px;
     }
 
-    .Return-signup {
-        flex-direction: column;
-        gap: 5px;
-    }
-
-    .Return-signup p {
-        font-size: 14px;
-    }
+   
 }

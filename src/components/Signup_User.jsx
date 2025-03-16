@@ -74,30 +74,10 @@ function Signup_User() {
                   <p style={{ color: 'red', fontSize: '14px' }}>Le mot de passe doit contenir au moins 8 caractères</p>
                 )}
             </div>
-            <div className="chooseuser">
-                <div className="user">
-                  <input type="radio" name="role" value="Médecin" onChange={handleRoleChange} />
-                  <label>Médecin</label>
-                </div>
-                <div className="user">
-                  <input type="radio" name="role" value="Assistant de médecin" onChange={handleRoleChange} />
-                  <label>Assistant de médecin</label>
-                </div>
-                <div className="user">
-                  <input type="radio" name="role" value="Directeur" onChange={handleRoleChange} />
-                  <label>Directeur</label>
-                </div>
-            </div>
-            {formData.role === '' && (
-              <p style={{ color: 'red', fontSize: '14px', textAlign: 'center' }}>Veuillez choisir un rôle</p>
-            )}
-            <div className="add-ruturn">
-                <div className="Return-signup">
-                    <button className="btn-arrow"><IoArrowBackCircle className="ioArrowBackCircle" /> </button>
-                    <p>Retoure</p>
-                </div>
+            
+            
                 <button className='add-signup'  disabled={!isValid}>Ajouter</button>
-            </div>
+            
          </form>
     </div>
   )

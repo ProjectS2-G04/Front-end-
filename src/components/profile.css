@@ -80,19 +80,18 @@
 
 }
 
-.parametres-input-current-password {
+.parametres-input-current-password{
   width: 100%;
   padding: 8px;
-  margin-left: 35px;
   border-radius: 5px;
+  margin-left:25px ;
   border: 1px solid #ccc;
-
 }
 
-.parametres-input-new-password {
+
+.parametres-input-new-password{
   width: 100%;
   padding: 8px;
-  margin: 15px;
   border-radius: 5px;
   border: 1px solid #ccc;
 
@@ -112,8 +111,13 @@
   margin-top: 20px;
 }
 
+.change-password-link{
+  cursor: pointer;
+}
 .save-button:hover {
   background-color: #3aafa9;
+  transform: scale(1.1);
+
 }
 
 /* Responsive  */
@@ -151,10 +155,11 @@
   }
 
   .parametres-input-current-password,
-  .parametres-input-new-password {
+  .parametres-input-new-password{
     margin-left: 0;
   }
 }
+
 
 @media (max-width: 480px) {
   .profile-header img {

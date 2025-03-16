@@ -95,6 +95,8 @@
 
 .sinscrire-button:hover {
   background-color: #79D7BE;
+  transform: scale(1.1);
+
 }
 
 .connexion-link {
