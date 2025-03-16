@@ -7,9 +7,12 @@ import Profile from "./components/profile"
 import Home from "./components/home"
 import Forgot_Password1 from './components/Forgot_Password1';
 import Forgot_Password2 from './components/Forgot_Password2';
+import Signup_User from './components/Signup_User';
+import AdminPage from './components/Admin_Page'
 
 const App = () => {
   return (
+    <>
     <Router> 
     <Routes>
       <Route path="/" element={<SeConnecter />} /> 
@@ -18,9 +21,12 @@ const App = () => {
       <Route path="/sinscrire" element={<Sinscrire />} /> 
       <Route path="/forgot-password" element={<Forgot_Password />} />
       <Route path="/enter-code" element ={<Forgot_Password1/>} />
-      <Route path="/reset-password" element ={<Forgot_Password2/>}></Route>
+      <Route path="/reset-password" element ={<Forgot_Password2/>}/>
+      <Route path="/Admin_Page" element={<AdminPage />} />
     </Routes>
   </Router>
+  <Signup_User/>
+  </>
   )
 }
 

@@ -6,7 +6,9 @@ import './profile.css';
 
 const Profile = () => {
     const navigate = useNavigate();
+
     const [currentPassword, setCurrentPassword] = useState('');
+
     const [newPassword, setNewPassword] = useState('');
 
     const handleSave = async (e) => {
@@ -71,16 +73,16 @@ const Profile = () => {
                         />
                     </div>
                     <div className='contenue-input'>
-                        <label>Nouveau mot de passe :</label>
-                        <input
-                            className='parametres-input-new-password'
-                            type="password"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            placeholder="Nouveau mot de passe"
-                        />
-                    </div>
-                    <button type="submit" className='save-button'>Sauvegarder</button>
+                         <label>Nouveau mot de passe :</label>
+                         <input
+                             className='parametres-input-new-password'
+                             type="password"
+                             value={newPassword}
+                             onChange={(e) => setNewPassword(e.target.value)}
+                             placeholder="Nouveau mot de passe"
+                         />
+                     </div>
+                     <button type="submit" className='save-button'>Sauvegarder</button>
                 </form>
             </div>
         </div>

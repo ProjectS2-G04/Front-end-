@@ -110,6 +110,8 @@
 
 .seConnecter-button:hover {
   background: #79D7BE;
+  transform: scale(1.1);
+
 }
 
 .seConnecter-form p a {
@@ -126,6 +128,9 @@
   align-items: center;
   justify-content: space-between;
 
+}
+.creer-compte-button{
+  cursor: pointer;
 }
 
 /* Responsive */
