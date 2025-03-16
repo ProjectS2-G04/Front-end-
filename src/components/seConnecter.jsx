@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import seConnecterLogo from "../assets/logo.png";
 import "./seConnecter.css";
 
-
 const seConnecter = () => {
   const navigate = useNavigate(); 
   const [formData, setFormData] = useState({
@@ -11,6 +10,7 @@ const seConnecter = () => {
     password: "",
     rememberMe: false,
   });
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -18,26 +18,53 @@ const seConnecter = () => {
       [name]: type === "checkbox" ? checked : value,
     });
   };
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const esiEmailRegex = /^[a-zA-Z0-9._%+-]+@esi-sba\.dz$/;
+
     if (!formData.email || !formData.password) {
       alert("Veuillez remplir tous les champs !");
       return;
     }
+
     if (!esiEmailRegex.test(formData.email)) {
       alert(
         "Veuillez utiliser une adresse email ESI SBA valide (ex: exemple@esi-sba.dz)"
       );
       return;
     }
-    if (formData.password.length < 8) {
-      alert("Le mot de passe doit contenir au moins 8 caractères.");
-      return;
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/accounts/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+    
+      if (!response.ok) {
+        const errorData = await response.json();
+        
+        const errorMessage = errorData.detail || "Échec de la connexion";
+        throw new Error(errorMessage);
+      }
+    
+      const data = await response.json();
+      localStorage.setItem('access_token', data.access);
+      localStorage.setItem('refresh_token', data.refresh);
+      
+    
+      console.log("Login successful:", data);
+      navigate('/home');
+    } catch (error) {
+      alert(error.message || "Une erreur est survenue");
     }
-    console.log("Form Data:", formData);
-    // Later: Send the data to the backend
-    navigate('/home');
+    
   };
 
   return (
@@ -85,8 +112,6 @@ const seConnecter = () => {
                 e.preventDefault(); 
                 navigate("/forgot-password"); 
             }}> Mots de passe oublié ?</a>
-              
-            
           </div>
           <div className="seConnInscrir-div">
             <button type="submit" className="seConnecter-button">
