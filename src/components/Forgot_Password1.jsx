@@ -33,7 +33,7 @@ function Forgot_Password1() {
     const resetCode = Object.values(code).join(""); 
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/api/verify-reset-code/", {  
+        const response = await fetch("http://127.0.0.1:8000/api/accounts/verify-reset-code/", {  
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, code: resetCode }),

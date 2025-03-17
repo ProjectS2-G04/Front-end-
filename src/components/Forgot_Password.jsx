@@ -20,7 +20,7 @@ function Forgot_Password() {
       }
     
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/send-reset-code/", {
+        const response = await fetch("http://127.0.0.1:8000/api/accounts/send-reset-code/", {
 
           method: "POST",
           headers: { "Content-Type": "application/json" },
