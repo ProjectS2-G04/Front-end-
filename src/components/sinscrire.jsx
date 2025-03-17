@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import "./sinscrire.css";
 import sinscrireLogo from "../assets/logo.png";
+import "./sinscrire.css";
 
-const sinscrire = () => {
+const Sinscrire = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nom: "",
@@ -12,6 +12,7 @@ const sinscrire = () => {
     password: "",
     role: "",
   });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -19,32 +20,43 @@ const sinscrire = () => {
       [name]: value,
     });
   };
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const esiEmailRegex = /^[a-zA-Z0-9._%+-]+@esi-sba\.dz$/;
-    if (
-      !formData.nom ||
-      !formData.prenom ||
-      !formData.email ||
-      !formData.password ||
-      formData.role.length === 0
-    ) {
-      alert("Veuillez remplir tous les champs !");
-      return;
+  
+    
+    const role = formData.role.toUpperCase();  
+  
+    const data = {
+      email: formData.email,
+      password: formData.password,
+      first_name: formData.prenom,
+      last_name: formData.nom,
+      sub_role: role,  
+    };
+  
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/accounts/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+    
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.email || 'Erreur lors de l\'inscription');
+      }
+    
+      const result = await response.json();
+      console.log(result);  
+      navigate('/home');
+    } catch (error) {
+      console.error(error);
+      alert(`Erreur lors de l'inscription: ${error.message}`);
     }
-    if (!esiEmailRegex.test(formData.email)) {
-      alert(
-        "Veuillez utiliser une adresse email ESI SBA valide (ex: exemple@esi-sba.dz)"
-      );
-      return;
-    }
-    if (formData.password.length < 8) {
-      alert("Le mot de passe doit contenir au moins 8 caractères.");
-      return;
-    }
-    console.log("Form Data:", formData);
-    // Later: Send data to backend
-    navigate('/home');
+    
   };
 
   return (
@@ -101,9 +113,9 @@ const sinscrire = () => {
               <input
                 type="radio"
                 name="role"
-                value="étudiant"
-                onChange={() => setFormData({ ...formData, role: "étudiant" })}
-                checked={formData.role === "étudiant"}
+                value="ETUDIANT"
+                onChange={() => setFormData({ ...formData, role: "ETUDIANT" })}
+                checked={formData.role === "ETUDIANT"}
               />
               étudiant
             </label>
@@ -111,11 +123,9 @@ const sinscrire = () => {
               <input
                 type="radio"
                 name="role"
-                value="enseignant"
-                onChange={() =>
-                  setFormData({ ...formData, role: "enseignant" })
-                }
-                checked={formData.role === "enseignant"}
+                value="ENSEIGNANT"
+                onChange={() => setFormData({ ...formData, role: "ENSEIGNANT" })}
+                checked={formData.role === "ENSEIGNANT"}
               />
               enseignant
             </label>
@@ -142,4 +152,4 @@ const sinscrire = () => {
   );
 };
 
-export default sinscrire;
+export default Sinscrire;

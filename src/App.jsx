@@ -1,14 +1,14 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import AdminPage from './components/Admin_Page';
 import Forgot_Password from './components/Forgot_Password';
-import SeConnecter from "./components/seConnecter"
-import Sinscrire from "./components/sinscrire"
-import Profile from "./components/profile"
-import Home from "./components/home"
 import Forgot_Password1 from './components/Forgot_Password1';
 import Forgot_Password2 from './components/Forgot_Password2';
+import Home from "./components/home";
+import Profile from "./components/profile";
+import SeConnecter from "./components/seConnecter";
 import Signup_User from './components/Signup_User';
-import AdminPage from './components/Admin_Page'
+import Sinscrire from "./components/sinscrire";
 
 const App = () => {
   return (
@@ -23,9 +23,10 @@ const App = () => {
       <Route path="/enter-code" element ={<Forgot_Password1/>} />
       <Route path="/reset-password" element ={<Forgot_Password2/>}/>
       <Route path="/Admin_Page" element={<AdminPage />} />
+      <Route path="/signup_user" element={<Signup_User />} />
     </Routes>
   </Router>
-  <Signup_User/>
+  
   </>
   )
 }

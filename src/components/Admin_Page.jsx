@@ -1,15 +1,14 @@
-import React from "react";
-import { useState } from "react";
-import AdminSidebar from "./AdminSidebar";
-import AdminList from "./AdminList";
-import "./Admin_Page.css";
+import React, { useState } from "react"; // Add missing React import
+import AdminSidebar from "./AdminSidebar"; // Import AdminSidebar
+import AdminList from "./AdminList"; // Import AdminList
+import "./Admin_Page.css"; // Import CSS
 
 const AdminPage = () => {
-  const [activeList, setActiveList] = useState("medecins"); // Default list
+  const [activeList, setActiveList] = useState("medecins");
 
   const titles = {
-    medecins: "La Liste des medecins",
-    assistants: "La Liste des assistants medecins",
+    medecins: "La Liste des médecins",
+    assistants: "La Liste des assistants médecins",
     directeurs: "La Liste des directeurs",
     patients: "La Liste des patients",
   };
@@ -26,4 +25,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default AdminPage; // Add missing export default
