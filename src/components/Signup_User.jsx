@@ -122,6 +122,7 @@ function Signup_User() {
             <option value="DOCTOR">Médecin</option>
             <option value="ASSISTANT">Assistant médecin</option>
             <option value="DIRECTOR">Directeur</option>
+            <option value="PATIENT">Patient</option>
           </select>
         </div>
         <button className="add-signup" type="submit" disabled={!isValid}>Ajouter</button>
