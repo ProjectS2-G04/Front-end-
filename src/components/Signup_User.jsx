@@ -48,7 +48,7 @@ function Signup_User() {
     e.preventDefault();
     console.log("Form data submitted:", formData);
 
-    fetch('http://127.0.0.1:8000/api/accounts/user_register/', {
+    fetch('http://127.0.0.1:8000/api/registerAdmin/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -63,18 +63,16 @@ function Signup_User() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log("User registration response:", data);
-        if (data.message) {
-          // Show alert and clear the form
-          window.alert("Enregistré avec succès");
-          setFormData(initialFormData);
-          setIsValid(false);
-          // Redirect to the admin page
-          navigate('/Admin_Page');
+        if (data.user) {
+            window.alert("Enregistré avec succès");
+            setFormData(initialFormData);
+            setIsValid(false);
+            navigate('/Admin_Page');
         } else {
-          window.alert("Erreur lors de l'inscription");
+            window.alert(data.message || "Erreur lors de l'inscription");
         }
-      })
+    })
+    
       .catch(error => {
         console.error("Error during registration:", error);
         window.alert("Erreur lors de l'inscription");
@@ -118,12 +116,12 @@ function Signup_User() {
         <div className="inputuser">
           <label htmlFor="role">Role</label>
           <select name="role" value={formData.role} onChange={handleRoleChange} required>
-            <option value="">--Sélectionnez un rôle--</option>
-            <option value="DOCTOR">Médecin</option>
-            <option value="ASSISTANT">Assistant médecin</option>
-            <option value="DIRECTOR">Directeur</option>
-            <option value="PATIENT">Patient</option>
-          </select>
+             <option value="">--Sélectionnez un rôle--</option>
+             <option value="MEDECIN">Médecin</option>
+             <option value="ASSISTANT_MEDECIN">Assistant médecin</option>
+             <option value="DIRECTEUR">Directeur</option>
+             <option value="PATIENT">Patient</option>
+              </select>
         </div>
         <button className="add-signup" type="submit" disabled={!isValid}>Ajouter</button>
       </form>

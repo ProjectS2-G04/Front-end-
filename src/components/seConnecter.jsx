@@ -60,7 +60,7 @@ const seConnecter = () => {
       
     
       console.log("Login successful:", data);
-      navigate('/home');
+      navigate('home');
     } catch (error) {
       alert(error.message || "Une erreur est survenue");
     }

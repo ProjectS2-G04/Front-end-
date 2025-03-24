@@ -14,26 +14,30 @@ const AdminList = ({ title, listType }) => {
   };
 
   useEffect(() => {
-    const mappedRole = roleMapping[listType] || listType;
-    console.log("Fetching data for role:", mappedRole);
-
-    fetch(`http://127.0.0.1:8000/api/accounts/users/?role=${mappedRole}`)
+    const apiMapping = {
+      medecins: "groups/medecin/",
+      assistants: "groups/assistant-medecin/",
+      directeurs: "groups/directeur/",
+      patients: "groups/patient/",
+    };
+  
+    const apiEndpoint = apiMapping[listType];
+  
+    if (!apiEndpoint) {
+      console.error("Invalid list type:", listType);
+      return;
+    }
+  
+    console.log("Fetching data from:", `http://127.0.0.1:8000/api/${apiEndpoint}`);
+  
+    fetch(`http://127.0.0.1:8000/api/${apiEndpoint}`)
       .then((response) => response.json())
       .then((data) => {
         console.log("Fetched data:", data);
-        setItems(data);
+        setItems(data.members || []); // تأكد أن البيانات تحتوي على `members`
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, [listType]);
-
-  const handleDelete = (id) => {
-    fetch(`http://127.0.0.1:8000/api/accounts/users/${id}/`, {
-      method: "DELETE",
-    })
-      .then(() => setItems(items.filter((item) => item.id !== id)))
-      .catch((error) => console.error("Error deleting:", error));
-  };
-
   return (
     <div className="admin-content">
       <h3 className="List-title">{title}</h3>
