@@ -15,6 +15,7 @@ function Signup_User() {
 
   const [formData, setFormData] = useState(initialFormData);
   const [isValid, setIsValid] = useState(false);
+  const [errors, setErrors] = useState({}); // تخزين الأخطاء
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,18 +36,21 @@ function Signup_User() {
   };
 
   const validateForm = (data) => {
-    const isFormValid =
-      data.nom.trim() !== '' &&
-      data.prenom.trim() !== '' &&
-      validateEmail(data.email) &&
-      data.password.length >= 8 &&
-      data.role !== '';
-    setIsValid(isFormValid);
+    let validationErrors = {};
+
+    if (data.nom.trim() === '') validationErrors.nom = "Le nom est requis.";
+    if (data.prenom.trim() === '') validationErrors.prenom = "Le prénom est requis.";
+    if (!validateEmail(data.email)) validationErrors.email = "Format invalide (ex: abc.nom@esi-sba.dz)";
+    if (data.password.length < 8) validationErrors.password = "Le mot de passe doit contenir au moins 8 caractères.";
+    if (data.role === '') validationErrors.role = "Veuillez sélectionner un rôle.";
+
+    setErrors(validationErrors);
+    setIsValid(Object.keys(validationErrors).length === 0);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form data submitted:", formData);
+    setErrors({}); // تنظيف الأخطاء قبل الإرسال
 
     fetch('http://127.0.0.1:8000/api/registerAdmin/', {
       method: 'POST',
@@ -58,24 +62,26 @@ function Signup_User() {
         last_name: formData.prenom,
         email: formData.email,
         password: formData.password,
-        role: formData.role // Must match valid choices (e.g., "DOCTOR")
+        role: formData.role
       })
     })
       .then(response => response.json())
       .then(data => {
         if (data.user) {
-            window.alert("Enregistré avec succès");
-            setFormData(initialFormData);
-            setIsValid(false);
-            navigate('/Admin_Page');
+          window.alert("Enregistré avec succès");
+          setFormData(initialFormData);
+          setIsValid(false);
+          navigate('/Admin_Page');
         } else {
-            window.alert(data.message || "Erreur lors de l'inscription");
+          // التحقق مما إذا كان هناك خطأ وإضافته إلى قائمة الأخطاء
+          if (data.email) setErrors((prev) => ({ ...prev, email: data.email[0] }));
+          if (data.role) setErrors((prev) => ({ ...prev, role: data.role[0] }));
+          if (data.message) window.alert(data.message);
         }
-    })
-    
+      })
       .catch(error => {
         console.error("Error during registration:", error);
-        window.alert("Erreur lors de l'inscription");
+        setErrors({ global: "Une erreur s'est produite. Veuillez réessayer." });
       });
   };
 
@@ -94,35 +100,35 @@ function Signup_User() {
         <div className="inputuser">
           <label htmlFor="nom">Nom</label>
           <input type="text" name="nom" value={formData.nom} onChange={handleChange} required />
+          {errors.nom && <p className="error-message">{errors.nom}</p>}
         </div>
         <div className="inputuser">
           <label htmlFor="prenom">Prénom</label>
           <input type="text" name="prenom" value={formData.prenom} onChange={handleChange} required />
+          {errors.prenom && <p className="error-message">{errors.prenom}</p>}
         </div>
         <div className="inputuser">
           <label htmlFor="email">Email</label>
           <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-          {!validateEmail(formData.email) && formData.email.length > 0 && (
-            <p style={{ color: 'red', fontSize: '14px' }}>Format invalide (ex: abc.nom@esi-sba.dz)</p>
-          )}
+          {errors.email && <p className="error-message">{errors.email}</p>}
         </div>
         <div className="inputuser">
           <label htmlFor="password">Mot de passe</label>
           <input type="password" name="password" value={formData.password} onChange={handleChange} required />
-          {formData.password.length > 0 && formData.password.length < 8 && (
-            <p style={{ color: 'red', fontSize: '14px' }}>Le mot de passe doit contenir au moins 8 caractères</p>
-          )}
+          {errors.password && <p className="error-message">{errors.password}</p>}
         </div>
         <div className="inputuser">
-          <label htmlFor="role">Role</label>
+          <label htmlFor="role">Rôle</label>
           <select name="role" value={formData.role} onChange={handleRoleChange} required>
-             <option value="">--Sélectionnez un rôle--</option>
-             <option value="MEDECIN">Médecin</option>
-             <option value="ASSISTANT_MEDECIN">Assistant médecin</option>
-             <option value="DIRECTEUR">Directeur</option>
-             <option value="PATIENT">Patient</option>
-              </select>
+            <option value="">--Sélectionnez un rôle--</option>
+            <option value="MEDECIN">Médecin</option>
+            <option value="ASSISTANT_MEDECIN">Assistant médecin</option>
+            <option value="DIRECTEUR">Directeur</option>
+            <option value="PATIENT">Patient</option>
+          </select>
+          {errors.role && <p className="error-message">{errors.role}</p>}
         </div>
+        {errors.global && <p className="error-message">{errors.global}</p>}
         <button className="add-signup" type="submit" disabled={!isValid}>Ajouter</button>
       </form>
     </div>
