@@ -105,7 +105,113 @@
   background: #4db6ac;
   transform: scale(1.1);
 }
+.admin-page {
+  display: flex;
+}
 
+.Admin-sidebar {
+  width: 15%;
+  background: linear-gradient(to bottom, #fff, #F8FBFC, #50A3AB);
+  padding: 20px;
+  height: 100vh;
+}
+
+.Admin-sidebar-logo {
+  display: block;
+  margin: 0 auto 20px;
+  width: 80%;
+}
+
+.Admin-sidebar-ul {
+  list-style: none;
+  padding: 20px;
+}
+
+.Admin-sidebar li {
+  padding: 5px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  cursor: pointer;
+  color: #2E5077;
+  border-bottom: 1px solid #79D7BE ;
+  border-radius:2px;
+  transition: 0.3s ease;
+}
+
+.Admin-sidebar li:hover {
+  background: #79D7BE;
+  transform: scale(1.1);
+}
+
+.admin-content {
+  width: 90%;
+  padding: 50px;
+  margin-top: 35px;
+}
+
+.List-title {
+  background-color: #79D7BE;
+  text-align: center;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 40px;
+  width: 28%;
+  white-space: nowrap;
+
+
+}
+
+.admin-list-item {
+  display: flex;
+  justify-content: space-between;
+
+  padding: 10px;
+  border-bottom: 1px solid #79D7BE;
+}
+.admin-list-item span {
+  margin-top: 10px;
+  font-weight: 400;
+}
+
+.Admin-delete-button {
+  background: #e57373;
+  border-radius: 3px;
+  font-weight: bold;
+  font-size: 14px;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.Admin-delete-button:hover {
+  background: #ef5350;
+  transform: scale(1.1);
+ 
+}
+
+.Admin-add-button {
+  background: #79D7BE;
+  border: none;
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  margin: 50px 0px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+  width: 200px;
+  border-radius: 3px;
+  transition: 0.3s ease ;
+}
+
+.Admin-add-button:hover {
+  background: #4db6ac;
+  transform: scale(1.1);
+}
 /* Responsive  */
 @media (max-width: 768px) {
   .admin-page {

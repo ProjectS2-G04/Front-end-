@@ -51,7 +51,7 @@ const Sinscrire = () => {
     
       const result = await response.json();
       console.log(result);  
-      navigate('/home');
+      alert("Un lien de vérification a été envoyé à votre adresse email. Veuillez vérifier votre boîte de réception.");
     } catch (error) {
       console.error(error);
       alert(`Erreur lors de l'inscription: ${error.message}`);
