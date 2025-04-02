@@ -1,12 +1,17 @@
+/* General Layout */
 .admin-page {
   display: flex;
+  height: 100vh;
 }
 
+/* Sidebar */
 .Admin-sidebar {
-  width: 15%;
+  width: 18%;
   background: linear-gradient(to bottom, #fff, #F8FBFC, #50A3AB);
   padding: 20px;
-  height: 100vh;
+  height: 100%;
+  box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
+  transition: width 0.3s ease;
 }
 
 .Admin-sidebar-logo {
@@ -17,230 +22,305 @@
 
 .Admin-sidebar-ul {
   list-style: none;
-  padding: 20px;
+  padding: 0;
+  margin-top: 20px;
 }
 
 .Admin-sidebar li {
-  padding: 5px;
-  margin-bottom: 20px;
-  cursor: pointer;
-  color: #2E5077;
-  border-bottom: 1px solid #b1a7a7;
-}
-
-.Admin-sidebar li:hover {
-  background: #79D7BE;
-}
-
-.admin-content {
-  width: 90%;
-  padding: 50px;
-  margin-top: 35px;
-}
-
-.List-title {
-  background-color: #79D7BE;
-  color: white;
-  border: none;
-  padding: 10px;
-  margin-bottom: 40px;
-  width: 30%;
-  white-space: nowrap;
-
-}
-
-.admin-list-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-}
-
-.Admin-delete-button {
-  background: #e57373;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-.Admin-delete-button:hover {
-  background: #ef5350;
-}
-
-.Admin-add-button {
-  background: #79D7BE;
-  border: none;
-  padding: 10px;
-  color: white;
-  cursor: pointer;
-  margin: 50px 0px;
-
-
-}
-
-.Admin-add-button:hover {
-  background: #4db6ac;
-}
-.admin-page {
-  display: flex;
-}
-
-.Admin-sidebar {
-  width: 15%;
-  background: linear-gradient(to bottom, #fff, #F8FBFC, #50A3AB);
-  padding: 20px;
-  height: 100vh;
-}
-
-.Admin-sidebar-logo {
-  display: block;
-  margin: 0 auto 20px;
-  width: 80%;
-}
-
-.Admin-sidebar-ul {
-  list-style: none;
-  padding: 20px;
-}
-
-.Admin-sidebar li {
-  padding: 5px;
+  padding: 12px;
+  font-size: 15px;
   font-weight: 500;
-  margin-bottom: 20px;
   cursor: pointer;
   color: #2E5077;
-  border-bottom: 1px solid #79D7BE ;
-  border-radius:2px;
-  transition: 0.3s ease;
+  border-bottom: 1px solid #79D7BE;
+  border-radius: 4px;
+  transition: all 0.3s ease-in-out;
+}
+
+.Admin-sidebar li.active {
+  background: #79D7BE;
+  color: white;
+  transform: scale(1.05);
 }
 
 .Admin-sidebar li:hover {
-  background: #79D7BE;
-  transform: scale(1.1);
+  background: #4db6ac;
+  color: white;
+  transform: scale(1.05);
 }
 
+/* Admin Content */
 .admin-content {
-  width: 90%;
+  flex-grow: 1;
   padding: 50px;
-  margin-top: 35px;
+  overflow-y: auto;
 }
-
+.Title-search{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 80px;
+}
+/* Section Title */
 .List-title {
   background-color: #79D7BE;
   text-align: center;
   color: white;
-  border: none;
-  border-radius: 3px;
-  padding: 10px;
-  margin-bottom: 40px;
-  width: 28%;
-  white-space: nowrap;
-
-
-}
-
-.admin-list-item {
-  display: flex;
-  justify-content: space-between;
-
-  padding: 10px;
-  border-bottom: 1px solid #79D7BE;
-}
-.admin-list-item span {
-  margin-top: 10px;
-  font-weight: 400;
-}
-
-.Admin-delete-button {
-  background: #e57373;
-  border-radius: 3px;
+  font-size: 20px;
   font-weight: bold;
-  font-size: 14px;
-  color: white;
+  padding: 12px;
+  border-radius: 4px;
+  width: 40%;
+}
+
+/* Table */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.table-title
+{
+  color: #50A3AB;
+font-weight: bolder;
+}
+
+.admin-table th {
+  color: #50A3AB;
+  padding: 18px;
+  border-bottom: #4db6ac;
+  text-align: left;
+}
+.admin-table td {
+  color: #2E5077;
+  padding: 10px;
+  border-bottom: 1px solid #8ABFC3;
+}
+.admin-table td {
+  padding: 10px;
+  border-bottom: 1px solid #8ABFC3;
+}
+
+.admin-table tbody tr:hover {
+  background: #f1f1f1;
+}
+
+
+/* Action Buttons */
+.activate-btn, .deactivate-btn {
   border: none;
-  padding: 5px 10px;
+  margin-right: 20px;
+  padding: 9px 14px;
+  font-size: 14px;
   cursor: pointer;
-  transition: 0.3s ease;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
-.Admin-delete-button:hover {
-  background: #ef5350;
-  transform: scale(1.1);
- 
+.activate-btn {
+  background: #79D7BE;
+  color: white;
 }
 
+.activate-btn:hover {
+  background: #13eb98;
+}
+
+.deactivate-btn {
+  background: #DB6671;
+  color: white;
+}
+
+.deactivate-btn:hover {
+  background: #D32F2F;
+}
+
+/* Add Button */
 .Admin-add-button {
   background: #79D7BE;
-  border: none;
-  padding: 10px;
+  padding: 12px;
   color: white;
-  cursor: pointer;
-  margin: 50px 0px;
-  text-align: center;
-  font-weight: bold;
   font-size: 16px;
-  width: 200px;
-  border-radius: 3px;
-  transition: 0.3s ease ;
+  font-weight: bold;
+  text-align: center;
+  width: 220px;
+  border: none;
+  border-radius: 4px;
+  margin-top: 30px;
+  transition: all 0.3s ease-in-out;
 }
 
 .Admin-add-button:hover {
   background: #4db6ac;
   transform: scale(1.1);
 }
-/* Responsive  */
+
+/* Search Bar */
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: #80ddc7; 
+  border-radius: 30px; 
+  padding: 10px 20px;
+  height: 60px;
+  width: 50%; 
+}
+
+.search-container input {
+  border: none;
+  background: transparent;
+  outline: none;
+  flex: 1;
+  font-size: 16px;
+  color: white;
+}
+
+.search-container::before {
+  content: "🔍";
+  font-size: 18px;
+  color: white;
+  margin-right: 20px;
+}
+
+.search-container button {
+  display: none; /* Hide extra button */
+}
+/* Dropdown button */
+.dropdown-button {
+  background-color: #79D7BE;
+  color: white;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 200px;
+  text-align: left;
+  position: relative;
+}
+
+/* Dropdown Button */
+.dropdown-button {
+  background-color: #79D7BE;
+  color: white;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 200px;
+  text-align: left;
+  position: relative;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ddd;
+  list-style: none;
+  width: 200px;
+  padding: 0;
+  margin-top: 5px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.dropdown-menu li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown-menu li:hover {
+  background-color: #79D7BE;
+  color: white;
+}
+
+/* Dossier List */
+.dossier-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dossier-item {
+  display: flex;
+  justify-content: space-between;
+  background: #f5f5f5;
+  padding: 10px;
+  color: #2E5077;
+  border-radius: 5px;
+  align-items: center;
+}
+
+.dossier-name {
+  font-size: 16px;
+}
+
+.archive-btn {
+  background-color: #e74c3c;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .Admin-sidebar {
+    width: 22%;
+  }
+  .List-title {
+    width: 50%;
+  }
+}
+
 @media (max-width: 768px) {
   .admin-page {
-    flex-direction: row;
+    flex-direction: column;
   }
 
   .Admin-sidebar {
-    width: 30%;
-    height: 100vh;
+    width: 100%;
+    height: auto;
+    text-align: center;
+  }
+
+  .Admin-sidebar-ul {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
   }
 
   .admin-content {
-    width: 85%;
-    padding: 50px;
-    margin-top: 35px;
+    padding: 20px;
   }
 
   .List-title {
-    width: 80%;
-    text-align: left;
-  }
-
-  .Admin-add-button {
-    width: auto;
+    width: 60%;
   }
 }
 
 @media (max-width: 480px) {
-  .Admin-sidebar-logo {
-    width: 100px;
-  }
-
-  .Admin-sidebar {
-    width: 30%;
+  .Admin-sidebar-ul {
+    flex-direction: column;
   }
 
   .Admin-sidebar li {
-    font-size: 9px;
-    width: 200%;
+    font-size: 14px;
+    padding: 10px;
   }
 
   .List-title {
-    font-size: 10px;
     width: 100%;
+    font-size: 16px;
   }
 
-  .admin-list-item {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .Admin-delete-button {
-    margin-top: 10px;
+  .Admin-add-button {
+    width: 100%;
   }
 }
