@@ -1,0 +1,180 @@
+
+.app-container {
+
+    display: flex;
+    min-height: 100vh;
+    
+  }
+  .listDoctor-main-content {
+   padding: 10px;
+    margin-left: 250px;
+    width: 100vw;
+  } 
+  
+.main-content {
+    flex: 1;
+    
+    margin-left: 260px; /* Same as sidebar width */
+    padding: 20px;
+  }
+  
+  .content-header {
+    background-color: white;
+    text-align: center;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+  
+  .content-header h1 {
+    margin: 0;
+    color: #2E5077;
+    font-size: 1.5rem;
+  }
+  
+  .content-body {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .search-bar {
+    display: flex;
+    margin-bottom: 20px;
+    align-items: center;
+    gap: 45px;
+  }
+  .search-bar p {
+    background-color: #79D7BE;
+    padding: 15px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    color: white;
+  }
+  .search-bar input {
+    width: 65%;
+    padding:  15px 20px;
+    border: 1px solid #ddd;
+    border-radius: 45px;
+    background-color: #79D7BE;
+    outline: none;
+   color: white;
+    font-size: 1rem;
+  } 
+  .search-bar input::placeholder {
+    color: white;
+   opacity: .7;
+  }
+  
+  .records-list {
+    margin-bottom: 20px;
+  }
+  
+  .record-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 2px solid #8ABFC3;
+    margin-bottom: 10px;
+    
+  }
+  .recordnamedocs {
+    display: flex;
+    gap: 10px;
+   
+  } 
+  .RiDossierFill {
+    height: 32px;
+    width: 30px;
+    color: #4AA1A8;
+  }
+  
+  .record-name {
+  margin-top: 5px;
+    font-weight: bold;
+    color: #2E5077;
+  }
+  .record-actions{
+    display: flex;
+    gap: 20px;
+   width:300px;
+   
+  }
+  .BsFillSave2Fill {
+   
+    width: 28px;
+    height: 32px;
+    color: #2E5077;
+  }
+  .record-actions button {
+    padding: 8px 15px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    background-color: #F6F4F0;
+    border: 1px solid #8ABFC3;
+    color: #2E5077 ;
+    font-weight:600 ;
+  }
+  
+  .record-actions button:hover{
+    background-color: #79D7BE;
+    opacity: .7;
+    color: white;
+  }
+  
+   .addreturn {
+    display: flex;
+    justify-content: space-between;
+   }
+   .IoArrowBackCircle{
+    height: 35px;
+    width: 35px;
+    color: #79D7BE;
+   }
+   .addreturn  .add-btn {
+    padding: 10px 15px;
+    width: 200px;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    background-color:#79D7BE ;
+    cursor: pointer;
+   }
+  .add-btn:hover {
+    background-color: #A8D1D5;
+  }
+  .record-actionsAssistant {
+    width: 30px;
+  }
+  
+  
+  @media screen and (max-width: 580px){
+    .listDoctor-main-content {
+      padding: 10px;
+       margin-left: 150px;
+       max-width: 100vw;
+       width: 75%;
+     } 
+     .record-actions {
+      width: 200px;
+      gap: 2px;
+     }
+     .record-actions button {
+      padding: 8px 10px;
+      width: 70px;
+      font-size: 10px;
+     }
+     .BsFillSave2Fill {
+      width:14px;
+      height: 16px;
+     }
+  }
