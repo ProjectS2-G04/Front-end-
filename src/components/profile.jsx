@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import profileLogo from "../assets/logo.png";
 import profileUser from "../assets/user.png";
@@ -7,20 +7,41 @@ import './profile.css';
 const Profile = () => {
     const navigate = useNavigate();
 
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
-
     const [newPassword, setNewPassword] = useState('');
+
+    // Fetch user profile data when the component loads
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/profile/', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setFirstName(data.first_name);
+                    setLastName(data.last_name);
+                } else {
+                    console.error('Erreur lors de la récupération du profil');
+                }
+            } catch (error) {
+                console.error('Erreur de connexion au serveur', error);
+            }
+        };
+
+        fetchProfile();
+    }, []);
 
     const handleSave = async (e) => {
         e.preventDefault();
 
-        const isPasswordChanged = newPassword !== '';
-        if (!isPasswordChanged) {
-            alert('Pas de changements.');
-            return;
-        }
-
-        if (newPassword.length < 8 && isPasswordChanged) {
+        if (newPassword && newPassword.length < 8) {
             alert("Le mot de passe doit contenir au moins 8 caractères.");
             return;
         }
@@ -42,12 +63,12 @@ const Profile = () => {
         if (response.ok) {
             alert(data.message);
         } else {
-            alert('Erreur : ' + data.detail || 'Une erreur s\'est produite.');
+            alert('Erreur : ' + (data.detail || 'Une erreur s\'est produite.'));
         }
 
         setNewPassword('');
-        setCurrentPassword('');  // Clear the current password field after submission
-    }
+        setCurrentPassword('');
+    };
 
     return (
         <div className='profile-container'>
@@ -59,34 +80,50 @@ const Profile = () => {
                 <h2>Paramètres du compte</h2>
                 <div className="profile-image-text">
                     <img src={profileUser} alt='' />
-                    <p>Télécharger votre image</p>
+                    <p>Téléchargez votre image</p>
                 </div>
                 <form className="parametres-form" onSubmit={handleSave}>
                     <div className='contenue-input'>
-                        <label>mot de passe actuel :</label>
+                        <label>Nom :</label>
                         <input
-                            className='parametres-input-current-password'
+                            type="text"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            placeholder="Nom"
+                        />
+                    </div>
+                    <div className='contenue-input'>
+                        <label>Prénom :</label>
+                        <input
+                            type="text"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            placeholder="Prénom"
+                        />
+                    </div>
+                    <div className='contenue-input'>
+                        <label>Mot de passe actuel :</label>
+                        <input
                             type="password"
                             value={currentPassword}
-                            onChange={(e) => setCurrentPassword(e.target.value)}  // Update current password dynamically
+                            onChange={(e) => setCurrentPassword(e.target.value)}
                             placeholder="Mot de passe actuel"
                         />
                     </div>
                     <div className='contenue-input'>
-                         <label>Nouveau mot de passe :</label>
-                         <input
-                             className='parametres-input-new-password'
-                             type="password"
-                             value={newPassword}
-                             onChange={(e) => setNewPassword(e.target.value)}
-                             placeholder="Nouveau mot de passe"
-                         />
-                     </div>
-                     <button type="submit" className='save-button'>Sauvegarder</button>
+                        <label>Nouveau mot de passe :</label>
+                        <input
+                            type="password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            placeholder="Nouveau mot de passe"
+                        />
+                    </div>
+                    <button type="submit" className='save-button'>Sauvegarder</button>
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Profile;
