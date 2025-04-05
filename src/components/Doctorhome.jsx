@@ -1,11 +1,10 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
-import './home.css'
-import homeLogo from "../assets/logo.png"
-import homeUser from "../assets/user.png"
+import React from 'react';
 import { HiMiniDocumentText } from "react-icons/hi2";
+import { Link, useNavigate } from 'react-router-dom';
+import homeLogo from "../assets/logo.png";
+import homeUser from "../assets/user.png";
+import './home.css';
 import OnlineDoctoramico from "/src/assets/OnlineDoctor-amico.svg";
-import { useNavigate } from 'react-router-dom';
 
 const home = () => {
   const navigate = useNavigate();
@@ -22,7 +21,7 @@ const home = () => {
              </nav>
         </heder>
         <div className="options">
-          <button  onClick={() => navigate("DoctorList")}>Consulter les  dossier medicale <HiMiniDocumentText className='HiMiniDocumentText'/> </button>
+          <button  onClick={() => navigate("/DoctorList")}>Consulter les  dossier medicale <HiMiniDocumentText className='HiMiniDocumentText'/> </button>
           <button>Consulter les  dossier medicale <HiMiniDocumentText className='HiMiniDocumentText'/> </button>
           <button>Consulter les  dossier medicale <HiMiniDocumentText className='HiMiniDocumentText'/> </button>
           <button>Consulter les  dossier medicale <HiMiniDocumentText className='HiMiniDocumentText'/> </button>

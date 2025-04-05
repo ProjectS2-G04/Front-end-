@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import seConnecterLogo from "../assets/logo.png";
 import "./seConnecter.css";
 
-const seConnecter = () => {
-  const navigate = useNavigate(); 
+const SeConnecter = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -29,42 +29,61 @@ const seConnecter = () => {
     }
 
     if (!esiEmailRegex.test(formData.email)) {
-      alert(
-        "Veuillez utiliser une adresse email ESI SBA valide (ex: exemple@esi-sba.dz)"
-      );
+      alert("Veuillez utiliser une adresse email ESI SBA valide (ex: exemple@esi-sba.dz)");
       return;
     }
 
     try {
       const response = await fetch('http://127.0.0.1:8000/api/accounts/login/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
         }),
       });
-    
+
       if (!response.ok) {
         const errorData = await response.json();
-        
-        const errorMessage = errorData.detail || "Échec de la connexion";
+        const errorMessage = errorData.detail || errorData.error || "Échec de la connexion";
         throw new Error(errorMessage);
       }
-    
+
       const data = await response.json();
-      localStorage.setItem('access_token', data.access);
+
+      // Store tokens and user info
+      localStorage.setItem('token', data.access);
       localStorage.setItem('refresh_token', data.refresh);
-      
-    
-      console.log("Login successful:", data);
-      navigate('Assitanthome');
+      localStorage.setItem('role', data.role);
+      localStorage.setItem('sub_role', data.sub_role || '');
+      localStorage.setItem('email', data.email);
+      localStorage.setItem('name', `${data.first_name} ${data.last_name}`);
+
+      // Redirect user based on their role
+      switch (data.role) {
+        case 'DOCTOR':
+          navigate('/home');
+          break;
+        case 'ASSISTANT':
+          navigate('/Assitanthome');
+          break;
+        case 'PATIENT':
+          navigate('/Patienthome');
+          break;
+        case 'ADMIN':
+          navigate('/Admin_Page');
+          break;
+        case 'DIRECTOR':
+          navigate('/profile'); 
+          break;
+        default:
+          navigate('/profile');
+          break;
+      }
+
     } catch (error) {
       alert(error.message || "Une erreur est survenue");
     }
-    
   };
 
   return (
@@ -82,7 +101,7 @@ const seConnecter = () => {
       <div className="seConnecter-form">
         <h2>Se connecter</h2>
         <form onSubmit={handleSubmit}>
-          <label> Email </label>
+          <label>Email</label>
           <input
             type="email"
             name="email"
@@ -91,11 +110,11 @@ const seConnecter = () => {
             onChange={handleChange}
             required
           />
-          <label> Mots de passe</label>
+          <label>Mot de passe</label>
           <input
             type="password"
             name="password"
-            placeholder="Entrez votre Mots de passe"
+            placeholder="Entrez votre mot de passe"
             value={formData.password}
             onChange={handleChange}
             required
@@ -108,20 +127,21 @@ const seConnecter = () => {
               onChange={handleChange}
             />
             <span>Se souvenir de moi</span>
-            <a href='#' className='forget-password' onClick={(e) => {
-                e.preventDefault(); 
-                navigate("/forgot-password"); 
-            }}> Mots de passe oublié ?</a>
+            <a href="#" className="forget-password" onClick={(e) => {
+              e.preventDefault();
+              navigate("/forgot-password");
+            }}>Mot de passe oublié ?</a>
           </div>
           <div className="seConnInscrir-div">
             <button type="submit" className="seConnecter-button">
               Se connecter
             </button>
-              <a className='creer-compte-button' onClick={() => navigate('/sinscrire')} >Créer un compte</a>
+            <a className="creer-compte-button" onClick={() => navigate('/sinscrire')}>Créer un compte</a>
           </div>
         </form>
       </div>
     </div>
   );
 };
-export default seConnecter;
+
+export default SeConnecter;
