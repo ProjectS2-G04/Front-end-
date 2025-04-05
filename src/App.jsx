@@ -13,6 +13,7 @@ import AssitantHome from './components/AssitantHome';
 
 const App = () => {
   return (
+
     <Router>
       <Routes>
         <Route path="/" element={<SeConnecter />} />
@@ -29,5 +30,34 @@ const App = () => {
     </Router>
   );
 };
+
+  <>
+  
+
+  
+     <Router> 
+    <Routes>
+      <Route path="/" element={<SeConnecter />} /> 
+      <Route path="/home" element={<Doctorhome />} /> 
+      <Route path="/profile" element={<Profile />} /> 
+      <Route path="/sinscrire" element={<Sinscrire />} /> 
+      <Route path="/forgot-password" element={<Forgot_Password />} />
+      <Route path="/enter-code" element ={<Forgot_Password1/>} />
+      <Route path="/reset-password" element ={<Forgot_Password2/>}/>
+      <Route path="/AdminPage" element={<AdminPage />} />
+      <Route path="/signup_user" element={<Signup_User />} />
+      <Route path="/Assitanthome" element={<AssitantHome />} />
+      <Route path="/Patienthome" element={<PatientHome />} />
+      <Route path="/AssistantList" element={<AssistantList />} />
+      <Route path="/home/DoctorList" element={<DoctorList />} />
+
+    </Routes>
+  </Router>
+  
+  
+  </>
+  
+
+
 
 export default App;

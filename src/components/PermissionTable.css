@@ -1,0 +1,40 @@
+.permissions-table-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  
+  .permissions-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #79bac0;
+  }
+  
+  .permissions-table th,
+  .permissions-table td {
+    padding: 10px;
+    border-bottom: 2px solid white;
+    text-align: center;
+    color: #2E5077;
+  }
+ /* Hide default checkbox */
+.permissions-table input[type="checkbox"] {
+    width: 20px;  /* Change size */
+    height: 20px;
+    cursor: pointer;
+    accent-color: #2ca58d;  /* Change checkbox color */
+  }
+  
+  /* Style for when checkbox is checked */
+  .permissions-table input[type="checkbox"]:checked {
+    background-color: #2ca58d;
+    border: 2px solid #2ca58d;
+  }
+  
+  
+  .permissions-table input {
+    width: 18px;
+    height: 18px;
+  }
+  

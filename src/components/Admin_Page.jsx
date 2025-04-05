@@ -1,7 +1,7 @@
-import React, { useState } from "react"; // Add missing React import
-import AdminSidebar from "./AdminSidebar"; // Import AdminSidebar
-import AdminList from "./AdminList"; // Import AdminList
-import "./Admin_Page.css"; // Import CSS
+import React, { useState } from "react";
+import AdminSidebar from "./AdminSidebar";
+import AdminList from "./AdminList";
+import "./Admin_Page.css";
 
 const AdminPage = () => {
   const [activeList, setActiveList] = useState("medecins");
@@ -11,18 +11,16 @@ const AdminPage = () => {
     assistants: "La Liste des assistants médecins",
     directeurs: "La Liste des directeurs",
     patients: "La Liste des patients",
-  };
-
-  const handleListClick = (listType) => {
-    setActiveList(listType);
+    dossiers: "La Liste des dossiers médicaux",
+    permissions: "Gestion des permissions",
   };
 
   return (
     <div className="admin-page">
-      <AdminSidebar onListClick={handleListClick} />
+      <AdminSidebar onListClick={setActiveList} activeList={activeList} />
       <AdminList title={titles[activeList]} listType={activeList} />
     </div>
   );
 };
 
-export default AdminPage; // Add missing export default
+export default AdminPage;

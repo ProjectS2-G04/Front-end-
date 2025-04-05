@@ -5,7 +5,11 @@
   min-height: 100vh;
   margin: 0;
   font-family: "Poppins", arial;
-  background-color: #f7fafa;
+  background: linear-gradient(to bottom, 
+              #FFFFFF 40%, 
+              #FFFFFF 54%, 
+              #F8FBFC 58%, 
+              #50A3AB 100%);
   color: #2E5077;
 }
 
@@ -14,93 +18,108 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 100px;
+  height: 80px;
   padding: 10px 20px;
-  background: #f1f1f1;
+  background: transparent;
+  border-bottom: 2px solid #4DA1A9; /* Blue border at the bottom */
+
 }
 
 .profile-header img {
-  width: 200px;
-  height: 200px;
-  padding: 12px;
+  width: 150px;
+  height: auto;
+  padding: 10px;
 }
 
 .profile-header nav a {
   text-decoration: none;
   font-weight: bold;
-  margin: 50px;
+  margin-right: 30px;
   color: #2E5077;
   cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.profile-header nav a:hover {
+  text-decoration: underline;
 }
 
 .profile-content {
-  background: transparent;
-  padding: 30px;
   text-align: center;
   width: 50%;
+  border-radius: 15px;
+  margin-top: 30px;
 }
 
+h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
 
+.profile-image-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
 
 .profile-image-text img {
-  width: 200px;
-  height: 200px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  margin-top: 30px;
+  margin-bottom: 10px;
+  border: 2px solid #4BA0A8;
 }
 
 .profile-image-text p {
   font-size: 14px;
   cursor: pointer;
-  margin-bottom: 10px;
-  padding: 8px;
+  color: #4BA0A8;
 }
 
 .profile-image-text p:hover {
-  font-size: 14px;
-  cursor: pointer;
   text-decoration: underline;
 }
 
-.parametres-form form {
+.parametres-form {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 
 .contenue-input {
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 15px;
 }
 
 .contenue-input label {
   font-weight: bold;
   white-space: nowrap;
-  padding: 20px;
-
+  margin: 15px;
+  font-size: 1rem;
 }
 
-.parametres-input-current-password{
+.contenue-input input {
   width: 100%;
   padding: 8px;
+  margin-left: 20px;
   border-radius: 5px;
-  margin-left:25px ;
   border: 1px solid #ccc;
+  font-size: 1rem;
 }
 
-
-.parametres-input-new-password{
-  width: 100%;
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-
+.contenue-input input:focus {
+  border-color: #4BA0A8;
 }
 
 .save-button {
   width: 100%;
-  max-width: 200px;
-  padding: 10px;
+  max-width: 220px;
+  padding: 12px;
   background: #4BA0A8;
   color: white;
   border: none;
@@ -109,66 +128,32 @@
   font-weight: bold;
   cursor: pointer;
   margin-top: 20px;
+  transition: all 0.3s ease;
 }
 
-.change-password-link{
-  cursor: pointer;
-}
 .save-button:hover {
   background-color: #3aafa9;
-  transform: scale(1.1);
-
+  transform: scale(1.05);
 }
 
-/* Responsive  */
+/* Responsive Design */
 @media (max-width: 768px) {
-  .profile-header {
-    flex-direction: row;
-    height: auto;
-    padding: 10px;
-    background: #f1f1f1;
-
-  }
-
-  .profile-header img {
-    width: 150px;
-    height: 150px;
-  }
-
-  .profile-header nav a {
-    margin: 20px;
-  }
-
   .profile-content {
-    width: 100%;
-    padding: 10px;
-    margin-top: 35px;
+    width: 80%;
+    padding: 20px;
   }
 
-  .profile-image-text img {
-    width: 120px;
-    height: 120px;
+  .profile-header {
+    height: auto;
+    padding: 15px;
   }
 
-  .contenue-input {
-    align-items: center;
-  }
-
-  .parametres-input-current-password,
-  .parametres-input-new-password{
-    margin-left: 0;
-  }
-}
-
-
-@media (max-width: 480px) {
   .profile-header img {
-    width: 150px;
-    height: 150px;
+    width: 120px;
   }
 
   .profile-header nav a {
-    font-size: 14px;
+    font-size: 1rem;
   }
 
   .profile-image-text img {
@@ -176,15 +161,50 @@
     height: 100px;
   }
 
-  .profile-image-text p {
-    font-size: 12px;
+  .contenue-input label {
+    font-size: 0.9rem;
   }
 
-  .contenue-input label {
-    font-size: 14px;
+  .contenue-input input {
+    font-size: 0.9rem;
   }
 
   .save-button {
     font-size: 0.9rem;
+    max-width: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-content {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .profile-header img {
+    width: 100px;
+  }
+
+  .profile-header nav a {
+    font-size: 0.9rem;
+  }
+
+  .profile-image-text img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .contenue-input label {
+    font-size: 0.8rem;
+  }
+
+  .contenue-input input {
+    font-size: 0.8rem;
+    padding: 8px;
+  }
+
+  .save-button {
+    font-size: 0.8rem;
+    max-width: 160px;
   }
 }

@@ -4,12 +4,13 @@ import './DoctorList.css'
 import { RiDossierFill } from "react-icons/ri";
 import { BsFillSave2Fill } from "react-icons/bs";
 import { IoArrowBackCircle } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
 
 
 function DoctorList(){
     const [activeTab, setActiveTab] = useState('etudiants');
     const [searchTerm, setSearchTerm] = useState('');
-
+    const navigate = useNavigate();
   // Sample data
   const records = {
     enseignants: [
@@ -71,7 +72,7 @@ function DoctorList(){
             ))}
           </div>
             <div className="addreturn">
-              <IoArrowBackCircle className='IoArrowBackCircle'/>
+              <IoArrowBackCircle className='IoArrowBackCircle'onClick={() => navigate("/home")} />
               <button className="add-btn">Ajouter</button>
             </div>
         </div>
