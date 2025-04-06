@@ -1,35 +1,94 @@
-import React, { useState } from "react";
-import PermissionsTable from "./PermissionTable"; // Import the PermissionsTable component
+import React, { useState, useEffect } from "react";
+import PermissionsTable from "./PermissionTable";
 import "./Admin_Page.css";
+import axios from "axios";
 
 const AdminList = ({ title, listType }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Étudiants");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Dummy Data
-  const dummyUsers = {
-    medecins: [
-      { id: 1, first_name: "John", last_name: "Doe", email: "john.doe@example.com" },
-      { id: 2, first_name: "Jane", last_name: "Smith", email: "jane.smith@example.com" },
-    ],
-    assistants: [{ id: 3, first_name: "Alice", last_name: "Brown", email: "alice.brown@example.com" }],
-    patients: [{ id: 5, first_name: "Lucas", last_name: "Martin", email: "lucas.martin@example.com" }],
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const fetchUsers = (groupName) => {
+    setLoading(true);
+    setErrorMessage("");
+
+    fetch(`http://127.0.0.1:8000/api/groups/${groupName}/`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message) {
+          setErrorMessage(data.message);
+          setUsers([]);
+        } else if (data.group && data.members) {
+          setUsers(data.members);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching users:', error);
+        setErrorMessage("Une erreur s'est produite. Veuillez réessayer.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    let groupName = '';
+    switch (listType) {
+      case "medecins":
+        groupName = "medecin";
+        break;
+      case "assistants":
+        groupName = "assistant-medecin";
+        break;
+      case "patients":
+        groupName = "patient";
+        break;
+      case "directeurs":
+        groupName = "directeur";
+        break;
+      default:
+        break;
+    }
+
+    if (groupName) {
+      fetchUsers(groupName);
+    }
+  }, [listType]);
+
+  const activateUser = async (userId, action) => {
+    const endpoint = `http://127.0.0.1:8000/api/dossier-medicale/${action}/${userId}/`;
+    try {
+      const res = await axios.post(endpoint, {}, {
+        withCredentials: true,
+      });
+      alert(res.data.message);
+      fetchUsers(listType);
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        alert(error.response.data.message);
+      } else {
+        alert("Une erreur est survenue. Veuillez réessayer.");
+      }
+    }
   };
 
   const dummyDossiers = {
-    Étudiants: [{ id: 1, name: "Dossier Étudiant - Jean Dupont" }],
-    ATS: [{ id: 2, name: "Dossier ATS - Marc Lemoine" }],
-    Enseignants: [{ id: 3, name: "Dossier Enseignant - Claire Fontaine" }],
+    Étudiants: [{ id: 1, nom: "Jean", prenom: "Dupont" }],
+    ATS: [{ id: 2, nom: "Dossier ATS -", prenom: "Marc Lemoine" }],
+    Enseignants: [{ id: 3, nom: "Dossier Enseignant -", prenom: "Marc Lemoine" }],
   };
 
-  // Determine Items to Display
-  const items = listType === "dossiers" ? dummyDossiers[selectedCategory] || [] : dummyUsers[listType] || [];
+  const items = listType === "dossiers"
+    ? dummyDossiers[selectedCategory] || []
+    : users;
 
-  // Filter items based on search
   const filteredItems = items.filter((item) =>
     listType === "dossiers"
-      ? item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ? (item.nom + " " + item.prenom).toLowerCase().includes(searchTerm.toLowerCase())
       : item.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -40,7 +99,6 @@ const AdminList = ({ title, listType }) => {
       <div className="Title-search">
         <h3 className="List-title">{title}</h3>
 
-        {/* Hide search bar for permissions table */}
         {listType !== "permissions" && (
           <div className="search-container">
             <input
@@ -54,78 +112,45 @@ const AdminList = ({ title, listType }) => {
         )}
       </div>
 
-      {/* Render Permissions Table when listType is "permissions" */}
       {listType === "permissions" ? (
         <PermissionsTable />
-      ) : listType === "dossiers" ? (
-        <>
-          {/* Dropdown for selecting dossier category */}
-          <div className="dropdown">
-            <button className="dropdown-button" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-              {selectedCategory} ▼
-            </button>
-            {isDropdownOpen && (
-              <ul className="dropdown-menu">
-                {Object.keys(dummyDossiers).map((category) => (
-                  <li
-                    key={category}
-                    onClick={() => {
-                      setSelectedCategory(category);
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    {category}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          {/* Display Medical Records */}
-          <div className="dossier-list">
-            {filteredItems.length > 0 ? (
-              filteredItems.map((item) => (
-                <div key={item.id} className="dossier-item">
-                  <span className="dossier-name">📄 <strong>{item.name}</strong></span>
-                  <button className="archive-btn">Archiver</button>
-                </div>
-              ))
-            ) : (
-              <p className="no-data">Aucun dossier trouvé.</p>
-            )}
-          </div>
-        </>
       ) : (
-        /* User Management Table */
-        <table className="admin-table">
-          <thead>
-            <tr className="table-title">
-              <td>Nom</td>
-              <td>Prénom</td>
-              <td>Email</td>
-              <td>Actions</td>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredItems.length > 0 ? (
-              filteredItems.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.first_name}</td>
-                  <td>{item.last_name}</td>
-                  <td>{item.email}</td>
-                  <td>
-                    <button className="activate-btn">Activer</button>
-                    <button className="deactivate-btn">Désactiver</button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="no-data">Aucun {listType} trouvé.</td>
+        <div>
+          {loading && <p>Chargement...</p>}
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
+
+          <table className="admin-table">
+            <thead>
+              <tr className="table-title">
+                <td>Nom</td>
+                <td>Prénom</td>
+                {listType !== "dossiers" && <td>Email</td>}
+                {listType !== "dossiers" && <td>Actions</td>}
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredItems.length > 0 ? (
+                filteredItems.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.first_name || item.nom}</td>
+                    <td>{item.last_name || item.prenom}</td>
+                    {listType !== "dossiers" && <td>{item.email || "-"}</td>}
+                    {listType !== "dossiers" && (
+                      <td>
+                        <button className="activate-btn" onClick={() => activateUser(item.id, 'activate')}>Activer</button>
+                        <button className="deactivate-btn" onClick={() => activateUser(item.id, 'desactivate')}>Désactiver</button>
+                      </td>
+                    )}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={listType === "dossiers" ? "2" : "4"} className="no-data">Aucun {listType} trouvé.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
