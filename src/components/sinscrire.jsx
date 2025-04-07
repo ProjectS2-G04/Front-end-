@@ -23,16 +23,23 @@ const Sinscrire = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     
-    const role = formData.role.toUpperCase();  
-  
+    // Map the form roles to actual system roles
+    const roleMapping = {
+      'ETUDIANT': 'PATIENT',
+      'ENSEIGNANT': 'DOCTOR',
+      'ATS': 'ASSISTANT'
+    };
+    
+    const systemRole = roleMapping[formData.role] || 'PATIENT'; // Default to PATIENT if role not found
+
     const data = {
       email: formData.email,
       password: formData.password,
       first_name: formData.prenom,
       last_name: formData.nom,
-      sub_role: role,  
+      role: systemRole,
+      sub_role: formData.role, // Keep the original role as sub_role if needed
     };
   
     try {
@@ -50,13 +57,13 @@ const Sinscrire = () => {
       }
     
       const result = await response.json();
-      console.log(result);  
+      // Store the role temporarily for the verification process
+      localStorage.setItem('pending_role', systemRole);
       alert("Un lien de vérification a été envoyé à votre adresse email. Veuillez vérifier votre boîte de réception.");
     } catch (error) {
       console.error(error);
       alert(`Erreur lors de l'inscription: ${error.message}`);
     }
-    
   };
 
   return (

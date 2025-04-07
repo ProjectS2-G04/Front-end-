@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { BsFillSave2Fill } from "react-icons/bs";
-import { IoArrowBackCircle } from "react-icons/io5";
 import { RiDossierFill } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom';
 import './DoctorList.css';

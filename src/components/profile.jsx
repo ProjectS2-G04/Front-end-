@@ -6,7 +6,6 @@ import './profile.css';
 
 const Profile = () => {
     const navigate = useNavigate();
-
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
@@ -70,11 +69,37 @@ const Profile = () => {
         setCurrentPassword('');
     };
 
+    // Add function to handle home navigation based on role
+    const handleHomeNavigation = () => {
+        const userRole = localStorage.getItem('role');
+        
+        switch (userRole) {
+            case 'DOCTOR':
+                navigate('/home');
+                break;
+            case 'ASSISTANT':
+                navigate('/Assitanthome');
+                break;
+            case 'PATIENT':
+                navigate('/Patienthome');
+                break;
+            case 'ADMIN':
+                navigate('/Admin_Page');
+                break;
+            case 'DIRECTOR':
+                navigate('/profile');
+                break;
+            default:
+                navigate('/profile');
+                break;
+        }
+    };
+
     return (
         <div className='profile-container'>
             <header className='profile-header'>
                 <img src={profileLogo} alt="" />
-                <nav><a onClick={() => navigate('/home')}>Home</a></nav>
+                <nav><a onClick={handleHomeNavigation}>Home</a></nav>
             </header>
             <div className="profile-content">
                 <h2>Paramètres du compte</h2>

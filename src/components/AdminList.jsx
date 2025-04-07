@@ -18,10 +18,13 @@ const AdminList = ({ title, listType }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log("useEffect triggered with listType:", listType); // Debug log
     if (listType === "dossiers") {
       fetchData();
-    } else if (!listType || listType === "users") {
+    } else if (["medecins", "assistants", "directeurs", "patients"].includes(listType)) {
       fetchUsers();
+    } else if (listType === "permissions") {
+      // Do nothing, handled in render
     }
   }, [selectedCategory, listType]);
 
@@ -90,64 +93,64 @@ const AdminList = ({ title, listType }) => {
   };
 
   const fetchUsers = async () => {
-  try {
-    setIsLoading(true);
-    setError(null);
-    let token = localStorage.getItem("token");
-    if (!token) throw new Error("No authentication token found.");
+    try {
+      setIsLoading(true);
+      setError(null);
+      let token = localStorage.getItem("token");
+      if (!token) throw new Error("No authentication token found.");
 
-    const fetchGroup = async (groupName) => {
-      let response = await fetch(`${BASE_URL}/api/groups/${groupName}/`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      // If forbidden, try refresh
-      if (response.status === 403) {
-        token = await refreshToken();
-        if (!token) throw new Error("Unable to refresh token.");
-        response = await fetch(`${BASE_URL}/api/groups/${groupName}/`, {
+      const fetchGroup = async (groupName) => {
+        let response = await fetch(`${BASE_URL}/api/groups/${groupName}/`, {
           headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });
-      }
 
-      if (!response.ok) throw new Error(`Failed to fetch ${groupName}: ${response.status}`);
-      const data = await response.json();
+        if (response.status === 403) {
+          token = await refreshToken();
+          if (!token) throw new Error("Unable to refresh token.");
+          response = await fetch(`${BASE_URL}/api/groups/${groupName}/`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+        }
 
-      console.log(`${groupName} raw data:`, data);
+        if (!response.ok) throw new Error(`Failed to fetch ${groupName}: ${response.status}`);
+        const data = await response.json();
+        console.log(`${groupName} raw data:`, data);
+        return data.members || data.users || [];
+      };
 
-      // Support for either "members" or "users" keys
-      return data.members || data.users || [];
-    };
+      const groupMap = {
+        medecins: "medecin",
+        assistants: "assistant-medecin",
+        directeurs: "directeur",
+        patients: "patient",
+      };
+      const groupName = groupMap[listType];
+      const groupUsers = await fetchGroup(groupName);
 
-    const doctors = await fetchGroup("medecin");
-    const assistants = await fetchGroup("assistant-medecin");
+      console.log(`✅ ${listType} Users (fetched):`, groupUsers);
+      setUsers(groupUsers);
+    } catch (error) {
+      console.error("❌ Error fetching users:", error);
+      setError(error.message || "Failed to load users.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    const combinedUsers = [...doctors, ...assistants];
-    console.log("Combined Users:", combinedUsers);
-
-    setUsers(combinedUsers);
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    setError(error.message || "Failed to load users.");
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
-  const deleteUser = async (userId) => {
+  const activateUser = async (userId, action) => {
     try {
       let token = localStorage.getItem("token");
       if (!token) throw new Error("No authentication token found.");
 
-      let response = await fetch(`${BASE_URL}/api/users/${userId}/`, {
-        method: "DELETE",
+      const endpoint = `${BASE_URL}/api/dossier-medicale/${action}/${userId}/`;
+      let response = await fetch(endpoint, {
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -157,8 +160,8 @@ const AdminList = ({ title, listType }) => {
       if (response.status === 403) {
         token = await refreshToken();
         if (!token) throw new Error("Unable to refresh token.");
-        response = await fetch(`${BASE_URL}/api/users/${userId}/`, {
-          method: "DELETE",
+        response = await fetch(endpoint, {
+          method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -166,11 +169,15 @@ const AdminList = ({ title, listType }) => {
         });
       }
 
-      if (!response.ok) throw new Error(`Échec de suppression: ${response.status}`);
-      setUsers(users.filter((user) => user.id !== userId));
+      if (!response.ok) throw new Error(`Action échouée: ${response.status}`);
+      const data = await response.json();
+      alert(data.message || `${action === "activate" ? "Activé" : "Désactivé"} avec succès`);
+
+      // Refresh the user list after action
+      fetchUsers();
     } catch (error) {
-      console.error("Error deleting user:", error);
-      setError(error.message || "Impossible de supprimer l'utilisateur.");
+      console.error(`Error ${action} user:`, error);
+      alert(error.message || `Erreur lors de ${action === "activate" ? "l'activation" : "la désactivation"}`);
     }
   };
 
@@ -204,7 +211,10 @@ const AdminList = ({ title, listType }) => {
       ) : listType === "dossiers" ? (
         <>
           <div className="dropdown">
-            <button className="dropdown-button" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+            <button
+              className="dropdown-button"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
               {selectedCategory} ▼
             </button>
             {isDropdownOpen && (
@@ -233,7 +243,8 @@ const AdminList = ({ title, listType }) => {
               filteredItems.map((item) => (
                 <div key={item.id} className="dossier-item">
                   <span className="dossier-name">
-                    📄 <strong>{item.nom} {item.prenom}</strong> {item.is_archived && "(Archivé)"}
+                    📄 <strong>{item.nom} {item.prenom}</strong>{" "}
+                    {item.is_archived && "(Archivé)"}
                   </span>
                   <button className="archive-btn">
                     {item.is_archived ? "Désarchiver" : "Archiver"}
@@ -271,13 +282,19 @@ const AdminList = ({ title, listType }) => {
                   <td>{user.last_name || "N/A"}</td>
                   <td>{user.first_name || "N/A"}</td>
                   <td>{user.email}</td>
-                  <td>{user.role}</td>
+                  <td>{user.role || listType.charAt(0).toUpperCase() + listType.slice(1)}</td>
                   <td>
-                    <button onClick={() => { /* Add edit functionality */ }}>
-                      Modifier
+                    <button
+                      className="activate-btn"
+                      onClick={() => activateUser(user.id, "activate")}
+                    >
+                      Activer
                     </button>
-                    <button onClick={() => deleteUser(user.id)}>
-                      Supprimer
+                    <button
+                      className="deactivate-btn"
+                      onClick={() => activateUser(user.id, "desactivate")}
+                    >
+                      Désactiver
                     </button>
                   </td>
                 </tr>
