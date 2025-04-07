@@ -150,7 +150,7 @@ function DoctorList() {
                     </div>
                     <div className="addreturn">
                         <IoArrowBackCircle className='IoArrowBackCircle' onClick={() => navigate("/home")} />
-                        <button className="add-btn">Ajouter</button>
+                        <button className="add-btn" onClick={() => navigate("/CreateFormPatient")}>Ajouter</button>
                     </div>
                 </div>
             </div>

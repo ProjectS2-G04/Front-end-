@@ -14,36 +14,32 @@ import SeConnecter from "./components/seConnecter";
 import Signup_User from './components/Signup_User';
 import Sinscrire from "./components/sinscrire";
 import EditRecord from './components/EditRecord';
+import CreateFormPatient from './components/CreateFormPatient';
 const App = () => {
   return (
-  <>
-  
+    <>
+      <Router>
+        <Routes>
 
-  
-     <Router> 
-    <Routes>
-      <Route path="/" element={<SeConnecter />} /> 
-      <Route path="/home" element={<Doctorhome />} /> 
-      <Route path="/profile" element={<Profile />} /> 
-      <Route path="/sinscrire" element={<Sinscrire />} /> 
-      <Route path="/forgot-password" element={<Forgot_Password />} />
-      <Route path="/enter-code" element ={<Forgot_Password1/>} />
-      <Route path="/reset-password" element ={<Forgot_Password2/>}/>
-      <Route path="/Admin_Page" element={<AdminPage />} />
-      <Route path="/signup_user" element={<Signup_User />} />
-      <Route path="/Assitanthome" element={<AssitantHome />} />
-      <Route path="/Patienthome" element={<PatientHome />} />
-      <Route path="/AssistantList" element={<AssistantList />} />
-      <Route path="/DoctorList" element={<DoctorList />} />
-      <Route path="/edit-record/:tab/:recordId" element={<EditRecord />} />
+          <Route path="/" element={<SeConnecter />} />
+          <Route path="/home" element={<Doctorhome />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/sinscrire" element={<Sinscrire />} />
+          <Route path="/forgot-password" element={<Forgot_Password />} />
+          <Route path="/enter-code" element={<Forgot_Password1 />} />
+          <Route path="/reset-password" element={<Forgot_Password2 />} />
+          <Route path="/Admin_Page" element={<AdminPage />} />
+          <Route path="/signup_user" element={<Signup_User />} />
+          <Route path="/Assitanthome" element={<AssitantHome />} />
+          <Route path="/Patienthome" element={<PatientHome />} />
+          <Route path="/AssistantList" element={<AssistantList />} />
+          <Route path="/DoctorList" element={<DoctorList />} />
+          <Route path="/edit-record/:tab/:recordId" element={<EditRecord />} />
+          <Route path="/CreateFormPatient" element={<CreateFormPatient />} />
 
-      
-
-    </Routes>
-  </Router>
-  
-  
-  </>
+        </Routes>
+      </Router>
+    </>
   )
 }
 

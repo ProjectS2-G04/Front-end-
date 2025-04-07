@@ -14,7 +14,7 @@
 .main-content {
     flex: 1;
     
-    margin-left: 260px; /* Same as sidebar width */
+    margin-left: 260px; 
     padding: 20px;
   }
   
