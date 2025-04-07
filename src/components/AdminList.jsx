@@ -1,60 +1,42 @@
-import React, { useEffect, useState } from "react";
-import "./Admin_Page.css";
+import React, { useState, useEffect } from "react";
 import PermissionsTable from "./PermissionTable";
-
-const BASE_URL = "http://127.0.0.1:8000"; // Base URL for API
+import "./Admin_Page.css";
+import axios from "axios";
 
 const AdminList = ({ title, listType }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Étudiants");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [records, setRecords] = useState({
-    Étudiants: [],
-    Enseignants: [],
-    ATS: [],
-  });
   const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    console.log("useEffect triggered with listType:", listType); // Debug log
-    if (listType === "dossiers") {
-      fetchData();
-    } else if (["medecins", "assistants", "directeurs", "patients"].includes(listType)) {
-      fetchUsers();
-    } else if (listType === "permissions") {
-      // Do nothing, handled in render
-    }
-  }, [selectedCategory, listType]);
-
-  const refreshToken = async () => {
-    try {
-      const refreshToken = localStorage.getItem("refresh_token");
-      if (!refreshToken) throw new Error("No refresh token found.");
-
-      const response = await fetch(`${BASE_URL}/api/token/refresh/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refresh: refreshToken }),
-      });
-
-      if (!response.ok) throw new Error("Failed to refresh token.");
-
-      const data = await response.json();
-      localStorage.setItem("token", data.access);
-      return data.access;
-    } catch (error) {
-      console.error("Token refresh error:", error);
-      setError("Session expirée. Veuillez vous reconnecter.");
-      return null;
-    }
+  // Fetch users data based on groupName
+  const fetchUsers = (groupName) => {
+    setLoading(true);
+    setErrorMessage("");
+    fetch(`http://127.0.0.1:8000/api/groups/${groupName}/`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message) {
+          setErrorMessage(data.message);
+          setUsers([]);
+        } else if (data.group && data.members) {
+          setUsers(data.members);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching users:', error);
+        setErrorMessage("Une erreur s'est produite. Veuillez réessayer.");
+      })
+      .finally(() => setLoading(false));
   };
 
+  // Fetch dossier data (from your version)
   const fetchData = async () => {
     try {
-      setIsLoading(true);
-      setError(null);
+      setLoading(true);
+      setErrorMessage(null);
       let url = "";
       if (selectedCategory === "Étudiants") url = "/dossiers/etudiants/";
       else if (selectedCategory === "Enseignants") url = "/dossiers/enseignants/";
@@ -63,130 +45,75 @@ const AdminList = ({ title, listType }) => {
       let token = localStorage.getItem("token");
       if (!token) throw new Error("No authentication token found.");
 
-      let response = await fetch(`${BASE_URL}/api/dossier-medicale${url}`, {
+      let response = await fetch(`http://127.0.0.1:8000/api/dossier-medicale${url}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
-
-      if (response.status === 403) {
-        token = await refreshToken();
-        if (!token) throw new Error("Unable to refresh token.");
-        response = await fetch(`${BASE_URL}/api/dossier-medicale${url}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-      }
 
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
       const data = await response.json();
-      setRecords((prev) => ({ ...prev, [selectedCategory]: data }));
+      setUsers(data); // Assuming this sets dossier records as users for consistency
     } catch (error) {
       console.error("Error fetching dossier data:", error);
-      setError(error.message || "Erreur lors du chargement des dossiers.");
+      setErrorMessage(error.message || "Erreur lors du chargement des dossiers.");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      let token = localStorage.getItem("token");
-      if (!token) throw new Error("No authentication token found.");
-
-      const fetchGroup = async (groupName) => {
-        let response = await fetch(`${BASE_URL}/api/groups/${groupName}/`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (response.status === 403) {
-          token = await refreshToken();
-          if (!token) throw new Error("Unable to refresh token.");
-          response = await fetch(`${BASE_URL}/api/groups/${groupName}/`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-        }
-
-        if (!response.ok) throw new Error(`Failed to fetch ${groupName}: ${response.status}`);
-        const data = await response.json();
-        console.log(`${groupName} raw data:`, data);
-        return data.members || data.users || [];
-      };
-
-      const groupMap = {
-        medecins: "medecin",
-        assistants: "assistant-medecin",
-        directeurs: "directeur",
-        patients: "patient",
-      };
-      const groupName = groupMap[listType];
-      const groupUsers = await fetchGroup(groupName);
-
-      console.log(`✅ ${listType} Users (fetched):`, groupUsers);
-      setUsers(groupUsers);
-    } catch (error) {
-      console.error("❌ Error fetching users:", error);
-      setError(error.message || "Failed to load users.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const activateUser = async (userId, action) => {
-    try {
-      let token = localStorage.getItem("token");
-      if (!token) throw new Error("No authentication token found.");
-
-      const endpoint = `${BASE_URL}/api/dossier-medicale/${action}/${userId}/`;
-      let response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.status === 403) {
-        token = await refreshToken();
-        if (!token) throw new Error("Unable to refresh token.");
-        response = await fetch(endpoint, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+  // Merged useEffect: Handles both dossier and user fetching
+  useEffect(() => {
+    let groupName = '';
+    if (listType === "dossiers") {
+      fetchData();
+    } else {
+      switch (listType) {
+        case "medecins":
+          groupName = "medecin";
+          break;
+        case "assistants":
+          groupName = "assistant-medecin";
+          break;
+        case "patients":
+          groupName = "patient";
+          break;
+        case "directeurs":
+          groupName = "directeur";
+          break;
+        default:
+          break;
       }
+      if (groupName) {
+        fetchUsers(groupName);
+      }
+    }
+  }, [listType, selectedCategory]); // Added selectedCategory as a dependency for dossier fetching
 
-      if (!response.ok) throw new Error(`Action échouée: ${response.status}`);
-      const data = await response.json();
-      alert(data.message || `${action === "activate" ? "Activé" : "Désactivé"} avec succès`);
-
-      // Refresh the user list after action
-      fetchUsers();
+  // Merged activateUser using axios (from your friend's version)
+  const activateUser = async (userId, action) => {
+    const endpoint = `http://127.0.0.1:8000/api/dossier-medicale/${action}/${userId}/`;
+    try {
+      const res = await axios.post(endpoint, {}, {
+        withCredentials: true,
+      });
+      alert(res.data.message);
+      fetchUsers(listType); // Refresh the list after action
     } catch (error) {
-      console.error(`Error ${action} user:`, error);
-      alert(error.message || `Erreur lors de ${action === "activate" ? "l'activation" : "la désactivation"}`);
+      if (error.response?.status === 400) {
+        alert(error.response.data.message);
+      } else {
+        alert("Une erreur s'est produite lors de l'action.");
+      }
     }
   };
 
-  const filteredItems = records[selectedCategory].filter((item) =>
-    `${item.nom} ${item.prenom}`.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const filteredUsers = users.filter((user) =>
-    `${user.first_name || ""} ${user.last_name || ""}`.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredItems = users.filter((item) =>
+    (item.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     item.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     item.email?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+    (!listType === "dossiers" || `${item.nom} ${item.prenom}`.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
@@ -219,7 +146,7 @@ const AdminList = ({ title, listType }) => {
             </button>
             {isDropdownOpen && (
               <ul className="dropdown-menu">
-                {Object.keys(records).map((category) => (
+                {["Étudiants", "Enseignants", "ATS"].map((category) => (
                   <li
                     key={category}
                     onClick={() => {
@@ -235,10 +162,10 @@ const AdminList = ({ title, listType }) => {
           </div>
 
           <div className="dossier-list">
-            {isLoading ? (
+            {loading ? (
               <p>Chargement...</p>
-            ) : error ? (
-              <p className="error">{error}</p>
+            ) : errorMessage ? (
+              <p className="error">{errorMessage}</p>
             ) : filteredItems.length > 0 ? (
               filteredItems.map((item) => (
                 <div key={item.id} className="dossier-item">
@@ -257,55 +184,49 @@ const AdminList = ({ title, listType }) => {
           </div>
         </>
       ) : (
-        <table className="admin-table">
-          <thead>
-            <tr className="table-title">
-              <td>Nom</td>
-              <td>Prénom</td>
-              <td>Email</td>
-              <td>Rôle</td>
-              <td>Actions</td>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              <tr>
-                <td colSpan="5">Chargement...</td>
+        <div>
+          {loading && <p>Chargement...</p>}
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
+          <table className="admin-table">
+            <thead>
+              <tr className="table-title">
+                <td>Nom</td>
+                <td>Prénom</td>
+                <td>Email</td>
+                <td>Actions</td>
               </tr>
-            ) : error ? (
-              <tr>
-                <td colSpan="5" className="error">{error}</td>
-              </tr>
-            ) : filteredUsers.length > 0 ? (
-              filteredUsers.map((user) => (
-                <tr key={user.id}>
-                  <td>{user.last_name || "N/A"}</td>
-                  <td>{user.first_name || "N/A"}</td>
-                  <td>{user.email}</td>
-                  <td>{user.role || listType.charAt(0).toUpperCase() + listType.slice(1)}</td>
-                  <td>
-                    <button
-                      className="activate-btn"
-                      onClick={() => activateUser(user.id, "activate")}
-                    >
-                      Activer
-                    </button>
-                    <button
-                      className="deactivate-btn"
-                      onClick={() => activateUser(user.id, "desactivate")}
-                    >
-                      Désactiver
-                    </button>
-                  </td>
+            </thead>
+            <tbody>
+              {filteredItems.length > 0 ? (
+                filteredItems.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.last_name || item.nom || "N/A"}</td>
+                    <td>{item.first_name || item.prenom || "N/A"}</td>
+                    <td>{item.email}</td>
+                    <td>
+                      <button
+                        className="activate-btn"
+                        onClick={() => activateUser(item.id, "activate")}
+                      >
+                        Activer
+                      </button>
+                      <button
+                        className="deactivate-btn"
+                        onClick={() => activateUser(item.id, "desactivate")}
+                      >
+                        Désactiver
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="no-data">Aucun {listType} trouvé.</td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5" className="no-data">Aucun utilisateur trouvé.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

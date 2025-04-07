@@ -1,36 +1,55 @@
 import React from 'react';
 import { HiMiniDocumentText } from "react-icons/hi2";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import homeLogo from "../assets/logo.png";
 import homeUser from "../assets/user.png";
 import './home.css';
 import OnlineDoctoramico from "/src/assets/OnlineDoctor-amico.svg";
 
-const home = () => {
+function Doctorhome() { // Renamed to match file convention and React best practice
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate('/'); // Redirect to login or landing page
+  };
+
+  const handleProfile = () => {
+    navigate('/profile'); // Redirect to profile page
+  };
+
   return (
     <div className='home-container'>
-    
-        <heder className="home-header">
-                <img src={homeLogo} alt="Medeciel Logo" />
-             <nav>
-             <Link to="/profile">  
-             <img src={homeUser} alt="Profile Icon" />
-             </Link>
-             <Link to="/" > <button className="deconnexion-button">Déconnexion</button></Link>
-             </nav>
-        </heder>
-        <div className="options">
-          <button  onClick={() => navigate("/DoctorList")}>Consulter les  dossier medicale <HiMiniDocumentText className='HiMiniDocumentText'/> </button>
-          <button>Consulter les  dossier medicale <HiMiniDocumentText className='HiMiniDocumentText'/> </button>
-          <button>Consulter les  dossier medicale <HiMiniDocumentText className='HiMiniDocumentText'/> </button>
-          <button>Consulter les  dossier medicale <HiMiniDocumentText className='HiMiniDocumentText'/> </button>
-        </div>
-        <div className="homeimg">
-       <img src={OnlineDoctoramico} alt="" />
+      <header className="home-header"> {/* Fixed typo: "heder" → "header" */}
+        <img src={homeLogo} alt="Medeciel Logo" />
+        <nav>
+          <img
+            src={homeUser}
+            alt="Profile Icon"
+            onClick={handleProfile} // Using onClick for programmatic navigation
+            style={{ cursor: 'pointer' }} // Add cursor pointer for UX
+          />
+          <button
+            className="deconnexion-button"
+            onClick={handleLogout} // Using onClick for consistency
+          >
+            Déconnexion
+          </button>
+        </nav>
+      </header>
+      <div className="options">
+        <button onClick={() => navigate("/DoctorList")}>
+          Consulter les dossiers médicaux <HiMiniDocumentText className='HiMiniDocumentText' />
+        </button>
+        {/* Removed duplicate buttons; add more with specific purposes if needed */}
+        <button onClick={() => navigate("/CreateFormPatient")}>
+          Créer un nouveau dossier <HiMiniDocumentText className='HiMiniDocumentText' />
+        </button>
+      </div>
+      <div className="homeimg">
+        <img src={OnlineDoctoramico} alt="Online Doctor Illustration" />
       </div>
     </div>
-  )
+  );
 }
 
-export default home
+export default Doctorhome;
