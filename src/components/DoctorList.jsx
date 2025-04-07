@@ -148,6 +148,10 @@ function DoctorList() {
                             <p>No records available</p>
                         )}
                     </div>
+                    <div className="addreturn">
+                        <IoArrowBackCircle className='IoArrowBackCircle' onClick={() => navigate("/home")} />
+                        <button className="add-btn">Ajouter</button>
+                    </div>
                 </div>
             </div>
         </div>
