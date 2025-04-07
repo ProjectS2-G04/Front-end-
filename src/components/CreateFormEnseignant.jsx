@@ -16,8 +16,8 @@ const FormPersonalInfo = ({ formData, setFormData }) => {
         service: "Service",
         situation_familiale: "Situation de la famille",
         admission_etablissement: "Admis(e) à l’établissement",
-        filiere: "Filière",
-        niveau: "Niveau",
+        grade: "Grade",
+        specialite: "Specialite",
         numero_dossier: "N° dossier",
         groupe_sanguin: "Groupe sanguin",
         numero_securite_sociale: "N° sécurité social",
@@ -41,7 +41,7 @@ const FormPersonalInfo = ({ formData, setFormData }) => {
             <div className="header-section">
                 <div className="title-box">
                     <h3 className="title">Dossier médical</h3>
-                    <p className="subtitle">Étudiant</p>
+                    <p className="subtitle">Enseignant</p>
                 </div>
                 <div className="profile-photo">
                     {photo ? (
@@ -344,14 +344,14 @@ const FormMedicalHistory = ({ formData, setFormData }) => {
 };
 
 // ----- Main Form -----
-const CreateFormPatient = () => {
+const CreateFormEnseigant = () => {
 
     const navigate = useNavigate();
 
     const [personalInfo, setPersonalInfo] = useState({
         nom: "", prenom: "", date_naissance: "", lieu_naissance: "", adresse: "",
         numero_telephone: "", email: "", service: "", situation_familiale: "",
-        admission_etablissement: "", filiere: "", niveau: "", numero_dossier: "",
+        admission_etablissement: "", grade: "", specialite: "", numero_dossier: "",
         groupe_sanguin: "", numero_securite_sociale: "",
     });
 
@@ -391,7 +391,7 @@ const CreateFormPatient = () => {
         const requiredFields = [
             "nom", "prenom", "date_naissance", "lieu_naissance", "adresse",
             "numero_telephone", "email", "service", "situation_familiale",
-            "admission_etablissement", "filiere", "niveau", "numero_dossier",
+            "admission_etablissement", "grade", "specialite", "numero_dossier",
             "groupe_sanguin", "numero_securite_sociale",
             "taille", "poids", "frequence_cardiaque", "pression_arterielle",
             "fumeur", "chiqueur", "prise_autre", "age_premiere_prise", "ancien_fumeur",
@@ -431,4 +431,4 @@ const CreateFormPatient = () => {
     );
 };
 
-export default CreateFormPatient;
+export default CreateFormEnseigant;

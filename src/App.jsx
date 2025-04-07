@@ -15,6 +15,9 @@ import Signup_User from './components/Signup_User';
 import Sinscrire from "./components/sinscrire";
 import EditRecord from './components/EditRecord';
 import CreateFormPatient from './components/CreateFormPatient';
+import CreateFormEnseignant from './components/CreateFormEnseignant';
+import CreateFormATS from './components/CreateFormATS';
+
 const App = () => {
   return (
     <>
@@ -36,6 +39,8 @@ const App = () => {
           <Route path="/DoctorList" element={<DoctorList />} />
           <Route path="/edit-record/:tab/:recordId" element={<EditRecord />} />
           <Route path="/CreateFormPatient" element={<CreateFormPatient />} />
+          <Route path="/CreateFormEnseignant" element={<CreateFormEnseignant />} />
+          <Route path="/CreateFormATS" element={<CreateFormATS />} />
 
         </Routes>
       </Router>
