@@ -58,9 +58,9 @@ const FormPersonalInfo = ({ formData, setFormData }) => {
                     <div key={key} className="input-group">
                         <label>{fieldLabels[key]}</label>
                         <input
-                            type="text"
+                            type={key === "date_naissance" ? "date" : "text"}
                             name={key}
-                            value={formData[key]}
+                            value={formData[key] || ""}
                             onChange={handleChange}
                         />
                     </div>
@@ -350,7 +350,7 @@ const CreateFormATS = () => {
     const [personalInfo, setPersonalInfo] = useState({
         nom: "", prenom: "", date_naissance: "", lieu_naissance: "", adresse: "",
         numero_telephone: "", email: "", service: "", situation_familiale: "",
-        admission_etablissement: "", grade: "", numero_dossier: "",
+        admission_etablissement: "true", grade: "", numero_dossier: "",
         groupe_sanguin: "", numero_securite_sociale: "",
     });
 
@@ -379,14 +379,24 @@ const CreateFormATS = () => {
         interventions_chirurgicales: '', reactions_allergiques: ''
     });
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        // Fusionner toutes les données du formulaire
         const formData = {
             ...personalInfo,
             ...biometricData,
             ...personalBackground,
             ...medicalHistory,
+            taille: biometricData.taille ? parseFloat(biometricData.taille) : null,
+            poids: biometricData.poids ? parseFloat(biometricData.poids) : null,
+            frequence_cardiaque: biometricData.frequence_cardiaque ? parseFloat(biometricData.frequence_cardiaque) : null,
+            nombre_cigarettes: personalBackground.fumeur && personalBackground.nombre_cigarettes ? parseInt(personalBackground.nombre_cigarettes) : null,
+            nombre_boites_chique: personalBackground.chiqueur && personalBackground.nombre_boites_chique ? parseInt(personalBackground.nombre_boites_chique) : null,
+            nombre_boites_autre: personalBackground.prise_autre && personalBackground.nombre_boites_autre ? parseInt(personalBackground.nombre_boites_autre) : null,
+            age_premiere_prise: personalBackground.age_premiere_prise ? parseInt(personalBackground.age_premiere_prise) : null,
+            nombre_boites_fumeur: personalBackground.ancien_fumeur && personalBackground.nombre_boites_fumeur ? parseInt(personalBackground.nombre_boites_fumeur) : null,
         };
 
+        // Liste des champs obligatoires
         const requiredFields = [
             "nom", "prenom", "date_naissance", "lieu_naissance", "adresse",
             "numero_telephone", "email", "service", "situation_familiale",
@@ -398,9 +408,10 @@ const CreateFormATS = () => {
             "interventions_chirurgicales", "reactions_allergiques"
         ];
 
+        // Vérifier si tous les champs obligatoires sont remplis
         const hasEmptyRequired = requiredFields.some(key => {
             const val = formData[key];
-            return val === undefined || val.toString().trim() === "";
+            return val === undefined || val === null || val.toString().trim() === "";
         });
 
         if (hasEmptyRequired) {
@@ -408,10 +419,36 @@ const CreateFormATS = () => {
             return;
         }
 
-        console.log("Données validées :", formData);
-        navigate("/DoctorList");
-        alert("Dossier crée avec succes!");
+        try {
+            // Récupérer le token JWT du localStorage
+            const token = localStorage.getItem("token");
+
+            // Soumettre les données au backend via une requête POST
+            const response = await fetch("http://127.0.0.1:8000/api/dossier-medicale/dossiers/ats/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Erreur du backend:", errorData);
+                throw new Error(JSON.stringify(errorData));
+            }
+
+            const data = await response.json();
+            console.log("Dossier créé:", data);
+            alert("Dossier créé avec succès !");
+            navigate("/DoctorList");  // Rediriger vers la liste des docteurs
+        } catch (error) {
+            console.error("Erreur lors de la soumission:", error);
+            alert("Erreur lors de la création du dossier : " + error.message);
+        }
     };
+
 
     return (
         <div className="doc-container">

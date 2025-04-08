@@ -59,14 +59,14 @@ const FormPersonalInfo = ({ formData, setFormData }) => {
                     <div key={key} className="input-group">
                         <label>{fieldLabels[key]}</label>
                         <input
-                            type="text"
+                            type={key === "date_naissance" ? "date" : "text"}
                             name={key}
-                            value={formData[key]}
+                            value={formData[key] || ""}
                             onChange={handleChange}
                         />
                     </div>
                 ))}
-            </form> 
+            </form>
 
             <div className="additional-info-row">
                 <div className="info-box">
@@ -135,7 +135,7 @@ const FormBiometricData = ({ formData, setFormData }) => {
                         <input
                             type="text"
                             name={name}
-                            value={formData[name]}
+                            value={formData[name] || ""}
                             onChange={handleChange}
                             placeholder={placeholder}
                             className="form-input"
@@ -149,7 +149,7 @@ const FormBiometricData = ({ formData, setFormData }) => {
 
 // ----- FormPersonalBackground -----
 const FormPersonalBackground = ({ formData, setFormData }) => {
-    
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
@@ -157,10 +157,10 @@ const FormPersonalBackground = ({ formData, setFormData }) => {
             const isOuiCheckbox = name.startsWith("fumeur") || name.startsWith("chiqueur") || name.startsWith("prise_autre");
             const oppositeKey =
                 name === "fumeur" ? "ancien_fumeur" :
-                name === "chiqueur" ? "ancien_chiqueur" :
-                name === "prise_autre" ? "ancien_prise" :
-                name === "ancien_fumeur" ? "fumeur" :
-                null;
+                    name === "chiqueur" ? "ancien_chiqueur" :
+                        name === "prise_autre" ? "ancien_prise" :
+                            name === "ancien_fumeur" ? "fumeur" :
+                                null;
 
             setFormData(prev => ({
                 ...prev,
@@ -168,9 +168,9 @@ const FormPersonalBackground = ({ formData, setFormData }) => {
                 ...(oppositeKey && { [oppositeKey]: !checked }),
                 ...(isOuiCheckbox && !checked ? {
                     [name === "fumeur" ? "nombre_cigarettes" :
-                     name === "chiqueur" ? "nombre_boites_chique" :
-                     name === "prise_autre" ? "nombre_boites_autre" :
-                     ""]: ""
+                        name === "chiqueur" ? "nombre_boites_chique" :
+                            name === "prise_autre" ? "nombre_boites_autre" :
+                                ""]: ""
                 } : {})
             }));
         } else {
@@ -351,7 +351,7 @@ const CreateFormEnseigant = () => {
     const [personalInfo, setPersonalInfo] = useState({
         nom: "", prenom: "", date_naissance: "", lieu_naissance: "", adresse: "",
         numero_telephone: "", email: "", service: "", situation_familiale: "",
-        admission_etablissement: "", grade: "", specialite: "", numero_dossier: "",
+        admission_etablissement: "true", grade: "", specialite: "", numero_dossier: "",
         groupe_sanguin: "", numero_securite_sociale: "",
     });
 
@@ -380,28 +380,32 @@ const CreateFormEnseigant = () => {
         interventions_chirurgicales: '', reactions_allergiques: ''
     });
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const formData = {
             ...personalInfo,
             ...biometricData,
             ...personalBackground,
             ...medicalHistory,
+            taille: biometricData.taille ? parseFloat(biometricData.taille) : null,
+            poids: biometricData.poids ? parseFloat(biometricData.poids) : null,
+            frequence_cardiaque: biometricData.frequence_cardiaque ? parseFloat(biometricData.frequence_cardiaque) : null,
+            nombre_cigarettes: personalBackground.fumeur && personalBackground.nombre_cigarettes ? parseInt(personalBackground.nombre_cigarettes) : null,
+            nombre_boites_chique: personalBackground.chiqueur && personalBackground.nombre_boites_chique ? parseInt(personalBackground.nombre_boites_chique) : null,
+            nombre_boites_autre: personalBackground.prise_autre && personalBackground.nombre_boites_autre ? parseInt(personalBackground.nombre_boites_autre) : null,
+            age_premiere_prise: personalBackground.age_premiere_prise ? parseInt(personalBackground.age_premiere_prise) : null,
+            nombre_boites_fumeur: personalBackground.ancien_fumeur && personalBackground.nombre_boites_fumeur ? parseInt(personalBackground.nombre_boites_fumeur) : null,
         };
 
         const requiredFields = [
             "nom", "prenom", "date_naissance", "lieu_naissance", "adresse",
-            "numero_telephone", "email", "service", "situation_familiale",
-            "admission_etablissement", "grade", "specialite", "numero_dossier",
-            "groupe_sanguin", "numero_securite_sociale",
+            "numero_telephone", "email", "situation_familiale", "service", "grade",
+            "numero_dossier", "groupe_sanguin", "numero_securite_sociale",
             "taille", "poids", "frequence_cardiaque", "pression_arterielle",
-            "fumeur", "chiqueur", "prise_autre", "age_premiere_prise", "ancien_fumeur",
-            "affections_congenitales", "maladies_generales",
-            "interventions_chirurgicales", "reactions_allergiques"
         ];
 
         const hasEmptyRequired = requiredFields.some(key => {
             const val = formData[key];
-            return val === undefined || val.toString().trim() === "";
+            return val === undefined || val === null || val.toString().trim() === "";
         });
 
         if (hasEmptyRequired) {
@@ -409,10 +413,33 @@ const CreateFormEnseigant = () => {
             return;
         }
 
-        console.log("Données validées :", formData);
-        navigate("/DoctorList");
-        alert("Dossier crée avec succes!");
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch("http://127.0.0.1:8000/api/dossier-medicale/dossiers/enseignants/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Backend error:", errorData);
+                throw new Error(JSON.stringify(errorData));
+            }
+
+            const data = await response.json();
+            console.log("Dossier créé:", data);
+            alert("Dossier créé avec succès !");
+            navigate("/DoctorList"); // Redirection après succès
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            alert("Erreur lors de la création du dossier: " + error.message);
+        }
     };
+
 
     return (
         <div className="doc-container">

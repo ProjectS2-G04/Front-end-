@@ -154,10 +154,10 @@ const FormPersonalBackground = ({ formData, setFormData }) => {
             const isOuiCheckbox = ["fumeur", "chiqueur", "prise_autre"].includes(name);
             const oppositeKey =
                 name === "fumeur" ? "ancien_fumeur" :
-                name === "chiqueur" ? "ancien_chiqueur" :
-                name === "prise_autre" ? "ancien_prise" :
-                name === "ancien_fumeur" ? "fumeur" :
-                null;
+                    name === "chiqueur" ? "ancien_chiqueur" :
+                        name === "prise_autre" ? "ancien_prise" :
+                            name === "ancien_fumeur" ? "fumeur" :
+                                null;
 
             setFormData(prev => ({
                 ...prev,
@@ -165,9 +165,9 @@ const FormPersonalBackground = ({ formData, setFormData }) => {
                 ...(oppositeKey && { [oppositeKey]: !checked }),
                 ...(isOuiCheckbox && !checked ? {
                     [name === "fumeur" ? "nombre_cigarettes" :
-                     name === "chiqueur" ? "nombre_boites_chique" :
-                     name === "prise_autre" ? "nombre_boites_autre" :
-                     ""]: ""
+                        name === "chiqueur" ? "nombre_boites_chique" :
+                            name === "prise_autre" ? "nombre_boites_autre" :
+                                ""]: ""
                 } : {})
             }));
         } else {
@@ -344,7 +344,7 @@ const CreateFormPatient = () => {
     const [personalInfo, setPersonalInfo] = useState({
         nom: "", prenom: "", date_naissance: "", lieu_naissance: "", adresse: "",
         numero_telephone: "", email: "", service: "", situation_familiale: "",
-        admission_etablissement: "Oui", Filiere: "", Niveau: "", numero_dossier: "",
+        admission_etablissement: "true", Filiere: "", Niveau: "", numero_dossier: "",
         groupe_sanguin: "", numero_securite_sociale: "",
     });
 
