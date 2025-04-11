@@ -1,445 +1,487 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useState ,useEffect } from "react";
 import "./CreateForm.css";
 
-// ----- FormPersonalInfo -----
-const FormPersonalInfo = ({ formData, setFormData }) => {
-    const fieldLabels = {
-        nom: "Nom",
-        prenom: "Prénom",
-        date_naissance: "Date de naissance",
-        lieu_naissance: "Lieu de naissance",
-        adresse: "Adresse",
-        numero_telephone: "Numéro de téléphone",
-        email: "Email",
-        service: "Service",
-        situation_familiale: "Situation de la famille",
-        admission_etablissement: "Admis(e) à l’établissement",
-        Filiere: "Filière",
-        Niveau: "Niveau",
-        numero_dossier: "N° dossier",
-        groupe_sanguin: "Groupe sanguin",
-        numero_securite_sociale: "N° sécurité social",
-    };
+function CreateFormPatient() {
+  {/* ..............Pour charger une photo du Pc du l'utilisateure....................  */}
+  const fileInputRef = useRef(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+  const handleImageClick = () => {
+    fileInputRef.current.click();
+  };
 
-    const [photo, setPhoto] = useState(null);
-    const handlePhotoUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setPhoto(URL.createObjectURL(file));
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+   {/*................... Pour calculer le MC.........................   */}
+   const [taille, setTaille] = useState("");
+   const [poids, setPoids] = useState("");
+   const [imc, setImc] = useState("");
+   const [categorieImc, setCategorieImc] = useState("");
+   const [sexe, setSexe] = useState(""); 
+   useEffect(() => {
+    const t = parseFloat(taille);
+    const p = parseFloat(poids);
+    
+    if (t > 0 && p > 0) {
+      const imcCalc = p / Math.pow(t / 100, 2); // cm -> m
+      setImc(imcCalc.toFixed(2));
+
+      // Interprétation de l'IMC selon le sexe
+      let interpretation = "";
+      if (sexe === "Homme") {
+        if (imcCalc < 18.5) interpretation = "Insuffisance pondérale";
+        else if (imcCalc < 25) interpretation = "Corpulence normale";
+        else if (imcCalc < 30) interpretation = "Surpoids";
+        else if (imcCalc < 35) interpretation = "Obésité modérée";
+        else if (imcCalc < 40) interpretation = "Obésité sévère";
+        else interpretation = "Obésité morbide";
+      } else if (sexe === "Femme") {
+        if (imcCalc < 18.5) interpretation = "Insuffisance pondérale";
+        else if (imcCalc < 24) interpretation = "Corpulence normale";
+        else if (imcCalc < 29) interpretation = "Surpoids";
+        else if (imcCalc < 34) interpretation = "Obésité modérée";
+        else if (imcCalc < 39) interpretation = "Obésité sévère";
+        else interpretation = "Obésité morbide";
+      }
+
+      setCategorieImc(interpretation);
+    } else {
+      setImc("");
+      setCategorieImc("");
+    }
+  }, [taille, poids, sexe ,categorieImc]);
+
+ {/*................... Quand user cliquer sur non cela empecher l'ecriture dans la zone du text........................   */}
+  const [reponses, setReponses] = useState({
+    "A fumer": "",
+    "A chiquer": "",
+    "A prise": "",
+    "Ancien fumeur": "",
+  });
+
+  // Fonction pour gérer les changements de réponses
+  const handleRadioChange = (label, value) => {
+    setReponses((prevReponses) => ({
+      ...prevReponses,
+      [label]: value, // Met à jour la réponse pour le label spécifique
+    }));
+  };
+  {/*................... C'est pour optimiser react dans les text ares au lieu de faire 4 test are je met juste un seule text areas 
+    ........................   */}
+  const labels = [
+    "Affections congénitales :",
+    "Maladies générales",
+    "Interventions chirurgicales (reporter les dates)",
+    "Réactions allergiques aux médicaments (Lesquels ?)"
+  ];
+
+  {/*...................la pour l'aumentation de la zone du text  ........................   */}
+    
+  const textareasRef = useRef([]);
+  const handleInput = (e, index) => {
+    const textarea = textareasRef.current[index];
+    if (textarea) {
+      textarea.style.height = "auto"; // reset
+      textarea.style.height = textarea.scrollHeight + "px"; // adjust
+    }
+  };
+    {/*...................La pour chosire lieu du naissance  ........................   */}
+    const wilayas = [
+      { numero: "01", nom: "Adrar" },
+      { numero: "02", nom: "Chlef" },
+      { numero: "03", nom: "Laghouat" },
+      { numero: "04", nom: "Oum El Bouaghi" },
+      { numero: "05", nom: "Batna" },
+      { numero: "06", nom: "Béjaïa" },
+      { numero: "07", nom: "Biskra" },
+      { numero: "08", nom: "Béchar" },
+      { numero: "09", nom: "Blida" },
+      { numero: "10", nom: "Bouira" },
+      { numero: "11", nom: "Tamanrasset" },
+      { numero: "12", nom: "Tébessa" },
+      { numero: "13", nom: "Tlemcen" },
+      { numero: "14", nom: "Tiaret" },
+      { numero: "15", nom: "Tizi Ouzou" },
+      { numero: "16", nom: "Alger" },
+      { numero: "17", nom: "Djelfa" },
+      { numero: "18", nom: "Jijel" },
+      { numero: "19", nom: "Sétif" },
+      { numero: "20", nom: "Saïda" },
+      { numero: "21", nom: "Skikda" },
+      { numero: "22", nom: "Sidi Bel Abbès" },
+      { numero: "23", nom: "Annaba" },
+      { numero: "24", nom: "Guelma" },
+      { numero: "25", nom: "Constantine" },
+      { numero: "26", nom: "Médéa" },
+      { numero: "27", nom: "Mostaganem" },
+      { numero: "28", nom: "M’Sila" },
+      { numero: "29", nom: "Mascara" },
+      { numero: "30", nom: "Ouargla" },
+      { numero: "31", nom: "Oran" },
+      { numero: "32", nom: "El Bayadh" },
+      { numero: "33", nom: "Illizi" },
+      { numero: "34", nom: "Bordj Bou Arreridj" },
+      { numero: "35", nom: "Boumerdès" },
+      { numero: "36", nom: "El Tarf" },
+      { numero: "37", nom: "Tindouf" },
+      { numero: "38", nom: "Tissemsilt" },
+      { numero: "39", nom: "El Oued" },
+      { numero: "40", nom: "Khenchela" },
+      { numero: "41", nom: "Souk Ahras" },
+      { numero: "42", nom: "Tipaza" },
+      { numero: "43", nom: "Mila" },
+      { numero: "44", nom: "Aïn Defla" },
+      { numero: "45", nom: "Naâma" },
+      { numero: "46", nom: "Aïn Témouchent" },
+      { numero: "47", nom: "Ghardaïa" },
+      { numero: "48", nom: "Relizane" },
+      { numero: "49", nom: "Timimoun" },
+      { numero: "50", nom: "Bordj Badji Mokhtar" },
+      { numero: "51", nom: "Ouled Djellal" },
+      { numero: "52", nom: "Béni Abbès" },
+      { numero: "53", nom: "In Salah" },
+      { numero: "54", nom: "In Guezzam" },
+      { numero: "55", nom: "Touggourt" },
+      { numero: "56", nom: "Djanet" },
+      { numero: "57", nom: "El M'Ghair" },
+      { numero: "58", nom: "El Menia" }
+    ]; 
+    {/* pour les restriction qui existe sur le numero de telephone et email  */}
+    const [phone, setPhone] = useState("");
+    const [email, setEmail] = useState("");
+    const [phoneError, setPhoneError] = useState("");
+    const [emailError, setEmailError] = useState("");
+  
+    const validatePhone = (value) => {
+      const phoneRegex = /^0[5-7][0-9]{8}$/;
+      setPhone(value);
+      setPhoneError(
+        phoneRegex.test(value) ? "" : "Numéro invalide (format : 05XXXXXXXX)"
+      );
+    };
+  
+    const validateEmail = (value) => {
+      const emailRegex = /^[a-zA-Z]{1,3}\.[a-zA-Z]+@esi-sba\.dz$/;
+      setEmail(value);
+      setEmailError(
+        emailRegex.test(value)
+          ? ""
+          : "Email invalide (ex: abc.nom@esi-sba.dz)"
+      );
+    };
+    {/* Indication des ereure si il existe des champs nn pa encore remplie ou cocher  */}
+    const [formError, setFormError] = useState("");
+    useEffect(() => {
+      const inputs = document.querySelectorAll("input:not([type='file']):not([type='radio']), select, textarea");
+    
+      let valid = true;
+    
+      inputs.forEach((input) => {
+        if (!input.disabled && input.value.trim() === "") {
+          valid = false;
         }
+      });
+    
+      const tabacLabels = ["A fumer", "A chiquer", "A prise", "Ancien fumeur"];
+      for (let label of tabacLabels) {
+        const radios = document.getElementsByName(label);
+        const isChecked = Array.from(radios).some(radio => radio.checked);
+        if (!isChecked) {
+          valid = false;
+          break;
+        }
+      }
+    
+      if (!valid) {
+        setFormError("❗Veuillez remplir tous les champs et répondre à toutes les questions.");
+      } else {
+        setFormError("");
+      }
+    }, [taille, poids, sexe, phone, email, reponses]);
+    
+
+    const formErrorRef = useRef(null);
+    useEffect(() => {
+      if (formError && formErrorRef.current) {
+        formErrorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, [formError]);
+    const validerFormulaire = () => {
+      const inputs = document.querySelectorAll("input:not([type='file']):not([type='radio']), select, textarea");
+      let valid = true;
+    
+      inputs.forEach((input) => {
+        if (!input.disabled && input.value.trim() === "") {
+          valid = false;
+        }
+      });
+    
+      const tabacLabels = ["A fumer", "A chiquer", "A prise", "Ancien fumeur"];
+      for (let label of tabacLabels) {
+        const radios = document.getElementsByName(label);
+        const isChecked = Array.from(radios).some(radio => radio.checked);
+        if (!isChecked) {
+          valid = false;
+          break;
+        }
+      }
+    
+      if (!valid) {
+        setFormError("❗Veuillez remplir tous les champs et répondre à toutes les questions.");
+        setTimeout(() => {
+          if (formErrorRef.current) {
+            formErrorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }, 100);
+        return false;
+      } else {
+        setFormError("");
+        return true;
+      }
     };
-
-    return (
-        <div className="personal-info-container">
-            <div className="header-section">
-                <div className="title-box">
-                    <h3 className="title">Dossier médical</h3>
-                    <p className="subtitle">Étudiant</p>
-                </div>
-                <div className="profile-photo">
-                    {photo ? (
-                        <img src={photo} alt="Uploaded profile" className="photo-preview" />
-                    ) : (
-                        <label className="photo-placeholder">
-                            Photo ici
-                            <input type="file" accept="image/*" onChange={handlePhotoUpload} hidden />
-                        </label>
-                    )}
-                </div>
-            </div>
-            <form className="form-fields">
-                {Object.keys(fieldLabels).slice(0, -3).map((key) => (
-                    <div key={key} className="input-group">
-                        <label>{fieldLabels[key]}</label>
-                        <input
-                            type={key === "date_naissance" ? "date" : "text"}
-                            name={key}
-                            value={formData[key] || ""}
-                            onChange={handleChange}
-                        />
-                    </div>
-                ))}
-            </form>
-
-            <div className="additional-info-row">
-                <div className="info-box">
-                    <label>{fieldLabels.numero_dossier}</label>
-                    <input
-                        type="text"
-                        name="numero_dossier"
-                        value={formData.numero_dossier || ""}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="info-box">
-                    <label>{fieldLabels.groupe_sanguin}</label>
-                    <select
-                        name="groupe_sanguin"
-                        value={formData.groupe_sanguin || ""}
-                        onChange={handleChange}
-                    >
-                        <option value="">-- Choisir --</option>
-                        <option value="A+">A+</option>
-                        <option value="A-">A-</option>
-                        <option value="B+">B+</option>
-                        <option value="B-">B-</option>
-                        <option value="O+">O+</option>
-                        <option value="O-">O-</option>
-                        <option value="AB+">AB+</option>
-                        <option value="AB-">AB-</option>
-                    </select>
-                </div>
-                <div className="info-box">
-                    <label>{fieldLabels.numero_securite_sociale}</label>
-                    <input
-                        type="text"
-                        name="numero_securite_sociale"
-                        value={formData.numero_securite_sociale || ""}
-                        onChange={handleChange}
-                    />
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// ----- FormBiometricData -----
-const FormBiometricData = ({ formData, setFormData }) => {
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
-
-    return (
-        <div className="biometric-data-container">
-            <div className="medical-card">
-                <h3 className="card-title">Les données biométrique</h3>
-            </div>
-            <div className="biometric-form">
-                {[
-                    { label: "Taille (cm)", name: "taille", placeholder: "170" },
-                    { label: "Poids (kg)", name: "poids", placeholder: "70" },
-                    { label: "Fréquence cardiaque (bpm)", name: "frequence_cardiaque", placeholder: "72" },
-                    { label: "Pression artérielle (mmHg)", name: "pression_arterielle", placeholder: "120/80" },
-                ].map(({ label, name, placeholder }) => (
-                    <div className="form-row" key={name}>
-                        <label className="form-label">• {label}</label>
-                        <input
-                            type="text"
-                            name={name}
-                            value={formData[name] || ""}
-                            onChange={handleChange}
-                            placeholder={placeholder}
-                            className="form-input"
-                        />
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
-
-// ----- FormPersonalBackground -----
-const FormPersonalBackground = ({ formData, setFormData }) => {
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-
-        if (type === "checkbox") {
-            const isOuiCheckbox = ["fumeur", "chiqueur", "prise_autre"].includes(name);
-            const oppositeKey =
-                name === "fumeur" ? "ancien_fumeur" :
-                    name === "chiqueur" ? "ancien_chiqueur" :
-                        name === "prise_autre" ? "ancien_prise" :
-                            name === "ancien_fumeur" ? "fumeur" :
-                                null;
-
-            setFormData(prev => ({
-                ...prev,
-                [name]: checked,
-                ...(oppositeKey && { [oppositeKey]: !checked }),
-                ...(isOuiCheckbox && !checked ? {
-                    [name === "fumeur" ? "nombre_cigarettes" :
-                        name === "chiqueur" ? "nombre_boites_chique" :
-                            name === "prise_autre" ? "nombre_boites_autre" :
-                                ""]: ""
-                } : {})
-            }));
+    {/* le numro de dossier soit un nombre  */}
+    const [numeroDossier, setNumeroDossier] = useState("");
+    {/* le numro de securite   */}
+    const [numeroSecurite, setNumeroSecurite] = useState("");
+    const [secuError, setSecuError] = useState("");
+    const validateNumeroSecurite = (value) => {
+      const regex = /^\d{0,18}$/; // maximum 18 chiffres autorisés pendant la saisie
+      if (regex.test(value)) {
+        setNumeroSecurite(value);
+        if (value.length === 18) {
+          setSecuError(""); // valide
         } else {
-            setFormData(prev => ({
-                ...prev,
-                [name]: value
-            }));
+          setSecuError("Le numéro doit contenir exactement 18 chiffres.");
         }
+      }
     };
-
-    return (
-        <div className="personal-background-container">
-            <div className="medical-card">
-                <h1 className="card-title">Antécédents personnels</h1>
-            </div>
-            <div className="section-title">
-                <h2>Tabacs</h2>
-            </div>
-
-            <div className="habits-section">
-                {[
-                    {
-                        label: "À fumer",
-                        ouiKey: "fumeur",
-                        nonKey: "ancien_fumeur",
-                        inputKey: "nombre_cigarettes",
-                        placeholder: "Nombre de cigarettes /j"
-                    },
-                    {
-                        label: "À chiquer",
-                        ouiKey: "chiqueur",
-                        nonKey: "ancien_chiqueur",
-                        inputKey: "nombre_boites_chique",
-                        placeholder: "Nombre de boites /j"
-                    },
-                    {
-                        label: "À prise",
-                        ouiKey: "prise_autre",
-                        nonKey: "ancien_prise",
-                        inputKey: "nombre_boites_autre",
-                        placeholder: "Nombre de boites /j"
-                    }
-                ].map(({ label, ouiKey, nonKey, inputKey, placeholder }, index) => (
-                    <div className="smoking-section" key={index}>
-                        <ul><li><strong>{label}</strong></li></ul>
-
-                        <label className="custom-checkbox">
-                            <span>Oui</span>
-                            <input
-                                type="checkbox"
-                                name={ouiKey}
-                                checked={formData[ouiKey] || false}
-                                onChange={handleChange}
-                            />
-                            <span className="checkmark"></span>
-                        </label>
-
-                        <label className="custom-checkbox">
-                            <span>Non</span>
-                            <input
-                                type="checkbox"
-                                name={nonKey}
-                                checked={formData[nonKey] || false}
-                                onChange={handleChange}
-                            />
-                            <span className="checkmark"></span>
-                        </label>
-
-                        <label className="input-label">
-                            <span>{placeholder}</span>
-                            <input
-                                type="number"
-                                name={inputKey}
-                                value={formData[inputKey] || ""}
-                                onChange={handleChange}
-                                disabled={!formData[ouiKey]}
-                            />
-                        </label>
-                    </div>
-                ))}
-
-                <div className="age-section">
-                    <p>Âge à la première prise</p>
-                    <input
-                        type="number"
-                        name="age_premiere_prise"
-                        value={formData.age_premiere_prise || ""}
-                        onChange={handleChange}
-                        className="age-input"
-                    />
-                </div>
-
-                <div className="smoking-section">
-                    <ul><li><strong>Ancien fumeur</strong></li></ul>
-
-                    <label className="custom-checkbox">
-                        <span>Oui</span>
-                        <input
-                            type="checkbox"
-                            name="ancien_fumeur"
-                            checked={formData.ancien_fumeur || false}
-                            onChange={handleChange}
-                        />
-                        <span className="checkmark"></span>
-                    </label>
-
-                    <label className="custom-checkbox">
-                        <span>Non</span>
-                        <input
-                            type="checkbox"
-                            name="fumeur"
-                            checked={formData.fumeur || false}
-                            onChange={handleChange}
-                        />
-                        <span className="checkmark"></span>
-                    </label>
-
-                    <label className="input-label">
-                        <span>Nombre de boites /j</span>
-                        <input
-                            type="number"
-                            name="nombre_boites_fumeur"
-                            value={formData.nombre_boites_fumeur || ""}
-                            onChange={handleChange}
-                            disabled={!formData.ancien_fumeur}
-                        />
-                    </label>
-                </div>
-            </div>
+        
+  return (
+    <div className="container-infosdocs">
+      <div className="header">
+         <div className="republic">
+           <h3>République Algérienne Démocratique & Populaire</h3>
+           <p>Ministére de la santé et de la population</p>
+          </div>
+          <div className="photo">
+             <h3>Dossier médical - Etudiant</h3>
+             <div className="photo-upload-rectangle" onClick={handleImageClick}>
+          {imagePreview ? (
+            <img src={imagePreview} alt="Profil" className="uploaded-img" />
+          ) : (
+            <span className="upload-placeholder"><p>ajouter une photo</p></span>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
         </div>
-    );
-};
-
-// ----- FormMedicalHistory -----
-const FormMedicalHistory = ({ formData, setFormData }) => {
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-        e.target.style.height = 'auto';
-        e.target.style.height = `${e.target.scrollHeight}px`;
-    };
-
-    return (
-        <div className="medical-history-container">
-            <div className="medical-card">
-                <h3 className="card-title">Antecedents medicaux - chirurgicaux</h3>
-            </div>
-            <div className="medical-history-form">
-                {[
-                    { label: "Affections congénitales", name: "affections_congenitales" },
-                    { label: "Maladies générales", name: "maladies_generales" },
-                    { label: "Interventions chirurgicales (reporter les dates)", name: "interventions_chirurgicales" },
-                    { label: "Réactions allergiques aux médicaments (lesquels ?)", name: "reactions_allergiques" },
-                ].map(({ label, name }) => (
-                    <div className="history-item" key={name}>
-                        <label>• {label} :</label>
-                        <textarea
-                            name={name}
-                            value={formData[name] || ""}
-                            onChange={handleChange}
-                            className="auto-resize-textarea"
-                        />
-                    </div>
-                ))}
-            </div>
         </div>
-    );
-};
+      </div>
+      {formError && (
+         <div className="global-error-message" ref={formErrorRef}>
+         {formError}
+          </div>
+)}
 
+      <div className="form-sections">
+        <section className="form-column">
+          <h4>Informations personnelles</h4>
+          <input type="text" placeholder="N° dossier"
+           value={numeroDossier}  onChange={(e) => {
+            const value = e.target.value;
+            if (/^\d*$/.test(value)) {
+              setNumeroDossier(value);
+             }
+            }}
+          />
+          <div className="nom-prenom">
+            <input type="text" placeholder="Nom" />
+           <input type="text" placeholder="Prénom" />
+          </div>
+          <input type="date" placeholder="Date de naissance" />
+          <select name="lieu-naissance" id="lieu-naissance">
+          <option value="">Sélectionnez une wilaya</option>
+           {wilayas.map((wilaya) => (
+           <option key={wilaya.numero} value={wilaya.nom}>
+          {wilaya.numero} - {wilaya.nom}
+         </option>
+  ))}
+</select>
+          <input type="text" placeholder="Adresse" />
+          <div className="form-container">
+         <div className="form-field">
+          <input
+          type="tel"
+          placeholder="Numéro téléphone"
+          value={phone}
+          onChange={(e) => validatePhone(e.target.value)}
+          className={phoneError ? "input-error" : ""}
+         />
+        {phoneError && <p className="error-message">{phoneError}</p>}
+      </div>
 
-const CreateFormPatient = () => {
-    const navigate = useNavigate();
+      <div className="form-field">
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => validateEmail(e.target.value)}
+          className={emailError ? "input-error" : ""}
+        />
+        {emailError && <p className="error-message">{emailError}</p>}
+      </div>
+    </div>
+          <input type="text" placeholder="Service" />
+          <select> 
+            <option>Situation familiale</option>
+            <option>marié (M)</option>
+            <option>pacsé (O)</option>
+            <option>divorcé (D)</option>
+            <option> séparé (D)</option>
+            <option> célibataire (C) </option>
+            <option> veuf (V)</option>
+          </select>
+          <input type="text" placeholder="Admis(e) à l'établissement" />
+          <input type="text" placeholder="Filière" />
+          <select>
+            <option value="">Sélectionner le niveau</option>
+            <option value="1CP">1CP</option>
+            <option value="2CP">2CP</option>
+            <option value="1CS">1CS</option>
+            <option value="2CS">2CS</option>
+            <option value="3CS">3CS</option>
+         </select>
+          <div className="form-field">
+            <input
+              type="text"
+              placeholder="N° sécurité sociale"
+              value={numeroSecurite}
+              onChange={(e) => validateNumeroSecurite(e.target.value)}
+              className={secuError ? "input-error" : ""}
+          />
+            {secuError && <p className="error-message">{secuError}</p>}
+          </div>
+          <select>
+            <option>Groupe sanguin</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+          </select>
+          <select value={sexe} onChange={(e) => setSexe(e.target.value)}>
+            <option value=''>Sexe</option>
+            <option>Homme</option>
+            <option>Femme</option>
+          </select>
+        </section>
 
-    const [personalInfo, setPersonalInfo] = useState({
-        nom: "", prenom: "", date_naissance: "", lieu_naissance: "", adresse: "",
-        numero_telephone: "", email: "", service: "", situation_familiale: "",
-        admission_etablissement: "true", Filiere: "", Niveau: "", numero_dossier: "",
-        groupe_sanguin: "", numero_securite_sociale: "",
-    });
+        {/* Données biométriques + Antécédents personnels */}
+        <section className="form-column">
+          <h4>Les Données biométriques</h4>
+          <div className="nom-prenom">
+          <input type="number" placeholder="Taille (cm)" min="50" max="250"  value={taille}
+          onChange={(e) => setTaille(e.target.value)} />
+          <input type="number" placeholder="Poids (kg)" min="1" max="300"  onChange={(e) => setPoids(e.target.value)} />
+          </div>
+          <input type="number" placeholder="Fréquence cardiaque (bpm)" min="30" max="220" />
+          <input type="number" placeholder="Pression artérielle (mmHg)" min="50" max="200" />
 
-    const [biometricData, setBiometricData] = useState({
-        taille: '', poids: '', frequence_cardiaque: '', pression_arterielle: ''
-    });
+          <input
+          type="text"
+          placeholder="IMC (Indice de Masse Corporelle)"
+          value={imc}
+          readOnly
+        />
+        <input
+          type="text"
+          placeholder="Interprétation IMC"
+          value={categorieImc}
+          readOnly
+        />
 
-    const [personalBackground, setPersonalBackground] = useState({
-        fumeur: false, nombre_cigarettes: "",
-        chiqueur: false, nombre_boites_chique: "",
-        prise_autre: false, nombre_boites_autre: "",
-        age_premiere_prise: "",
-        ancien_fumeur: false, nombre_boites_fumeur: "",
-    });
+          <h4>Antécédents personnels - Tabacs</h4>
+          <div>
+      {["A fumer", "A chiquer", "A prise", "Ancien fumeur"].map((label, i) => (
+        <div key={i} className="toggle-group">
+          <label>{label}</label>
+          <div>
+            <label>
+              <input
+                type="radio"
+                name={label}
+                value="Oui"
+                checked={reponses[label] === "Oui"}
+                onChange={() => handleRadioChange(label, "Oui")}
+              />
+              Oui
+            </label>
+            <label>
+              <input
+                type="radio"
+                name={label}
+                value="Non"
+                checked={reponses[label] === "Non"}
+                onChange={() => handleRadioChange(label, "Non")}
+              />
+              Non
+            </label>
+          </div>
+          {/* Le champ de texte est désactivé si "Non" est sélectionné */}
+          <input
+            type="text"
+            placeholder="Quantité/j"
+            disabled={reponses[label] === "Non"} // Désactive si "Non" est sélectionné
+          />
+        </div>
+      ))}
+    </div>
+        </section>
 
-    const [medicalHistory, setMedicalHistory] = useState({
-        affections_congenitales: '', maladies_generales: '',
-        interventions_chirurgicales: '', reactions_allergiques: ''
-    });
+        {/* Antécédents médico-chirurgicaux */}
+        <section className="form-column">
+          <h4>Antécédents médico-chirurgicaux</h4>
+          <div className="text-area">
+      {labels.map((label, index) => (
+        <div key={index} className="labeandtext">
+          <label htmlFor={`textarea-${index}`}>{label}</label>
+          <textarea
+            id={`textarea-${index}`}
+            ref={(el) => (textareasRef.current[index] = el)}
+            rows={1}
+            onInput={(e) => handleInput(e, index)}
+            style={{
+              overflow: 'hidden',
+              resize: 'none'
+            }}
+          />
+        </div>
+      ))}
+    </div>
+        </section>
+      </div>
 
-    const handleSubmit = async () => {
-        const formData = {
-            ...personalInfo,
-            ...biometricData,
-            ...personalBackground,
-            ...medicalHistory,
-            taille: biometricData.taille ? parseFloat(biometricData.taille) : null,
-            poids: biometricData.poids ? parseFloat(biometricData.poids) : null,
-            frequence_cardiaque: biometricData.frequence_cardiaque ? parseFloat(biometricData.frequence_cardiaque) : null,
-            nombre_cigarettes: personalBackground.fumeur && personalBackground.nombre_cigarettes ? parseInt(personalBackground.nombre_cigarettes) : null,
-            nombre_boites_chique: personalBackground.chiqueur && personalBackground.nombre_boites_chique ? parseInt(personalBackground.nombre_boites_chique) : null,
-            nombre_boites_autre: personalBackground.prise_autre && personalBackground.nombre_boites_autre ? parseInt(personalBackground.nombre_boites_autre) : null,
-            age_premiere_prise: personalBackground.age_premiere_prise ? parseInt(personalBackground.age_premiere_prise) : null,
-            nombre_boites_fumeur: personalBackground.ancien_fumeur && personalBackground.nombre_boites_fumeur ? parseInt(personalBackground.nombre_boites_fumeur) : null,
-        };
-
-        const requiredFields = [
-            "nom", "prenom", "date_naissance", "lieu_naissance", "adresse",
-            "numero_telephone", "email", "situation_familiale", "Filiere", "Niveau",
-            "numero_dossier", "groupe_sanguin", "numero_securite_sociale",
-            "taille", "poids", "frequence_cardiaque", "pression_arterielle",
-        ];
-
-        const hasEmptyRequired = requiredFields.some(key => {
-            const val = formData[key];
-            return val === undefined || val === null || val.toString().trim() === "";
-        });
-
-        if (hasEmptyRequired) {
-            alert("Veuillez remplir tous les champs obligatoires avant de soumettre.");
-            return;
+      <button  className="save-button" onClick={(e) => {
+        e.preventDefault();
+        if (validerFormulaire()) {
+          alert("Formulaire validé avec succès !");
         }
+      }} >  Sauvegarder </button>
+    </div>
+  )
+}
 
-        try {
-            const token = localStorage.getItem("token");
-            const response = await fetch("http://127.0.0.1:8000/api/dossier-medicale/dossiers/etudiants/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Backend error:", errorData);
-                throw new Error(JSON.stringify(errorData));
-            }
-
-            const data = await response.json();
-            console.log("Dossier créé:", data);
-            alert("Dossier créé avec succès !");
-            navigate("/DoctorList");
-        } catch (error) {
-            console.error("Error submitting form:", error);
-            alert("Erreur lors de la création du dossier: " + error.message);
-        }
-    };
-
-    return (
-        <div className="doc-container">
-            <h2 className='my-header1'>République Algérienne Démocratique & Populaire</h2>
-            <p className='my-header2'>Ministère de la santé et de la population</p>
-
-            <FormPersonalInfo formData={personalInfo} setFormData={setPersonalInfo} />
-            <FormBiometricData formData={biometricData} setFormData={setBiometricData} />
-            <FormPersonalBackground formData={personalBackground} setFormData={setPersonalBackground} />
-            <FormMedicalHistory formData={medicalHistory} setFormData={setMedicalHistory} />
-
-            <div className="save-button-container">
-                <button className="save-button" onClick={handleSubmit}>Sauvegarder</button>
-            </div>
-        </div>
-    );
-};
-
-export default CreateFormPatient;
+export default CreateFormPatient

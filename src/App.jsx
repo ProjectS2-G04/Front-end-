@@ -22,7 +22,10 @@ import VerifyEmail from './components/VerifyEmail';
 const App = () => {
   return (
     <>
-      <Router>
+    <CreateFormPatient/>
+    <CreateFormATS/>
+    <CreateFormEnseignant/>
+     {/* <Router>
         <Routes>
           <Route path="/" element={<SeConnecter />} />
           <Route path="/home" element={<Doctorhome />} />
@@ -43,7 +46,7 @@ const App = () => {
           <Route path="/CreateFormEnseignant" element={<CreateFormEnseignant />} />
           <Route path="/CreateFormATS" element={<CreateFormATS />} />
         </Routes>
-      </Router>
+      </Router>*/}
     </>
   );
 };

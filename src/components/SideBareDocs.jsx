@@ -11,24 +11,18 @@ function SideBareDocs({ activeTab, setActiveTab }) {
       <p>La liste des dossiers médicales</p>
     </div>
     <nav className="sidebardocs-nav">
-    <button
-        className={activeTab === 'etudiants' ? 'active' : ''}
-        onClick={() => setActiveTab('etudiants')}
-      >
-        Étudiants
-      </button>
-      <button
-        className={activeTab === 'enseignants' ? 'active' : ''}
-        onClick={() => setActiveTab('enseignants')}
-      >
-        Enseignants
-      </button>
-      <button
-        className={activeTab === 'ats' ? 'active' : ''}
-        onClick={() => setActiveTab('ats')}
-      >
-        ATS
-      </button>
+      
+    <label htmlFor="role-select" ></label>
+        <select
+          id="role-select"
+          value={activeTab}
+          onChange={(e) => setActiveTab(e.target.value)}
+        >
+          <option value="etudiants">Étudiants</option>
+          <option value="enseignants">Enseignants</option>
+          <option value="ats">ATS</option>
+        </select>
+      
     </nav>
   </div>
   )

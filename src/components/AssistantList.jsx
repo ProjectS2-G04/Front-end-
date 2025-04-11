@@ -129,7 +129,7 @@ function AssistantList() {
               className='IoArrowBackCircle' 
               onClick={() => navigate("/Assitanthome")} 
             />
-            <button className="add-btn">Ajouter</button>
+           
           </div>
         </div>
       </div>
