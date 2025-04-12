@@ -98,7 +98,13 @@ function DoctorList() {
     };
 
     const handleEdit = (recordId) => {
-        navigate(`/edit-record/${activeTab}/${recordId}`);
+        if (activeTab === 'etudiants') {
+            navigate(`/ModifyFormEtudiant/${recordId}`);
+        } else if (activeTab === 'enseignants') {
+            navigate(`/ModifyFormEnseignant/${recordId}`);
+            } else if (activeTab === 'ats') {
+                navigate(`/ModifyFormATS/${recordId}`);
+        }
     };
 
     const handlePrint = (recordId) => {
