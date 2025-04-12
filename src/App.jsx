@@ -8,7 +8,6 @@ import CreateFormEnseignant from './components/CreateFormEnseignant';
 import CreateFormPatient from './components/CreateFormPatient';
 import Doctorhome from "./components/Doctorhome";
 import DoctorList from './components/DoctorList';
-import EditRecord from './components/EditRecord';
 import Forgot_Password from './components/Forgot_Password';
 import Forgot_Password1 from './components/Forgot_Password1';
 import Forgot_Password2 from './components/Forgot_Password2';
@@ -19,6 +18,8 @@ import Signup_User from './components/Signup_User';
 import Sinscrire from "./components/sinscrire";
 import VerifyEmail from './components/VerifyEmail';
 import ModifyFormEtudiant from './components/ModifyFormEtudiant';
+import ModifyFormEnseignant from './components/ModifyFormEnseignant';
+import ModifyFormATS from './components/ModifyFormATS';
 
 
 const App = () => {
@@ -41,15 +42,13 @@ const App = () => {
           <Route path="/Patienthome" element={<PatientHome />} />
           <Route path="/AssistantList" element={<AssistantList />} />
           <Route path="/DoctorList" element={<DoctorList />} />
-          <Route path="/edit-record/:tab/:recordId" element={<EditRecord />} />
           <Route path="/CreateFormPatient" element={<CreateFormPatient />} />
-          <Route path="/CreateFormEnseignant" element={<CreateFormEnseignant />} />
-          <Route path="/CreateFormATS" element={<CreateFormATS />} />
           <Route path="/CreateFormPatient" element={<CreateFormPatient/>}/>
           <Route path="/CreateFormEnseignant" element={ <CreateFormEnseignant/>}/>
           <Route path="/CreateFormATS" element={<CreateFormATS/>}/>
-          <Route path="/ModifyFormEtudiant/:id" element={<ModifyFormEtudiant />} />
-         
+          <Route path="/ModifyFormEtudiant/:id" element={<ModifyFormEtudiant />} />        
+          <Route path="/ModifyFormEnseignant/:id" element={<ModifyFormEnseignant />} />  
+          <Route path="/ModifyFormATS/:id" element={<ModifyFormATS />} /> 
         </Routes>
       </Router>
     </>
