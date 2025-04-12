@@ -18,6 +18,8 @@ import SeConnecter from "./components/seConnecter";
 import Signup_User from './components/Signup_User';
 import Sinscrire from "./components/sinscrire";
 import VerifyEmail from './components/VerifyEmail';
+import ModifyFormEtudiant from './components/ModifyFormEtudiant';
+
 
 const App = () => {
   return (
@@ -46,6 +48,7 @@ const App = () => {
           <Route path="/CreateFormPatient" element={<CreateFormPatient/>}/>
           <Route path="/CreateFormEnseignant" element={ <CreateFormEnseignant/>}/>
           <Route path="/CreateFormATS" element={<CreateFormATS/>}/>
+          <Route path="/ModifyFormEtudiant/:id" element={<ModifyFormEtudiant />} />
          
         </Routes>
       </Router>
