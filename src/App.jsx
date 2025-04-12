@@ -18,13 +18,18 @@ import SeConnecter from "./components/seConnecter";
 import Signup_User from './components/Signup_User';
 import Sinscrire from "./components/sinscrire";
 import VerifyEmail from './components/VerifyEmail';
+import ReadOnlyStudent from './components/ReadOnlyStudent';
+import ReadOnlyAts from './components/ReadOnlyAts';
+import ReadOnlyTeacher from './components/ReadOnlyTeacher';
 
 const App = () => {
   return (
     <>
-    <CreateFormPatient/>
-    <CreateFormATS/>
-    <CreateFormEnseignant/>
+   
+    <ReadOnlyStudent />
+    <ReadOnlyAts />
+    <CreateFormPatient />
+    <ReadOnlyTeacher />
      {/* <Router>
         <Routes>
           <Route path="/" element={<SeConnecter />} />
