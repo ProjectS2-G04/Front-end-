@@ -118,12 +118,9 @@
     flex-direction: column;
     padding:100px;
     gap: 10px;
-<<<<<<< HEAD
     border-right: 2px solid #2E5077;
     
-=======
-    border-right: 1px solid #2E5077;
->>>>>>> 66a744e24e2845f2347da3dcc603e6fdf4c528db
+   
   } 
   .text-area {
     width: auto;
