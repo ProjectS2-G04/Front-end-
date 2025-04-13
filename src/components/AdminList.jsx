@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import PermissionsTable from "./PermissionTable"; // Import the PermissionsTable component
 import "./Admin_Page.css";
@@ -142,7 +141,7 @@ const AdminList = ({ title, listType }) => {
           <div className="search-container">
             <input
               type="text"
-              placeholder="Rechercher..."
+              placeholder="Rechercher....."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -179,18 +178,26 @@ const AdminList = ({ title, listType }) => {
                     <td>
                       <button className="activate-btn" onClick={() => activateUser(item.id, 'activate')}>Activer</button>
                       <button className="deactivate-btn" onClick={() => activateUser(item.id, 'desactivate')}>Désactiver</button>
+                      
                     </td>
                   </tr>
                 ))
+                
               ) : (
+                
                 <tr>
                   <td colSpan="4" className="no-data">Aucun {listType} trouvé.</td>
                 </tr>
               )}
             </tbody>
+            
           </table>
+          <div className="ajouter-button">
+        <button>Ajouter</button>
+      </div>
         </div>
       )}
+      
     </div>
   );
 };
