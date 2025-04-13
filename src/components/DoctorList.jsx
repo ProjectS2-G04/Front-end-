@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BsFillSave2Fill } from "react-icons/bs";
-import { IoArrowBackCircle } from "react-icons/io5";
 import { RiDossierFill } from "react-icons/ri";
+import { IoArrowBackCircle } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import './DoctorList.css';
 import SideBareDocs from './SideBareDocs';
@@ -64,37 +64,119 @@ function DoctorList() {
         `${record.nom} ${record.prenom}`.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleDownload = (pdfUrl, recordName) => {
-        if (!pdfUrl) {
+    const handleDownload = async (doc, recordName) => {
+        if (!doc || !doc.id) {
             alert("Aucun PDF disponible pour ce dossier.");
             return;
         }
 
-        const link = document.createElement("a");
-        link.href = pdfUrl;
-        link.download = `${recordName}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://127.0.0.1:8000/api/dossier-medicale/dossiers/download/${doc.id}/`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch PDF');
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${recordName}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Download error:', error);
+            alert('Erreur lors du téléchargement du PDF.');
+        }
     };
 
     const handleEdit = (recordId) => {
-        navigate(`/edit-record/${activeTab}/${recordId}`);
+        if (activeTab === 'etudiants') {
+            navigate(`/ModifyFormEtudiant/${recordId}`);
+        } else if (activeTab === 'enseignants') {
+            navigate(`/ModifyFormEnseignant/${recordId}`);
+            } else if (activeTab === 'ats') {
+                navigate(`/ModifyFormATS/${recordId}`);
+        }
     };
 
     const handlePrint = (recordId) => {
-        const printWindow = window.open("", "Print Window", "width=600,height=600");
-        printWindow.document.write(`
+        const record = filteredRecords.find(r => r.id === recordId);
+        if (!record) {
+            alert("Dossier non trouvé.");
+            return;
+        }
+
+        const printWindow = window.open("", "Print Window", "width=600,height=800");
+        const content = `
             <html>
             <head>
-                <title>Record Print</title>
+                <title>Dossier Médical - ${record.nom} ${record.prenom}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; }
+                    h1 { text-align: center; }
+                    h2 { margin-top: 20px; }
+                    .section { margin-bottom: 20px; }
+                    .field { margin: 5px 0; }
+                    .label { font-weight: bold; }
+                </style>
             </head>
             <body>
-                <h1>Printing Record ${recordId}</h1>
-                <p>Record details go here. Customize this section.</p>
+                <h1>Dossier Médical - ${record.nom} ${record.prenom}</h1>
+                <div class="section">
+                    <h2>Informations Personnelles</h2>
+                    <div class="field"><span class="label">Nom:</span> ${record.nom}</div>
+                    <div class="field"><span class="label">Prénom:</span> ${record.prenom}</div>
+                    <div class="field"><span class="label">Date de naissance:</span> ${record.date_naissance || 'N/A'}</div>
+                    <div class="field"><span class="label">Lieu de naissance:</span> ${record.lieu_naissance || 'N/A'}</div>
+                    <div class="field"><span class="label">Adresse:</span> ${record.adresse || 'N/A'}</div>
+                    <div class="field"><span class="label">Numéro de téléphone:</span> ${record.numero_telephone || 'N/A'}</div>
+                    <div class="field"><span class="label">Email:</span> ${record.email || 'N/A'}</div>
+                    <div class="field"><span class="label">Situation familiale:</span> ${record.situation_familiale || 'N/A'}</div>
+                    <div class="field"><span class="label">Admis(e):</span> ${record.admission_etablissement || 'N/A'}</div>
+                    <div class="field"><span class="label">Filière:</span> ${record.Filiere || 'N/A'}</div>
+                    <div class="field"><span class="label">Niveau:</span> ${record.Niveau || 'N/A'}</div>
+                    <div class="field"><span class="label">Numéro de dossier:</span> ${record.numero_dossier || 'N/A'}</div>
+                    <div class="field"><span class="label">Groupe sanguin:</span> ${record.groupe_sanguin || 'N/A'}</div>
+                    <div class="field"><span class="label">Numéro sécurité sociale:</span> ${record.numero_securite_sociale || 'N/A'}</div>
+                </div>
+                <div class="section">
+                    <h2>Données Biométriques</h2>
+                    <div class="field"><span class="label">Taille:</span> ${record.taille || 'N/A'} cm</div>
+                    <div class="field"><span class="label">Poids:</span> ${record.poids || 'N/A'} kg</div>
+                    <div class="field"><span class="label">Fréquence cardiaque:</span> ${record.frequence_cardiaque || 'N/A'} bpm</div>
+                    <div class="field"><span class="label">Pression artérielle:</span> ${record.pression_arterielle || 'N/A'}</div>
+                </div>
+                <div class="section">
+                    <h2>Antécédents Personnels</h2>
+                    <div class="field"><span class="label">Fumeur:</span> ${record.fumeur ? 'Oui' : 'Non'}</div>
+                    ${record.fumeur ? `<div class="field"><span class="label">Nombre de cigarettes:</span> ${record.nombre_cigarettes || 'N/A'}</div>` : ''}
+                    <div class="field"><span class="label">Chiqueur:</span> ${record.chiqueur ? 'Oui' : 'Non'}</div>
+                    ${record.chiqueur ? `<div class="field"><span class="label">Nombre de boîtes chique:</span> ${record.nombre_boites_chique || 'N/A'}</div>` : ''}
+                    <div class="field"><span class="label">Prise autre:</span> ${record.prise_autre ? 'Oui' : 'Non'}</div>
+                    ${record.prise_autre ? `<div class="field"><span class="label">Nombre de boîtes autre:</span> ${record.nombre_boites_autre || 'N/A'}</div>` : ''}
+                    <div class="field"><span class="label">Âge première prise:</span> ${record.age_premiere_prise || 'N/A'}</div>
+                    <div class="field"><span class="label">Ancien fumeur:</span> ${record.ancien_fumeur ? 'Oui' : 'Non'}</div>
+                    ${record.ancien_fumeur ? `<div class="field"><span class="label">Nombre de boîtes fumeur:</span> ${record.nombre_boites_fumeur || 'N/A'}</div>` : ''}
+                </div>
+                <div class="section">
+                    <h2>Antécédents Médicaux</h2>
+                    <div class="field"><span class="label">Affections congénitales:</span> ${record.affections_congenitales || 'N/A'}</div>
+                    <div class="field"><span class="label">Maladies générales:</span> ${record.maladies_generales || 'N/A'}</div>
+                    <div class="field"><span class="label">Interventions chirurgicales:</span> ${record.interventions_chirurgicales || 'N/A'}</div>
+                    <div class="field"><span class="label">Réactions allergiques:</span> ${record.reactions_allergiques || 'N/A'}</div>
+                </div>
             </body>
             </html>
-        `);
+        `;
+        printWindow.document.write(content);
         printWindow.document.close();
         printWindow.print();
     };
@@ -139,7 +221,10 @@ function DoctorList() {
                                         </button>
                                         <BsFillSave2Fill
                                             className='BsFillSave2Fill'
-                                            onClick={() => handleDownload(record.dossier_pdf_url, `${record.nom} ${record.prenom}`)}
+                                            onClick={() => handleDownload(
+                                                record.dossier_documents?.length > 0 ? record.dossier_documents[0] : null,
+                                                `${record.nom} ${record.prenom}`
+                                            )}
                                         />
                                     </div>
                                 </div>
@@ -147,6 +232,23 @@ function DoctorList() {
                         ) : (
                             <p>No records available</p>
                         )}
+                    </div>
+                    <div className="addreturn">
+                        <IoArrowBackCircle className='IoArrowBackCircle' onClick={() => navigate("/home")} />
+                        <button
+                            className="add-btn"
+                            onClick={() => {
+                                if (activeTab === 'etudiants') {
+                                    navigate("/CreateFormPatient");
+                                } else if (activeTab === 'enseignants') {
+                                    navigate("/CreateFormEnseignant");
+                                } else if (activeTab === 'ats') {
+                                    navigate("/CreateFormATS");
+                                }
+                            }}
+                        >
+                            Ajouter
+                        </button>
                     </div>
                 </div>
             </div>

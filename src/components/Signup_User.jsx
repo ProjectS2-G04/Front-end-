@@ -71,7 +71,7 @@ function Signup_User() {
           window.alert("Enregistré avec succès");
           setFormData(initialFormData);
           setIsValid(false);
-          navigate('/AdminPage');
+          navigate('/Admin_Page');
         } else {
           // التحقق مما إذا كان هناك خطأ وإضافته إلى قائمة الأخطاء
           if (data.email) setErrors((prev) => ({ ...prev, email: data.email[0] }));

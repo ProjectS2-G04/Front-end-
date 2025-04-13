@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import PermissionsTable from "./PermissionTable"; // Import the PermissionsTable component
+import PermissionsTable from "./PermissionTable";
 import "./Admin_Page.css";
 import axios from "axios";
 
@@ -7,136 +7,119 @@ const AdminList = ({ title, listType }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Étudiants");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Fetch users data based on the listType
+  // Fetch users data based on groupName
   const fetchUsers = (groupName) => {
     setLoading(true);
-    setErrorMessage(""); // Clear any previous error messages
-
-    fetch(`http://127.0.0.1:8000/api/groups/${groupName}/`) // Fetch from the Django API
+    setErrorMessage("");
+    fetch(`http://127.0.0.1:8000/api/groups/${groupName}/`)
       .then((response) => response.json())
       .then((data) => {
         if (data.message) {
-          setErrorMessage(data.message); // Display error if no members are found
+          setErrorMessage(data.message);
           setUsers([]);
         } else if (data.group && data.members) {
-          setUsers(data.members); // Set the users list from the API response
+          setUsers(data.members);
         }
       })
       .catch((error) => {
         console.error('Error fetching users:', error);
         setErrorMessage("Une erreur s'est produite. Veuillez réessayer.");
       })
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
   };
 
-  // Update users when listType changes (i.e., groupName changes)
+  // Fetch dossier data (from your version)
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setErrorMessage(null);
+      let url = "";
+      if (selectedCategory === "Étudiants") url = "/dossiers/etudiants/";
+      else if (selectedCategory === "Enseignants") url = "/dossiers/enseignants/";
+      else if (selectedCategory === "ATS") url = "/dossiers/ats/";
+
+      let token = localStorage.getItem("token");
+      if (!token) throw new Error("No authentication token found.");
+
+      let response = await fetch(`http://127.0.0.1:8000/api/dossier-medicale${url}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+      const data = await response.json();
+      setUsers(data); // Assuming this sets dossier records as users for consistency
+    } catch (error) {
+      console.error("Error fetching dossier data:", error);
+      setErrorMessage(error.message || "Erreur lors du chargement des dossiers.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Merged useEffect: Handles both dossier and user fetching
   useEffect(() => {
     let groupName = '';
-    switch (listType) {
-      case "medecins":
-        groupName = "medecin";
-        break;
-      case "assistants":
-        groupName = "assistant-medecin";
-        break;
-      case "patients":
-        groupName = "patient";
-        break;
-      case "directeurs":
-        groupName = "directeur";
-        break;
-      // Add more cases if needed for other user types
-      default:
-        break;
+    if (listType === "dossiers") {
+      fetchData();
+    } else {
+      switch (listType) {
+        case "medecins":
+          groupName = "medecin";
+          break;
+        case "assistants":
+          groupName = "assistant-medecin";
+          break;
+        case "patients":
+          groupName = "patient";
+          break;
+        case "directeurs":
+          groupName = "directeur";
+          break;
+        default:
+          break;
+      }
+      if (groupName) {
+        fetchUsers(groupName);
+      }
     }
+  }, [listType, selectedCategory]); // Added selectedCategory as a dependency for dossier fetching
 
-    if (groupName) {
-      fetchUsers(groupName); // Fetch data when listType changes
-    }
-  }, [listType]);
-
-  const handleActivation = async (userId, action) => {
+  // Merged activateUser using axios (from your friend's version)
+  const activateUser = async (userId, action) => {
+    const endpoint = `http://127.0.0.1:8000/api/dossier-medicale/${action}/${userId}/`;
     try {
-      // Choose the appropriate action (activate or deactivate)
-      const endpoint = `http://127.0.0.1:8000/api/dossier-medicale/${action}/${userId}/`;
-
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken'), // CSRF token management
-        },
-        credentials: 'include', // Ensures cookies are sent with request
+      const res = await axios.post(endpoint, {}, {
+        withCredentials: true,
       });
-
-      if (!response.ok) throw new Error('Action échouée'); // Handle failed request
-
-      // Refresh the list after the action
-      fetchUsers(listType); // Pass the current listType to fetch users again
+      alert(res.data.message);
+      fetchUsers(listType); // Refresh the list after action
     } catch (error) {
-      alert(error.message); // Display any error encountered during the fetch
+      if (error.response?.status === 400) {
+        alert(error.response.data.message);
+      } else {
+        alert("Une erreur s'est produite lors de l'action.");
+      }
     }
   };
 
-  const renderActions = (user) => (
-    <td>
-      {user.is_active ? (
-        <button
-          className="deactivate-btn"
-          onClick={() => handleActivation(user.id, 'desactivate')} // Call the desactivate API
-        >
-          Désactiver
-        </button>
-      ) : (
-        <button
-          className="activate-btn"
-          onClick={() => handleActivation(user.id, 'activate')} // Call the activate API
-        >
-          Activer
-        </button>
-      )}
-    </td>
-  );
-  const activateUser = async (userId, action) => {
-    const endpoint = `http://127.0.0.1:8000/api/dossier-medicale/${action}/${userId}/`;
-
-    try {
-      const res = await axios.post(endpoint, {}, {
-
-        withCredentials: true,
-      });
-      alert(res.data.message)
-    } catch (error) {
-      if (error.status == 400) {
-        alert(error.response.data.message)
-      }
-    }
-
-  }
-
-
-
-
-
   const filteredItems = users.filter((item) =>
-    item.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.email.toLowerCase().includes(searchTerm.toLowerCase())
+    (item.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     item.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     item.email?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+    (!listType === "dossiers" || `${item.nom} ${item.prenom}`.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
     <div className="admin-content">
       <div className="Title-search">
         <h3 className="List-title">{title}</h3>
-
-        {/* Hide search bar for permissions table */}
         {listType !== "permissions" && (
           <div className="search-container">
             <input
@@ -150,15 +133,60 @@ const AdminList = ({ title, listType }) => {
         )}
       </div>
 
-      {/* Render Permissions Table when listType is "permissions" */}
       {listType === "permissions" ? (
         <PermissionsTable />
+      ) : listType === "dossiers" ? (
+        <>
+          <div className="dropdown">
+            <button
+              className="dropdown-button"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              {selectedCategory} ▼
+            </button>
+            {isDropdownOpen && (
+              <ul className="dropdown-menu">
+                {["Étudiants", "Enseignants", "ATS"].map((category) => (
+                  <li
+                    key={category}
+                    onClick={() => {
+                      setSelectedCategory(category);
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    {category}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="dossier-list">
+            {loading ? (
+              <p>Chargement...</p>
+            ) : errorMessage ? (
+              <p className="error">{errorMessage}</p>
+            ) : filteredItems.length > 0 ? (
+              filteredItems.map((item) => (
+                <div key={item.id} className="dossier-item">
+                  <span className="dossier-name">
+                    📄 <strong>{item.nom} {item.prenom}</strong>{" "}
+                    {item.is_archived && "(Archivé)"}
+                  </span>
+                  <button className="archive-btn">
+                    {item.is_archived ? "Désarchiver" : "Archiver"}
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p className="no-data">Aucun dossier trouvé.</p>
+            )}
+          </div>
+        </>
       ) : (
-        /* User Management Table */
         <div>
           {loading && <p>Chargement...</p>}
           {errorMessage && <p className="error-message">{errorMessage}</p>}
-
           <table className="admin-table">
             <thead>
               <tr className="table-title">
@@ -172,13 +200,28 @@ const AdminList = ({ title, listType }) => {
               {filteredItems.length > 0 ? (
                 filteredItems.map((item) => (
                   <tr key={item.id}>
-                    <td>{item.first_name}</td>
-                    <td>{item.last_name}</td>
+                    <td>{item.last_name || item.nom || "N/A"}</td>
+                    <td>{item.first_name || item.prenom || "N/A"}</td>
                     <td>{item.email}</td>
                     <td>
+
                       <button className="activate-btn" onClick={() => activateUser(item.id, 'activate')}>Activer</button>
                       <button className="deactivate-btn" onClick={() => activateUser(item.id, 'desactivate')}>Désactiver</button>
                       
+
+                      <button
+                        className="activate-btn"
+                        onClick={() => activateUser(item.id, "activate")}
+                      >
+                        Activer
+                      </button>
+                      <button
+                        className="deactivate-btn"
+                        onClick={() => activateUser(item.id, "desactivate")}
+                      >
+                        Désactiver
+                      </button>
+
                     </td>
                   </tr>
                 ))

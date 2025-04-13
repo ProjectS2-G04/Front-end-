@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import AdminSidebar from "./AdminSidebar";
 import AdminList from "./AdminList";
+import AdminSidebar from "./AdminSidebar";
 import "./Admin_Page.css";
 
 const AdminPage = () => {
@@ -14,6 +14,7 @@ const AdminPage = () => {
     dossiers: "La Liste des dossiers médicaux",
     permissions: "Gestion des permissions",
   };
+  console.log("Rendering AdminList with activeList:", activeList); // Ad
 
   return (
     <div className="admin-page">
