@@ -28,12 +28,9 @@ import ModifyFormATS from './components/ModifyFormATS';
 const App = () => {
   return (
     <>
-      <ReadOnlyStudent />
-      <ReadOnlyAts />
-      <ReadOnlyTeacher />
-      
       <Router>
         <Routes>
+
           <Route path="/" element={<SeConnecter />} />
           <Route path="/home" element={<Doctorhome />} />
           <Route path="/profile" element={<Profile />} />
@@ -54,6 +51,10 @@ const App = () => {
           <Route path="/ModifyFormEtudiant/:id" element={<ModifyFormEtudiant />} />
           <Route path="/ModifyFormEnseignant/:id" element={<ModifyFormEnseignant />} />
           <Route path="/ModifyFormATS/:id" element={<ModifyFormATS />} />
+          <Route path="/ReadOnlyStudent/:id" element={<ReadOnlyStudent />} />
+          <Route path="/ReadOnlyTeacher/:id" element={<ReadOnlyTeacher />} />
+          <Route path="/ReadOnlyAts/:id" element={<ReadOnlyAts />} />
+          
         </Routes>
       </Router>
     </>
