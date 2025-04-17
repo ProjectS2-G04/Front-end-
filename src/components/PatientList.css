@@ -1,0 +1,104 @@
+/* Pour le layout principal avec sidebar */
+.patient-container {
+    display: flex;
+    width: 100vw;
+    min-height: 100vh;
+    font-family: 'Poppins' , sans-serif;
+  }
+  
+  /* Conteneur de la liste */
+  .patientliste-container {
+   margin-bottom: 10px;
+    width: 75%;
+    padding: 10px;
+    margin-left: 250px;
+    width: 100vw;
+    
+  }
+  
+  /* Titre */
+  .patientliste-container h1 {
+
+    color: #2E5077;
+    font-size: 1.5rem;
+  }
+  .patientliste-header{
+    background-color: white;
+    text-align: center;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+  /* Barre de recherche */
+  .search-input {
+    padding: 15px 10px;
+    padding-left: 20px; 
+    margin-left: 50px;
+    width: 50%;
+    margin-bottom: 20px;
+    border: 2px solid #79D7BE;
+    border-radius: 45px;
+    font-size: 16px;
+    outline: none;
+  }
+  .search-input::placeholder {
+    padding: 5px;
+    font-size: 16px;
+  }
+
+  .patients-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .patients-table th,
+  .patients-table td {
+    padding: 12px 15px;
+    text-align: center;
+    background-color: white;
+    color: #2E5077;
+  }
+  .patients-table td {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+  .patients-table tr:hover {
+    background-color: #f1f1f1;
+    transform: scale(1.01); /* Légère agrandissement */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Douce ombre */
+    cursor: pointer;
+  }
+  .patients-table th {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .patients-table th span {
+    display: inline-block;
+    width: 150px;
+   padding: 3px;
+    border-bottom: 5px solid #A3CED2;
+  }
+  
+  .patients-table tr:hover {
+    background-color: #f9f9f9;
+  }
+  
+  /* Bouton "Détails" */
+  .btn-details {
+    width: 150px;
+    padding: 10px 15px;
+    background-color: #F6F4F0;
+    color: #2E5077;
+    font-weight: 400;
+    font-size: 16px;
+    border: 1px solid #8ABFC3;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-details:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  

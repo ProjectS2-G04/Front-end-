@@ -1,6 +1,6 @@
 import React from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import AdminPage from './components/Admin_Page';
+import { Routes, Route } from 'react-router-dom';
+import AdminPage from './components/Admin_Page.jsx';
 import AssistantList from './components/AssistantList';
 import AssitantHome from './components/AssitantHome';
 import CreateFormATS from './components/CreateFormATS';
@@ -23,16 +23,21 @@ import ReadOnlyTeacher from './components/ReadOnlyTeacher';
 import ModifyFormEtudiant from './components/ModifyFormEtudiant';
 import ModifyFormEnseignant from './components/ModifyFormEnseignant';
 import ModifyFormATS from './components/ModifyFormATS';
+import PatientList from './components/PatientList.jsx';
 
 
 const App = () => {
   return (
     <>
-      <ReadOnlyStudent />
+ 
+   <PatientList/>
+   
+    {/**
+       <ReadOnlyStudent />
       <ReadOnlyAts />
       <ReadOnlyTeacher />
       
-      <Router>
+      
         <Routes>
           <Route path="/" element={<SeConnecter />} />
           <Route path="/home" element={<Doctorhome />} />
@@ -55,7 +60,7 @@ const App = () => {
           <Route path="/ModifyFormEnseignant/:id" element={<ModifyFormEnseignant />} />
           <Route path="/ModifyFormATS/:id" element={<ModifyFormATS />} />
         </Routes>
-      </Router>
+        */}
     </>
   );
 }
