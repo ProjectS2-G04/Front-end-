@@ -1,6 +1,6 @@
 import React from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import AdminPage from './components/Admin_Page';
+import { Routes, Route } from 'react-router-dom';
+import AdminPage from './components/Admin_Page.jsx';
 import AssistantList from './components/AssistantList';
 import AssitantHome from './components/AssitantHome';
 import CreateFormATS from './components/CreateFormATS';
@@ -17,17 +17,30 @@ import SeConnecter from "./components/seConnecter";
 import Signup_User from './components/Signup_User';
 import Sinscrire from "./components/sinscrire";
 import VerifyEmail from './components/VerifyEmail';
+import ReadOnlyStudent from './components/ReadOnlyStudent';
+import ReadOnlyAts from './components/ReadOnlyAts';
+import ReadOnlyTeacher from './components/ReadOnlyTeacher';
 import ModifyFormEtudiant from './components/ModifyFormEtudiant';
 import ModifyFormEnseignant from './components/ModifyFormEnseignant';
 import ModifyFormATS from './components/ModifyFormATS';
+import PatientList from './components/PatientList.jsx';
 
 
 const App = () => {
   return (
     <>
-    
-     <Router>
+ 
+   <PatientList/>
+   
+    {/**
+       <ReadOnlyStudent />
+      <ReadOnlyAts />
+      <ReadOnlyTeacher />
+      
+      
+      <Router>
         <Routes>
+
           <Route path="/" element={<SeConnecter />} />
           <Route path="/home" element={<Doctorhome />} />
           <Route path="/profile" element={<Profile />} />
@@ -43,16 +56,19 @@ const App = () => {
           <Route path="/AssistantList" element={<AssistantList />} />
           <Route path="/DoctorList" element={<DoctorList />} />
           <Route path="/CreateFormPatient" element={<CreateFormPatient />} />
-          <Route path="/CreateFormPatient" element={<CreateFormPatient/>}/>
-          <Route path="/CreateFormEnseignant" element={ <CreateFormEnseignant/>}/>
-          <Route path="/CreateFormATS" element={<CreateFormATS/>}/>
-          <Route path="/ModifyFormEtudiant/:id" element={<ModifyFormEtudiant />} />        
-          <Route path="/ModifyFormEnseignant/:id" element={<ModifyFormEnseignant />} />  
-          <Route path="/ModifyFormATS/:id" element={<ModifyFormATS />} /> 
+          <Route path="/CreateFormEnseignant" element={<CreateFormEnseignant />} />
+          <Route path="/CreateFormATS" element={<CreateFormATS />} />
+          <Route path="/ModifyFormEtudiant/:id" element={<ModifyFormEtudiant />} />
+          <Route path="/ModifyFormEnseignant/:id" element={<ModifyFormEnseignant />} />
+          <Route path="/ModifyFormATS/:id" element={<ModifyFormATS />} />
+          <Route path="/ReadOnlyStudent/:id" element={<ReadOnlyStudent />} />
+          <Route path="/ReadOnlyTeacher/:id" element={<ReadOnlyTeacher />} />
+          <Route path="/ReadOnlyAts/:id" element={<ReadOnlyAts />} />
+          
         </Routes>
-      </Router>
+        */}
     </>
   );
-};
+}
 
 export default App;

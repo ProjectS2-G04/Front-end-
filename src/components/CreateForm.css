@@ -32,6 +32,7 @@
   gap: 5px;
 }
 
+<<<<<<< HEAD
 .republic h3 {
   font-size: 23px;
   color: #4BA0A8;
@@ -286,3 +287,113 @@
   font-size: 0.8em;
   margin-top: 0.2em;
 }
+=======
+  .toggle-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .toggle-group > div {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .save-button {
+    margin-top: 30px;
+    display: block;
+    
+    color: white;
+    border: none;
+    padding: 20px 25px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .global-error-message {
+    background-color: #ffe5e5;
+    color: #d00000;
+    padding: 10px 15px;
+    border: 1px solid #d00000;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+  .input-error {
+    border: 2px solid red;
+  }
+  
+<<<<<<< HEAD
+  .error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 4px;
+  }
+  .form-sections label {
+    font-weight: 700;
+    font-size: 15px;
+    
+  }
+  .nom-prenom label {
+    margin-top: 15px;
+  }
+  @media (max-width: 1400px) {
+    .nom-prenom {
+      flex-direction:column;
+    }
+    .form-column {
+      padding: 50px;
+    }
+  }
+  
+=======
+    
+  .imc-underweight {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+  }
+  
+  .imc-normal {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  .imc-overweight {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+  }
+  
+  .imc-obese-moderate {
+    background-color: #ffd8b1;
+    color: #805b36;
+    border: 1px solid #ffcb9a;
+  }
+  
+  .imc-obese-severe {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  
+  .imc-obese-morbid {
+    background-color: #e6b8c3;
+    color: #4a252d;
+    border: 1px solid #e4a9b9;
+  }
+  
+  .input-error {
+    border: 1px solid #dc3545;
+  }
+  
+  .error-message {
+    color: #dc3545;
+    font-size: 0.8em;
+    margin-top: 0.2em;
+  }
+>>>>>>> 66a744e24e2845f2347da3dcc603e6fdf4c528db
+>>>>>>> 474fda4e2199be7eec1c465913f834753df1845d

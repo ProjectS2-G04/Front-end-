@@ -40,7 +40,6 @@ function Doctorhome() { // Renamed to match file convention and React best pract
         <button onClick={() => navigate("/DoctorList")}>
           Consulter les dossiers médicaux <HiMiniDocumentText className='HiMiniDocumentText' />
         </button>
-        {/* Removed duplicate buttons; add more with specific purposes if needed */}
         <button onClick={() => navigate("/CreateFormPatient")}>
           Créer un nouveau dossier <HiMiniDocumentText className='HiMiniDocumentText' />
         </button>
