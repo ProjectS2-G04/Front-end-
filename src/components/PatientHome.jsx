@@ -31,12 +31,7 @@ function PatientHome() {
       if (!userId) {
         throw new Error('User ID not found in token.');
       }
-      // print
-      console.log('User ID:', userId);
-      console.log('Sub Role:', subRole);
-      console.log('Token:', token);
 
-      // Select the correct endpoint for the sub_role
       let url = '';
       if (subRole === 'STUDENT') {
         url = '/dossier-medicale/dossiers/etudiants/';
@@ -48,10 +43,8 @@ function PatientHome() {
         throw new Error('Unknown user role.');
       }
 
-      // print
       console.log('URL:', url);
 
-      // Fetch all dossiers for this sub_role
       const response = await fetch(`http://127.0.0.1:8000/api${url}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -66,7 +59,6 @@ function PatientHome() {
       const dossiers = await response.json();
       const userDossier = dossiers.find(d => d.user === userId);
 
-      // print
       console.log('Dossiers:', dossiers);
       console.log('User Dossier:', userDossier.id);
 
@@ -74,7 +66,6 @@ function PatientHome() {
         throw new Error('Dossier not found for this user.');
       }
 
-      // Navigate to correct read-only route
       if (subRole === 'STUDENT') {
         navigate(`/ReadOnlyStudent/${userDossier.id}`);
       } else if (subRole === 'TEACHER') {
