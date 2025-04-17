@@ -4,7 +4,7 @@ import "./CreateForm.css";
 
 function ModifyFormPatient() {
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { id } = useParams(); 
 
     const [formData, setFormData] = useState({
         nom: "",
@@ -54,7 +54,6 @@ function ModifyFormPatient() {
                 if (!res.ok) throw new Error("Failed to fetch data");
                 const data = await res.json();
 
-                // Set the fetched data
                 const updatedFormData = {
                     ...formData,
                     ...Object.fromEntries(
@@ -67,7 +66,6 @@ function ModifyFormPatient() {
                     photo: data.photo ?? "",
                 };
 
-                // Calculate IMC if taille and poids are available
                 const t = parseFloat(updatedFormData.taille);
                 const p = parseFloat(updatedFormData.poids);
 
