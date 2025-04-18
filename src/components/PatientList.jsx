@@ -4,10 +4,9 @@ import SideBareDocs from './SideBareDocs'
 import { BsCalendarPlusFill } from "react-icons/bs";
 import { SiGoogledocs } from "react-icons/si";
 import { IoArrowBackCircle } from "react-icons/io5";
-import React, { useEffect, useState } from 'react';
+
 import { useNavigate } from 'react-router-dom';
-import './PatientList.css';
-import SideBareDocs from './SideBareDocs';
+
 
 function PatientList() {
   const [patients, setPatients] = useState([]);
@@ -81,13 +80,17 @@ function PatientList() {
 
   
   const handleDetailsClick = (patient) => {
-    const subRoleToTab = {
-      STUDENT: 'etudiants',
-      TEACHER: 'enseignants',
-      ATS: 'ats',
-    };
-    const activeTab = subRoleToTab[patient.sub_role] || 'etudiants';
-    navigate(`/DoctorList`, { state: { activeTab, patientId: patient.id } });
+    console.log('Patient:', patient); // Debug the patient object
+    setSelectedPatient({
+        nom: patient.last_name ?? '',
+        prenom: patient.first_name ?? '',
+        email: patient.email ?? '',
+        dateNaissance: patient.date_naissance ?? '',
+        telephone: patient.telephone ?? '',
+        sexe: patient.sexe ?? '',
+        role: patient.sub_role ?? '',
+    });
+    setShowModal(true);
   };
 
   return (
