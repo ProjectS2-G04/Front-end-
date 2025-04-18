@@ -68,10 +68,10 @@ function Signup_User() {
       .then(response => response.json())
       .then(data => {
         if (data.message && data.user) {
-          window.alert('Inscription réussie ! Veuillez vérifier votre email pour activer votre compte.');
+          window.alert('Inscription réussie .');
           setFormData(initialFormData);
           setIsValid(false);
-          navigate('/login'); // Navigate to login page
+          navigate('/Admin_Page'); 
         } else {
           if (data.email) setErrors((prev) => ({ ...prev, email: data.email }));
           if (data.role) setErrors((prev) => ({ ...prev, role: data.role }));

@@ -65,7 +65,7 @@ const SeConnecter = () => {
           navigate('/PatientList');
           break;
         case 'ASSISTANT':
-          navigate('/Assitanthome');
+          navigate('/PatientList');
           break;
         case 'PATIENT':
           navigate('/Patienthome');
