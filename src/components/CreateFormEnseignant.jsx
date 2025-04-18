@@ -664,9 +664,15 @@ function CreateFormEnseignant() {
         </section>
       </div>
 
+      <div className="addreturn">
+        <div className="back-container" onClick={() => navigate("/DoctorList")}>
+          <IoArrowBackCircle className="IoArrowBackCircle" />
+          <span className="back-text">Retour</span>
+        </div>
       <button className="save-button" onClick={handleSubmit}>
-        Sauvegarder
-      </button>
+          Sauvegarder
+        </button>
+     </div> 
     </div>
   );
 }

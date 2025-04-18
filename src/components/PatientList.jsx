@@ -1,47 +1,94 @@
-import React ,{useEffect , useState} from 'react'
-import './PatientList.css'
-import SideBareDocs from './SideBareDocs'
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './PatientList.css';
+import SideBareDocs from './SideBareDocs';
 
 function PatientList() {
-    const [patients, setPatients] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-   
-    const filteredPatients = patients.filter((patient) => {
-        const search = searchTerm.toLowerCase();
-        return (
-          patient.nom.toLowerCase().includes(search) ||
-          patient.prenom.toLowerCase().includes(search) ||
-          patient.email.toLowerCase().includes(search) ||
-          patient.role.toLowerCase().includes(search)
-        );
-      });
-    
-    
+  const [patients, setPatients] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('etudiants'); 
+  const navigate = useNavigate();
 
-  // Données internes (mockées) – tu pourras les remplacer plus tard par des données API
- 
+
   useEffect(() => {
-    const patientsData = [
-      { nom: "Mohamed", prenom: "Amin", email: "m.amin@esi-sba.dz", role: "Etudiant" },
-      { nom: "Fezazi", prenom: "Amina", email: "ak.fezazi@esi-sba.dz", role: "ATS" },
-      { nom: "AbdELhak ", prenom: "Souliman", email: "abd.fezazi@esi-sba.dz", role: "Enseignant" },
-      { nom: "Alaa", prenom: "Fezz", email: "a.fzz@esi-sba.dz", role: "Etudiant" },
-    ];
-    setPatients(patientsData);
+    const fetchPatients = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('No authentication token found. Please log in.');
+        }
+
+        const response = await fetch('http://127.0.0.1:8000/api/accounts/users/', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          if (response.status === 403) {
+            throw new Error('Access forbidden. Please check your credentials.');
+          }
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('API Response:', data);
+
+      
+        const filteredData = (data.results || data).filter(
+          (user) =>
+            user.role === 'PATIENT' ||
+            (user.role === 'DIRECTOR' && ['STUDENT', 'TEACHER', 'ATS'].includes(user.sub_role))
+        );
+        setPatients(filteredData);
+      } catch (err) {
+        console.error('Error fetching patients:', err);
+        setError(err.message || 'Failed to load patients. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPatients();
   }, []);
 
-     
-    
+
+  const filteredPatients = patients.filter((patient) => {
+    const search = searchTerm.toLowerCase();
+    return (
+      patient.last_name.toLowerCase().includes(search) ||
+      patient.first_name.toLowerCase().includes(search) ||
+      patient.email.toLowerCase().includes(search) ||
+      (patient.sub_role || '').toLowerCase().includes(search)
+    );
+  });
+
+  
+  const handleDetailsClick = (patient) => {
+    const subRoleToTab = {
+      STUDENT: 'etudiants',
+      TEACHER: 'enseignants',
+      ATS: 'ats',
+    };
+    const activeTab = subRoleToTab[patient.sub_role] || 'etudiants';
+    navigate(`/DoctorList`, { state: { activeTab, patientId: patient.id } });
+  };
+
   return (
     <div className="patient-container">
-    <SideBareDocs />
-    
-    <div className="patientliste-container" >
-        <header className='patientliste-header'>
-         <h1>La liste des patients</h1>
-      </header>
-      
-      <input
+      <SideBareDocs activeTab={activeTab} setActiveTab={setActiveTab} /> {/* Pass activeTab and setActiveTab */}
+      <div className="patientliste-container">
+        <header className="patientliste-header">
+          <h1>La liste des patients</h1>
+        </header>
+
+        <input
           type="text"
           className="search-input"
           placeholder="🔍 Rechercher un patient..."
@@ -49,40 +96,50 @@ function PatientList() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
 
-       
-
-      <table className="patients-table">
-        <thead>
-          <tr>
-            <th><span>Nom</span></th>
-            <th><span>Prénom</span></th>
-            <th><span>Email</span></th>
-            <th><span>Rôle</span></th>
-            <th><span>Actions</span></th>
-          </tr>
-        </thead>
-        <tbody>
-         {/* ❗️Ici on affiche seulement les patients filtrés */}
-         {filteredPatients.length > 0 ? (
-              filteredPatients.map((patient, index) => (
-                <tr key={index}>
-                  <td>{patient.nom}</td>
-                  <td>{patient.prenom}</td>
-                  <td>{patient.email}</td>
-                  <td>{patient.role}</td>
-                  <td><button className="btn-details">Détails</button></td>
-                </tr>
-              ))
-            ) : (
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p className="error">{error}</p>
+        ) : (
+          <table className="patients-table">
+            <thead>
               <tr>
-                <td colSpan="5">Aucun patient trouvé.</td>
+                <th><span>Nom</span></th>
+                <th><span>Prénom</span></th>
+                <th><span>Email</span></th>
+                <th><span>Rôle</span></th>
+                <th><span>Actions</span></th>
               </tr>
-            )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {filteredPatients.length > 0 ? (
+                filteredPatients.map((patient) => (
+                  <tr key={patient.id}>
+                    <td>{patient.last_name}</td>
+                    <td>{patient.first_name}</td>
+                    <td>{patient.email}</td>
+                    <td>{patient.sub_role || 'N/A'}</td>
+                    <td>
+                      <button
+                        className="btn-details"
+                        onClick={() => handleDetailsClick(patient)}
+                      >
+                        Détails
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5">Aucun patient trouvé.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
-  </div>
-  )
+  );
 }
 
-export default PatientList
+export default PatientList;

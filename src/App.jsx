@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AdminPage from './components/Admin_Page.jsx';
 import AssistantList from './components/AssistantList';
 import AssitantHome from './components/AssitantHome';
@@ -27,24 +27,18 @@ import PatientList from './components/PatientList.jsx';
 
 
 const App = () => {
-  return (
-    <>
- 
-   <PatientList/>
-   
-    {/**
-       <ReadOnlyStudent />
-      <ReadOnlyAts />
-      <ReadOnlyTeacher />
+  return (     
       
-      
-      <Router>
         <Routes>
 
           <Route path="/" element={<SeConnecter />} />
           <Route path="/home" element={<Doctorhome />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/sinscrire" element={<Sinscrire />} />
+          <Route path="/PatientList" element={<PatientList/>} />
+          <Route path="/ReadOnlyStudent " element={<ReadOnlyStudent/>} />
+          <Route path="/ReadOnlyAts" element={<ReadOnlyAts/>} />
+          <Route path="/ReadOnlyTeacher" element={<ReadOnlyTeacher/>} />
           <Route path="/verify-email/:uidb64/:token" element={<VerifyEmail />} />
           <Route path="/forgot-password" element={<Forgot_Password />} />
           <Route path="/enter-code" element={<Forgot_Password1 />} />
@@ -54,21 +48,21 @@ const App = () => {
           <Route path="/Assitanthome" element={<AssitantHome />} />
           <Route path="/Patienthome" element={<PatientHome />} />
           <Route path="/AssistantList" element={<AssistantList />} />
-          <Route path="/DoctorList" element={<DoctorList />} />
+          <Route path="/DoctorList" element={<DoctorList/>} />
           <Route path="/CreateFormPatient" element={<CreateFormPatient />} />
           <Route path="/CreateFormEnseignant" element={<CreateFormEnseignant />} />
-          <Route path="/CreateFormATS" element={<CreateFormATS />} />
+          <Route path="/CreateFormATS" element={<CreateFormATS/>} />
           <Route path="/ModifyFormEtudiant/:id" element={<ModifyFormEtudiant />} />
           <Route path="/ModifyFormEnseignant/:id" element={<ModifyFormEnseignant />} />
           <Route path="/ModifyFormATS/:id" element={<ModifyFormATS />} />
           <Route path="/ReadOnlyStudent/:id" element={<ReadOnlyStudent />} />
-          <Route path="/ReadOnlyTeacher/:id" element={<ReadOnlyTeacher />} />
-          <Route path="/ReadOnlyAts/:id" element={<ReadOnlyAts />} />
+          <Route path="/ReadOnlyTeacher/:id" element={<ReadOnlyTeacher/>} />
+          <Route path="/ReadOnlyAts/:id" element={<ReadOnlyAts/>} />
+          
           
         </Routes>
-        */}
-    </>
+     
   );
-}
+};
 
 export default App;

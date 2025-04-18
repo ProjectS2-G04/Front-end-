@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
+import { IoArrowBackCircle } from 'react-icons/io5';
 import { useNavigate } from "react-router-dom";
 import "./CreateForm.css";
 
 function CreateFormATS() {
   const navigate = useNavigate();
 
-  // State for form data
+  
   const [formData, setFormData] = useState({
     numero_dossier: "",
     nom: "",
@@ -652,11 +653,17 @@ function CreateFormATS() {
           </div>
         </section>
       </div>
-
+      <div className="addreturn">
+        <div className="back-container" onClick={() => navigate("/DoctorList")}>
+          <IoArrowBackCircle className="IoArrowBackCircle" />
+          <span className="back-text">Retour</span>
+        </div>
       <button className="save-button" onClick={handleSubmit}>
-        Sauvegarder
-      </button>
+          Sauvegarder
+        </button>
+     </div> 
     </div>
+    
   );
 }
 
