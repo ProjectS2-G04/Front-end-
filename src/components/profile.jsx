@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import profileLogo from "../assets/logo.png";
 import profileUser from "../assets/user.png";
@@ -69,13 +69,13 @@ const Profile = () => {
         setCurrentPassword('');
     };
 
-    // Add function to handle home navigation based on role
+    
     const handleHomeNavigation = () => {
         const userRole = localStorage.getItem('role');
         
         switch (userRole) {
             case 'DOCTOR':
-                navigate('/home');
+                navigate('/PatientList');
                 break;
             case 'ASSISTANT':
                 navigate('/Assitanthome');

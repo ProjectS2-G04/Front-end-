@@ -59,10 +59,10 @@ const SeConnecter = () => {
       localStorage.setItem('email', data.email);
       localStorage.setItem('name', `${data.first_name} ${data.last_name}`);
 
-      // Redirect user based on their role
+      
       switch (data.role) {
         case 'DOCTOR':
-          navigate('/home');
+          navigate('/PatientList');
           break;
         case 'ASSISTANT':
           navigate('/Assitanthome');

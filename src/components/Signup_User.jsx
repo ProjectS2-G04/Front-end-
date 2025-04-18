@@ -15,7 +15,7 @@ function Signup_User() {
 
   const [formData, setFormData] = useState(initialFormData);
   const [isValid, setIsValid] = useState(false);
-  const [errors, setErrors] = useState({}); // تخزين الأخطاء
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,11 +38,11 @@ function Signup_User() {
   const validateForm = (data) => {
     let validationErrors = {};
 
-    if (data.nom.trim() === '') validationErrors.nom = "Le nom est requis.";
-    if (data.prenom.trim() === '') validationErrors.prenom = "Le prénom est requis.";
-    if (!validateEmail(data.email)) validationErrors.email = "Format invalide (ex: abc.nom@esi-sba.dz)";
-    if (data.password.length < 8) validationErrors.password = "Le mot de passe doit contenir au moins 8 caractères.";
-    if (data.role === '') validationErrors.role = "Veuillez sélectionner un rôle.";
+    if (data.nom.trim() === '') validationErrors.nom = 'Le nom est requis.';
+    if (data.prenom.trim() === '') validationErrors.prenom = 'Le prénom est requis.';
+    if (!validateEmail(data.email)) validationErrors.email = 'Format invalide (ex: abc.nom@esi-sba.dz)';
+    if (data.password.length < 8) validationErrors.password = 'Le mot de passe doit contenir au moins 8 caractères.';
+    if (data.role === '') validationErrors.role = 'Veuillez sélectionner un rôle.';
 
     setErrors(validationErrors);
     setIsValid(Object.keys(validationErrors).length === 0);
@@ -50,7 +50,7 @@ function Signup_User() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setErrors({}); // تنظيف الأخطاء قبل الإرسال
+    setErrors({});
 
     fetch('http://127.0.0.1:8000/api/registerAdmin/', {
       method: 'POST',
@@ -67,20 +67,19 @@ function Signup_User() {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.user) {
-          window.alert("Enregistré avec succès");
+        if (data.message && data.user) {
+          window.alert('Inscription réussie ! Veuillez vérifier votre email pour activer votre compte.');
           setFormData(initialFormData);
           setIsValid(false);
-          navigate('/Admin_Page');
+          navigate('/login'); // Navigate to login page
         } else {
-          // التحقق مما إذا كان هناك خطأ وإضافته إلى قائمة الأخطاء
-          if (data.email) setErrors((prev) => ({ ...prev, email: data.email[0] }));
-          if (data.role) setErrors((prev) => ({ ...prev, role: data.role[0] }));
-          if (data.message) window.alert(data.message);
+          if (data.email) setErrors((prev) => ({ ...prev, email: data.email }));
+          if (data.role) setErrors((prev) => ({ ...prev, role: data.role }));
+          if (data.message && !data.user) window.alert(data.message);
         }
       })
       .catch(error => {
-        console.error("Error during registration:", error);
+        console.error('Error during registration:', error);
         setErrors({ global: "Une erreur s'est produite. Veuillez réessayer." });
       });
   };
@@ -93,7 +92,7 @@ function Signup_User() {
         </div>
         <div className="title-signup">
           <h1>Inscription</h1>
-          <p>Inscription pour les medecins, assistants medecin et directeurs</p>
+          <p>Inscription pour les médecins, assistants médecin et directeurs</p>
         </div>
       </div>
       <form className="form-signupUser" onSubmit={handleSubmit}>
