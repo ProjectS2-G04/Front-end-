@@ -1,21 +1,20 @@
-import React ,{useEffect , useState} from 'react'
-import './PatientList.css'
-import SideBareDocs from './SideBareDocs'
+import React, { useEffect, useState } from 'react';
 import { BsCalendarPlusFill } from "react-icons/bs";
-import { SiGoogledocs } from "react-icons/si";
 import { IoArrowBackCircle } from "react-icons/io5";
-
+import { SiGoogledocs } from "react-icons/si";
 import { useNavigate } from 'react-router-dom';
-
+import './PatientList.css';
+import SideBareDocs from './SideBareDocs';
 
 function PatientList() {
   const [patients, setPatients] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('etudiants'); 
+  const [activeTab, setActiveTab] = useState('etudiants');
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -28,7 +27,7 @@ function PatientList() {
           throw new Error('No authentication token found. Please log in.');
         }
 
-        const response = await fetch('http://127.0.0.1:8000/api/accounts/users/', {
+        const response = await fetch('http://127.0.0.1:8000/api/dossier-medicale/dossiers/', {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -36,22 +35,20 @@ function PatientList() {
         });
 
         if (!response.ok) {
+          console.log('Response:', response.status, response.statusText);
           if (response.status === 403) {
             throw new Error('Access forbidden. Please check your credentials.');
+          } else if (response.status === 500) {
+            throw new Error('Server error. Please try again later or contact support.');
           }
+          const errorData = await response.text();
+          console.error('Error response:', errorData);
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('API Response:', data);
-
-      
-        const filteredData = (data.results || data).filter(
-          (user) =>
-            user.role === 'PATIENT' ||
-            (user.role === 'DIRECTOR' && ['STUDENT', 'TEACHER', 'ATS'].includes(user.sub_role))
-        );
-        setPatients(filteredData);
+        console.log('Fetched patients:', data);
+        setPatients(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error('Error fetching patients:', err);
         setError(err.message || 'Failed to load patients. Please try again.');
@@ -62,46 +59,91 @@ function PatientList() {
 
     fetchPatients();
   }, []);
-  
- //Pop up 
-   const [selectedPatient, setSelectedPatient] = useState(null);
-   const [showModal, setShowModal] = useState(false);
 
+  const getPatientRole = (patient) => {
+    if (patient?.Filiere) return 'etudiants';
+    if (patient?.grade && patient?.specialite) return 'enseignants';
+    if (patient?.grade) return 'ats';
+    return 'N/A';
+  };
 
   const filteredPatients = patients.filter((patient) => {
     const search = searchTerm.toLowerCase();
+    const role = getPatientRole(patient);
     return (
-      patient.last_name.toLowerCase().includes(search) ||
-      patient.first_name.toLowerCase().includes(search) ||
-      patient.email.toLowerCase().includes(search) ||
-      (patient.sub_role || '').toLowerCase().includes(search)
+      (patient?.nom?.toLowerCase() || '').includes(search) ||
+      (patient?.prenom?.toLowerCase() || '').includes(search) ||
+      (patient?.email?.toLowerCase() || '').includes(search) ||
+      role.toLowerCase().includes(search)
     );
   });
 
-  
   const handleDetailsClick = (patient) => {
-    console.log('Patient:', patient); // Debug the patient object
+    console.log('Patient:', patient);
+    const role = getPatientRole(patient);
+    const newActiveTab = role;
+
     setSelectedPatient({
-        nom: patient.last_name ?? '',
-        prenom: patient.first_name ?? '',
-        email: patient.email ?? '',
-        dateNaissance: patient.date_naissance ?? '',
-        telephone: patient.telephone ?? '',
-        sexe: patient.sexe ?? '',
-        role: patient.sub_role ?? '',
+      id: patient?.id || '',
+      nom: patient?.nom || '',
+      prenom: patient?.prenom || '',
+      email: patient?.email || '',
+      dateNaissance: patient?.date_naissance ? new Date(patient.date_naissance).toLocaleDateString('fr-FR') : '',
+      telephone: patient?.numero_telephone || '',
+      sexe: patient?.sexe || '',
+      role: role,
+      activeTab: newActiveTab,
     });
     setShowModal(true);
   };
 
+  const handleConsultDossier = async () => {
+    if (!selectedPatient) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found.');
+      }
+
+      const response = await fetch(`http://127.0.0.1:8000/api/dossier-medicale/dossiers/${selectedPatient.id}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch dossier: ${response.status}`);
+      }
+
+      const data = await response.json();
+      let rolePath;
+      if (data.Filiere) {
+        rolePath = 'student';
+      } else if (data.grade && data.specialite) {
+        rolePath = 'teacher';
+      } else if (data.grade) {
+        rolePath = 'ats';
+      } else {
+        throw new Error('Unknown role');
+      }
+
+      console.log('Navigating to:', `/dossier/${selectedPatient.id}/${rolePath}`, 'with state:', { activeTab: selectedPatient.activeTab });
+      navigate(`/dossier/${selectedPatient.id}/${rolePath}`, { state: { activeTab: selectedPatient.activeTab } });
+    } catch (err) {
+      console.error('Error fetching dossier:', err);
+      setError(err.message || 'Failed to load dossier. Please try again.');
+    }
+  };
+
   return (
-    
     <div className="patient-container">
-      <SideBareDocs activeTab={activeTab} setActiveTab={setActiveTab} /> {/* Pass activeTab and setActiveTab */}
+      <SideBareDocs activeTab={activeTab} setActiveTab={setActiveTab} />
       <div className="patientliste-container">
         <header className="patientliste-header">
           <h1>La liste des patients</h1>
         </header>
-
         <input
           type="text"
           className="search-input"
@@ -109,7 +151,6 @@ function PatientList() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-
         {isLoading ? (
           <p>Loading...</p>
         ) : error ? (
@@ -128,11 +169,11 @@ function PatientList() {
             <tbody>
               {filteredPatients.length > 0 ? (
                 filteredPatients.map((patient) => (
-                  <tr key={patient.id}>
-                    <td>{patient.last_name}</td>
-                    <td>{patient.first_name}</td>
-                    <td>{patient.email}</td>
-                    <td>{patient.sub_role || 'N/A'}</td>
+                  <tr key={patient?.id || Math.random()}>
+                    <td>{patient?.nom || 'N/A'}</td>
+                    <td>{patient?.prenom || 'N/A'}</td>
+                    <td>{patient?.email || 'N/A'}</td>
+                    <td>{getPatientRole(patient)}</td>
                     <td>
                       <button
                         className="btn-details"
@@ -152,57 +193,59 @@ function PatientList() {
           </table>
         )}
       </div>
-   
-    {showModal && selectedPatient && (
-      <div className="modal-overlay">
-        <div className="modal-content">
-          <header>
-              
-             <button className="close-button" onClick={() => setShowModal(false)}><IoArrowBackCircle className='IoArrowBackCircle' /></button>
-        
-          </header> 
-          <div className="modal-buttons">
-             <div className="modal-field">
+      {showModal && selectedPatient && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <header>
+              <button className="close-button" onClick={() => setShowModal(false)}>
+                <IoArrowBackCircle className="IoArrowBackCircle" />
+              </button>
+            </header>
+            <div className="modal-buttons">
+              <div className="modal-field">
                 <label>Nom</label>
                 <input type="text" value={selectedPatient.nom} readOnly />
+              </div>
+              <button className="btn-consultation" onClick={handleConsultDossier}>
+                <SiGoogledocs className="SiGoogledocs" /> <p>Consulter le dossier</p>
+              </button>
             </div>
-          <button className="btn-consultation"><SiGoogledocs className='SiGoogledocs' /> <p>Consulter le dossier</p></button>
-         </div>
-      <div className="modal-buttons">
-          <div className="modal-field">
-            <label>Prénom</label>
-            <input type="text" value={selectedPatient.prenom} readOnly />
-         </div>
-         <button className="btn-rdv"><BsCalendarPlusFill className='BsCalendarPlusFill' /> <p>Ajouter un rendez-vous</p></button>
-      </div>
-      <div className="modal-field">
-        <label>Email</label>
-        <input type="text" value={selectedPatient.email} readOnly />
-      </div>
-      <div className="modal-field">
-        <label>Date de naissance</label>
-        <input type="text" value={selectedPatient.dateNaissance} readOnly />
-      </div>
-      <div className="modal-field">
-        <label>Téléphone</label>
-        <input type="text" value={selectedPatient.telephone} readOnly />
-      </div>
-      <div className="sex-role">
-      <div className="modal-field">
-        <label>Sexe</label>
-        <input type="text" value={selectedPatient.sexe} readOnly />
-      </div>
-      <div className="modal-field">
-        <label>Rôle</label>
-        <input type="text" value={selectedPatient.role} readOnly />
-      </div>
-      </div>
+            <div className="modal-buttons">
+              <div className="modal-field">
+                <label>Prénom</label>
+                <input type="text" value={selectedPatient.prenom} readOnly />
+              </div>
+              <button className="btn-rdv">
+                <BsCalendarPlusFill className="BsCalendarPlusFill" /> <p>Ajouter un rendez-vous</p>
+              </button>
+            </div>
+            <div className="modal-field">
+              <label>Email</label>
+              <input type="text" value={selectedPatient.email} readOnly />
+            </div>
+            <div className="modal-field">
+              <label>Date de naissance</label>
+              <input type="text" value={selectedPatient.dateNaissance} readOnly />
+            </div>
+            <div className="modal-field">
+              <label>Téléphone</label>
+              <input type="text" value={selectedPatient.telephone} readOnly />
+            </div>
+            <div className="sex-role">
+              <div className="modal-field">
+                <label>Sexe</label>
+                <input type="text" value={selectedPatient.sexe} readOnly />
+              </div>
+              <div className="modal-field">
+                <label>Rôle</label>
+                <input type="text" value={selectedPatient.role} readOnly />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  </div>
-)}
-  </div>
-
-  )
+  );
 }
 
 export default PatientList;

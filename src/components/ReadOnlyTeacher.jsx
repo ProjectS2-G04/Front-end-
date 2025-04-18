@@ -1,9 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { IoArrowBackCircle } from "react-icons/io5";
 import "./CreateForm.css";
 
 function ReadOnlyTeacher() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const activeTab = location.state?.activeTab || "enseignants";
 
   const [formData, setFormData] = useState({
     numero_dossier: "",
@@ -42,20 +46,33 @@ function ReadOnlyTeacher() {
     reactions_allergiques: "",
   });
 
-  // const fileInputRef = useRef(null);
-  // const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [error, setError] = useState(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`http://127.0.0.1:8000/api/dossier-medicale/dossiers/enseignants/${id}/`, {
+        if (!token) {
+          throw new Error("No authentication token found. Please log in.");
+        }
+
+        const res = await fetch(`http://127.0.0.1:8000/api/dossier-medicale/dossiers/${id}/`, {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         });
-        if (!res.ok) throw new Error("Failed to fetch data");
+
+        if (!res.ok) {
+          if (res.status === 404) throw new Error("Dossier not found.");
+          if (res.status === 403) throw new Error("Access forbidden.");
+          throw new Error(`Failed to fetch data: ${res.status}`);
+        }
+
         const data = await res.json();
+        console.log("Fetched dossier:", data);
 
         const updatedFormData = {
           ...formData,
@@ -66,13 +83,12 @@ function ReadOnlyTeacher() {
           chiqueur: data.chiqueur ? "Oui" : "Non",
           prise_autre: data.prise_autre ? "Oui" : "Non",
           ancien_fumeur: data.ancien_fumeur ? "Oui" : "Non",
-          photo: data.photo ?? "",
         };
 
         const t = parseFloat(updatedFormData.taille);
         const p = parseFloat(updatedFormData.poids);
 
-        if (t > 0 && p > 0) {
+        if (t > 0 && p > 0 && !isNaN(t) && !isNaN(p)) {
           const imcCalc = p / Math.pow(t / 100, 2);
           updatedFormData.imc = imcCalc.toFixed(2);
 
@@ -99,125 +115,170 @@ function ReadOnlyTeacher() {
           updatedFormData.categorie_imc = "";
         }
 
+        console.log("Updated formData:", updatedFormData);
         setFormData(updatedFormData);
         let photoUrl = data.photo ?? null;
         if (photoUrl && !photoUrl.startsWith("http")) {
           photoUrl = `http://127.0.0.1:8000${photoUrl}`;
         }
         setImagePreview(photoUrl);
-
       } catch (err) {
         console.error("Erreur de chargement:", err);
+        setError(err.message || "Failed to load dossier.");
       }
     };
 
     fetchData();
   }, [id]);
 
-  const [fieldErrors, setFieldErrors] = useState({});
+  const handleBack = () => {
+    console.log("Navigating back with activeTab:", activeTab);
+    navigate("/PatientList", { state: { activeTab } });
+  };
 
-  const fileInputRef = useRef(null);
-  const [imagePreview, setImagePreview] = useState(null);
-
-
-  return (
-    <div className="container-infosdocs">
-      <div className="header">
-        <div className="republic">
-          <h3>République Algérienne Démocratique & Populaire</h3>
-          <p>Ministére de la santé et de la population</p>
-        </div>
-        <div className="photo">
-          <h3>Dossier médical - Etudiant</h3>
-          <div className="photo-upload-rectangle">
-            {imagePreview ? (
-              <img src={imagePreview} alt="Profil" className="uploaded-img" />
-            ) : (
-              <span className="upload-placeholder"><p>Photo</p></span>
-            )}
-          </div>
+  if (error) {
+    return (
+      <div className="patient-container full-page">
+        <div className="container-infosdocs">
+          <button className="btn-back" onClick={handleBack}>
+            <IoArrowBackCircle className="IoArrowBackCircle" /> Retour
+          </button>
+          <p className="error">{error}</p>
         </div>
       </div>
+    );
+  }
 
-      <div className="form-sections">
-        <section className="form-column">
-          <h4>Informations personnelles</h4>
-          <label> Numero de dossier </label>
-          <input type="text" value={formData.numeroDossier} name="numeroDossier" readOnly />
-          <div className="nom-prenom">
-            <label> Nom </label>
-            <input type="text" value={formData.nom} readOnly />
-            <label> Prenom </label>
-            <input type="text" value={formData.prenom} readOnly />
+  return (
+    <div className="patient-container full-page">
+      <div className="container-infosdocs">
+        <button className="btn-back" onClick={handleBack}>
+          <IoArrowBackCircle className="IoArrowBackCircle" /> Retour
+        </button>
+        <div className="header">
+          <div className="republic">
+            <h3>République Algérienne Démocratique & Populaire</h3>
+            <p>Ministère de la santé et de la population</p>
           </div>
-          <label> Date de naissance </label>
-          <input type="date" value={formData.date_naissance} readOnly />
-          <label> Lieu de naissance  </label>
-          <select disabled value={formData.lieu_naissance}>
-            <option value={formData.lieu_naissance}>{formData.lieu_naissance}</option>
-          </select>
-          <label> Adresse </label>
-          <input type="text" value={formData.adresse} readOnly />
-          <label> Numéro du télèphone </label>
-          <input type="tel" value={formData.numero_telephone} readOnly />
-          <label> Email </label>
-          <input type="email" value={formData.email} readOnly />
-          <label> Service </label>
-          <input type="text" value="Informatique" readOnly />
-          <label> Situation familiale  </label>
-          <select disabled value={formData.situation_familiale}>
-            <option value={formData.situation_familiale}>{formData.situation_familiale} (C)</option>
-          </select>
-          <label> Admis a l'etablissment </label>
-          <input type="text" value="Oui" readOnly />
-          <label> Grade </label>
-          <input type="text" value={formData.grade} readOnly />
-          <label> Specialite </label>
-          <input type="text" value={formData.specialite} readOnly />
-          <label> Numéro de sécurité sociale  </label>
-          <input type="text" value={formData.numero_securite_sociale} readOnly />
-          <label> Groupe sanguin</label>
-          <select disabled value={formData.groupe_sanguin}>
-            <option value={formData.groupe_sanguin}>{formData.groupe_sanguin}</option>
-          </select>
-          <label> Sexe </label>
-          <select disabled value={formData.sexe}>
-            <option value={formData.sexe}>{formData.sexe}</option>
-          </select>
-        </section>
-
-        <section className="form-column">
-          <h4>Les Données biométriques</h4>
-          <div className="nom-prenom">
-            <label> Taille  </label>
-            <input type="number" value={formData.taille} readOnly />
-            <label> Poids  </label>
-            <input type="number" value={formData.poids} readOnly />
+          <div className="photo">
+            <h3>Dossier médical - Enseignant</h3>
+            <div className="photo-upload-rectangle">
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="Profil"
+                  className="uploaded-img"
+                  onError={() => setImagePreview(null)}
+                />
+              ) : (
+                <span className="upload-placeholder">
+                  <p>Photo</p>
+                </span>
+              )}
+            </div>
           </div>
-          <label> Fréquence cardiaque  </label>
-          <input type="number" value={formData.frequence_cardiaque} readOnly />
-          <label> Pression atérielle </label>
-          <input type="number" value={formData.pression_arterielle} readOnly />
-          <label> IMC (indice de masse Corporelle) </label>
-          <input type="text" value={formData.imc} readOnly />
-          <label> Interprétation IMC</label>
-          <input type="text" value={formData.categorie_imc} readOnly />
+        </div>
 
-          <h4>Antécédents personnels - Tabacs</h4>
-          <div>
+        <div className="form-sections">
+          <section className="form-column">
+            <h4>Informations personnelles</h4>
+            <label>Numéro de dossier</label>
+            <input type="text" value={formData.numero_dossier || ""} readOnly />
+            <div className="nom-prenom">
+              <label>Nom</label>
+              <input type="text" value={formData.nom || ""} readOnly />
+              <label>Prénom</label>
+              <input type="text" value={formData.prenom || ""} readOnly />
+            </div>
+            <label>Date de naissance</label>
+            <input type="date" value={formData.date_naissance || ""} readOnly />
+            <label>Lieu de naissance</label>
+            <select disabled value={formData.lieu_naissance || ""}>
+              <option value={formData.lieu_naissance || ""}>
+                {formData.lieu_naissance || "N/A"}
+              </option>
+            </select>
+            <label>Adresse</label>
+            <input type="text" value={formData.adresse || ""} readOnly />
+            <label>Numéro de téléphone</label>
+            <input type="tel" value={formData.numero_telephone || ""} readOnly />
+            <label>Email</label>
+            <input type="email" value={formData.email || ""} readOnly />
+            <label>Situation familiale</label>
+            <select disabled value={formData.situation_familiale || ""}>
+              <option value={formData.situation_familiale || ""}>
+                {formData.situation_familiale || "N/A"}
+              </option>
+            </select>
+            <label>Admis à l'établissement</label>
+            <input
+              type="text"
+              value={formData.admission_etablissement || ""}
+              readOnly
+            />
+            <label>Grade</label>
+            <input type="text" value={formData.grade || ""} readOnly />
+            <label>Spécialité</label>
+            <input type="text" value={formData.specialite || ""} readOnly />
+            <label>Numéro de sécurité sociale</label>
+            <input
+              type="text"
+              value={formData.numero_securite_sociale || ""}
+              readOnly
+            />
+            <label>Groupe sanguin</label>
+            <select disabled value={formData.groupe_sanguin || ""}>
+              <option value={formData.groupe_sanguin || ""}>
+                {formData.groupe_sanguin || "N/A"}
+              </option>
+            </select>
+            <label>Sexe</label>
+            <select disabled value={formData.sexe || ""}>
+              <option value={formData.sexe || ""}>
+                {formData.sexe || "N/A"}
+              </option>
+            </select>
+          </section>
+
+          <section className="form-column">
+            <h4>Données biométriques</h4>
+            <div className="nom-prenom">
+              <label>Taille (cm)</label>
+              <input type="number" value={formData.taille || ""} readOnly />
+              <label>Poids (kg)</label>
+              <input type="number" value={formData.poids || ""} readOnly />
+            </div>
+            <label>Fréquence cardiaque</label>
+            <input
+              type="number"
+              value={formData.frequence_cardiaque || ""}
+              readOnly
+            />
+            <label>Pression artérielle</label>
+            <input
+              type="text"
+              value={formData.pression_arterielle || ""}
+              readOnly
+            />
+            <label>IMC (Indice de Masse Corporelle)</label>
+            <input type="text" value={formData.imc || ""} readOnly />
+            <label>Interprétation IMC</label>
+            <input type="text" value={formData.categorie_imc || ""} readOnly />
+
+            <h4>Antécédents personnels - Tabacs</h4>
             {[
               {
-                label: "A fumer",
+                label: "Fumeur",
                 name: "fumeur",
                 quantity: "nombre_cigarettes",
               },
               {
-                label: "A chiquer",
+                label: "Chiqueur",
                 name: "chiqueur",
                 quantity: "nombre_boites_chique",
               },
               {
-                label: "A prise",
+                label: "Prise autre",
                 name: "prise_autre",
                 quantity: "nombre_boites_autre",
               },
@@ -254,10 +315,8 @@ function ReadOnlyTeacher() {
                 <input
                   type="text"
                   placeholder="Quantité/j"
-                  name={quantity}
-                  value={formData[quantity]}
+                  value={formData[quantity] || ""}
                   readOnly
-                  className={fieldErrors[quantity] ? "input-error" : ""}
                 />
               </div>
             ))}
@@ -266,60 +325,57 @@ function ReadOnlyTeacher() {
               <input
                 type="number"
                 placeholder="Âge"
-                name="age_premiere_prise"
-                value={formData.age_premiere_prise}
-                className={fieldErrors.age_premiere_prise ? "input-error" : ""}
+                value={formData.age_premiere_prise || ""}
                 readOnly
               />
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section className="form-column">
-          <h4>Antécédents médico-chirurgicaux</h4>
-          <div className="text-area">
-            <div className="labeandtext">
-              <label>Affections congénitales :</label>
-              <textarea
-                value={formData.affections_congenitales}
-                disabled
-                rows={1}
-                style={{ overflow: "hidden", resize: "none" }}
-              />
+          <section className="form-column">
+            <h4>Antécédents médico-chirurgicaux</h4>
+            <div className="text-area">
+              <div className="labeandtext">
+                <label>Affections congénitales :</label>
+                <textarea
+                  value={formData.affections_congenitales || ""}
+                  disabled
+                  rows={1}
+                  style={{ overflow: "hidden", resize: "none" }}
+                />
+              </div>
+              <div className="labeandtext">
+                <label>Maladies générales</label>
+                <textarea
+                  value={formData.maladies_generales || ""}
+                  disabled
+                  rows={1}
+                  style={{ overflow: "hidden", resize: "none" }}
+                />
+              </div>
+              <div className="labeandtext">
+                <label>Interventions chirurgicales</label>
+                <textarea
+                  value={formData.interventions_chirurgicales || ""}
+                  disabled
+                  rows={1}
+                  style={{ overflow: "hidden", resize: "none" }}
+                />
+              </div>
+              <div className="labeandtext">
+                <label>Réactions allergiques</label>
+                <textarea
+                  value={formData.reactions_allergiques || ""}
+                  disabled
+                  rows={1}
+                  style={{ overflow: "hidden", resize: "none" }}
+                />
+              </div>
             </div>
-            <div className="labeandtext">
-              <label>Maladies générales</label>
-              <textarea
-                value={formData.maladies_generales}
-                disabled
-                rows={1}
-                style={{ overflow: "hidden", resize: "none" }}
-              />
-            </div>
-            <div className="labeandtext">
-              <label>Interventions chirurgicales (reporter les dates)</label>
-              <textarea
-                value={formData.interventions_chirurgicales}
-                disabled
-                rows={1}
-                style={{ overflow: "hidden", resize: "none" }}
-              />
-            </div>
-            <div className="labeandtext">
-              <label>Réactions allergiques aux médicaments (Lesquels ?)</label>
-              <textarea
-                value={formData.reactions_allergiques}
-                disabled
-                rows={1}
-                style={{ overflow: "hidden", resize: "none" }}
-              />
-            </div>
-
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
     </div>
   );
 }
 
-export default ReadOnlyTeacher
+export default ReadOnlyTeacher;

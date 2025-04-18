@@ -1,11 +1,15 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './SideBareDocs.css';
 import logo from '../assets/logo.png';
 import user from '../assets/user.png';
+import './SideBareDocs.css';
 
 function SideBareDocs({ activeTab, setActiveTab, disableDropdown }) {
   const navigate = useNavigate();
+ 
+  const rawRole = localStorage.getItem('role');
+  const userRole = rawRole?.toUpperCase() || 'DOCTOR';
+  console.log('Raw role from localStorage:', rawRole, 'Normalized:', userRole);
 
   const handlePatientListClick = () => {
     console.log('Navigating to PatientList');
@@ -18,9 +22,12 @@ function SideBareDocs({ activeTab, setActiveTab, disableDropdown }) {
 
   const handleDropdownChange = (e) => {
     const newTab = e.target.value;
-    console.log('Dropdown changed to:', newTab);
+    console.log('Dropdown changed to:', newTab, 'userRole:', userRole);
     setActiveTab(newTab);
-    navigate('/DoctorList', { state: { activeTab: newTab } });
+    
+    const targetPath = userRole === 'DOCTOR' ? '/DoctorList' : '/AssistantList';
+    console.log('Navigating to:', targetPath);
+    navigate(targetPath, { state: { activeTab: newTab } });
   };
 
   const handleProfileClick = () => {
