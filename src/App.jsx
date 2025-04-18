@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
+
 import AdminPage from './components/Admin_Page.jsx';
 import AssistantList from './components/AssistantList';
 import AssitantHome from './components/AssitantHome';
@@ -25,6 +26,11 @@ import Signup_User from './components/Signup_User';
 import Sinscrire from "./components/sinscrire";
 import VerifyEmail from './components/VerifyEmail';
 import Demandes from './components/Demandes.jsx';
+import Appointment from './components/Appointment';
+import PrescriptionList from './components/PrescriptionList';
+import MedicalPrescription from './components/MedicalPrescription';
+import PrescriptionPrint from './components/PrescriptionPrint';
+
 
 const App = () => {
   return (
@@ -58,6 +64,10 @@ const App = () => {
         <Route path="/dossier/:id/teacher" element={<ReadOnlyTeacher />} />
         <Route path="/dossier/:id/ats" element={<ReadOnlyATS />} />
         <Route path="/Demandes"element={<Demandes/>} />
+        <Route path="/Appointment" element={<Appointment />} />
+          <Route path="/PrescriptionList" element={<PrescriptionList />} />
+          <Route path="/MedicalPrescription" element={<MedicalPrescription />} />
+          <Route path="/PrescriptionPrint" element={<PrescriptionPrint />} />
       </Routes>
     </>
   );
