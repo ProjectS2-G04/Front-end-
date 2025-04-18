@@ -38,16 +38,16 @@ const AdminList = ({ title, listType }) => {
       setLoading(true);
       setErrorMessage(null);
       let url = "";
-      if (selectedCategory === "Étudiants") url = "/dossiers/etudiants/";
-      else if (selectedCategory === "Enseignants") url = "/dossiers/enseignants/";
-      else if (selectedCategory === "ATS") url = "/dossiers/ats/";
+      if (selectedCategory === "Étudiants") url = "/etudiants/";
+      else if (selectedCategory === "Enseignants") url = "/enseignants/";
+      else if (selectedCategory === "ATS") url = "/fonctionnaires/";
 
       let token = localStorage.getItem("token");
       if (!token) throw new Error("No authentication token found.");
 
       let response = await fetch(`http://127.0.0.1:8000/api/dossier-medicale${url}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+           /* Authorization: `Bearer ${token}`, */
           "Content-Type": "application/json",
         },
       });
@@ -209,18 +209,7 @@ const AdminList = ({ title, listType }) => {
                       <button className="deactivate-btn" onClick={() => activateUser(item.id, 'desactivate')}>Désactiver</button>
                       
 
-                      <button
-                        className="activate-btn"
-                        onClick={() => activateUser(item.id, "activate")}
-                      >
-                        Activer
-                      </button>
-                      <button
-                        className="deactivate-btn"
-                        onClick={() => activateUser(item.id, "desactivate")}
-                      >
-                        Désactiver
-                      </button>
+                    
 
                     </td>
                   </tr>
