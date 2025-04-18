@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import PermissionsTable from "./PermissionTable";
-import "./Admin_Page.css";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import "./Admin_Page.css";
+import PermissionsTable from "./PermissionTable";
 
 const AdminList = ({ title, listType }) => {
   const [searchTerm, setSearchTerm] = useState("");

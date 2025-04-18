@@ -58,6 +58,61 @@
     background-color: #79D7BE;
     color: white;
   }
+  .sidebardocs-nav .options-todo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+  }
+  .options-todo button  {
+    padding: 15px;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-weight: 600;
+    border: none;
+    transition: all 0.25s ease; 
+    cursor: pointer; 
+  } 
+  .options-todo button:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+    transform: translateX(-1px);
+    background-color:white;
+    color: #2E5077;
+}
+  .options-todo select {
+    padding: 15px;
+    width: 100%;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .profile {
+    padding: 15px;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-weight: 600;
+    border: none;
+    transition: all 0.25s ease; 
+    cursor: pointer; 
+    display: flex;
+    gap: 10px;
+  }
+  .profile:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+    transform: translateX(-1px);
+    background-color:white;
+    color: #2E5077;
+  }
+  .profile img {
+    width: 40px;
+    height: 40px;
+    
+  }
+
   @media screen and (max-width: 768px) {
     .sidebardocs {
       width: 200px;

@@ -6,15 +6,15 @@ import homeUser from "../assets/user.png";
 import './home.css';
 import OnlineDoctoramico from "/src/assets/OnlineDoctor-amico.svg";
 
-function Doctorhome() { // Renamed to match file convention and React best practice
+function Doctorhome() { 
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    navigate('/'); // Redirect to login or landing page
+    navigate('/'); 
   };
 
   const handleProfile = () => {
-    navigate('/profile'); // Redirect to profile page
+    navigate('/profile'); 
   };
 
   return (
@@ -37,10 +37,9 @@ function Doctorhome() { // Renamed to match file convention and React best pract
         </nav>
       </header>
       <div className="options">
-        <button onClick={() => navigate("/DoctorList")}>
-          Consulter les dossiers médicaux <HiMiniDocumentText className='HiMiniDocumentText' />
+        <button onClick={() => navigate("/PatientList")}>
+          Consulter liste des patients <HiMiniDocumentText className='HiMiniDocumentText' />
         </button>
-        {/* Removed duplicate buttons; add more with specific purposes if needed */}
         <button onClick={() => navigate("/CreateFormPatient")}>
           Créer un nouveau dossier <HiMiniDocumentText className='HiMiniDocumentText' />
         </button>
