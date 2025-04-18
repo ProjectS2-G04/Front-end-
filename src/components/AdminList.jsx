@@ -37,24 +37,31 @@ const AdminList = ({ title, listType }) => {
     try {
       setLoading(true);
       setErrorMessage(null);
+  
+      console.log("selectedCategory:", selectedCategory);
+  
       let url = "";
       if (selectedCategory === "Étudiants") url = "/etudiants/";
       else if (selectedCategory === "Enseignants") url = "/enseignants/";
       else if (selectedCategory === "ATS") url = "/fonctionnaires/";
-
+  
+      console.log("Full fetch URL:", `http://127.0.0.1:8000/api/dossier-medicale${url}`);
+  
       let token = localStorage.getItem("token");
       if (!token) throw new Error("No authentication token found.");
-
+  
       let response = await fetch(`http://127.0.0.1:8000/api/dossier-medicale${url}`, {
         headers: {
-           /* Authorization: `Bearer ${token}`, */
           "Content-Type": "application/json",
         },
       });
-
+      
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+  
       const data = await response.json();
-      setUsers(data); // Assuming this sets dossier records as users for consistency
+      console.log("Fetched data:", data);
+  
+      setUsers(data);
     } catch (error) {
       console.error("Error fetching dossier data:", error);
       setErrorMessage(error.message || "Erreur lors du chargement des dossiers.");
@@ -62,6 +69,7 @@ const AdminList = ({ title, listType }) => {
       setLoading(false);
     }
   };
+  
 
   // Merged useEffect: Handles both dossier and user fetching
   useEffect(() => {
@@ -108,13 +116,29 @@ const AdminList = ({ title, listType }) => {
       }
     }
   };
+  const archiveDossier = async (id) => {
+    try {
+      const res = await axios.post(`http://127.0.0.1:8000/api/dossier-medicale/archive/${id}/`);
+      alert(res.data.message);
+      fetchData(); // Refresh the list after archiving
+    } catch (error) {
+      console.error("Error archiving dossier:", error);
+      alert("Erreur lors de l'archivage du dossier.");
+    }
+  };
+  
 
-  const filteredItems = users.filter((item) =>
-    (item.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     item.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     item.email?.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (!listType === "dossiers" || `${item.nom} ${item.prenom}`.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+const filteredItems = users.filter((item) => {
+  if (listType === "dossiers") {
+    return `${item.nom} ${item.prenom}`.toLowerCase().includes(searchTerm.toLowerCase());
+  } else {
+    return (
+      (item.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+       item.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+       item.email?.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  }
+});
 
   return (
     <div className="admin-content">
@@ -173,9 +197,12 @@ const AdminList = ({ title, listType }) => {
                     📄 <strong>{item.nom} {item.prenom}</strong>{" "}
                     {item.is_archived && "(Archivé)"}
                   </span>
-                  <button className="archive-btn">
-                    {item.is_archived ? "Désarchiver" : "Archiver"}
-                  </button>
+                  <button
+                      className="archive-btn"
+                        onClick={() => archiveDossier(item.id)}>
+                         {item.is_archived ? "Désarchiver" : "Archiver"}
+                         </button>
+ 
                 </div>
               ))
             ) : (
