@@ -29,16 +29,6 @@ import PatientList from './components/PatientList.jsx';
 const App = () => {
   return (
     <>
- 
-   <PatientList/>
-   
-    {/**
-       <ReadOnlyStudent />
-      <ReadOnlyAts />
-      <ReadOnlyTeacher />
-      
-      
-      <Router>
         <Routes>
 
           <Route path="/" element={<SeConnecter />} />
@@ -64,9 +54,10 @@ const App = () => {
           <Route path="/ReadOnlyStudent/:id" element={<ReadOnlyStudent />} />
           <Route path="/ReadOnlyTeacher/:id" element={<ReadOnlyTeacher />} />
           <Route path="/ReadOnlyAts/:id" element={<ReadOnlyAts />} />
+          <Route path="/PatientList" element={<PatientList/>} />
           
         </Routes>
-        */}
+        
     </>
   );
 }

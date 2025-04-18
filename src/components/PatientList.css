@@ -101,4 +101,153 @@
   .btn-details:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
+ .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .modal-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 100vw ;
+    width:50%;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid #2E5077;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+ 
+  .modal-content header h2 {
+    color: #2E5077;
+    margin-bottom: 10px;
+  }
+  .close-button {
+    width: 70px;
+    height: 70px;
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .close-button .IoArrowBackCircle {
+    width: 60px;
+    height: 60px;
+  }
+  .modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 900px;
+
+  }
+   .modal-field label{
+    width: 250px;
+    font-size: 18px;
+    font-weight: 700;
+   } 
+   .modal-field input  {
+    max-width: 500px;
+    width: 50%;
+    padding: 10px;
+    border-radius: 7px;
+    outline: none;
+    font-size: 18px;
+    font-weight: 500;
+    color: #2E5077;
+    border: 2px solid #4DA1A9
+   }
+   .sex-role {
+    display: flex;
+    flex-direction: row;
+   }
+   .sex-role .modal-field input {
+    max-width: 250px;
+    width: 100%;
+   }
+   .btn-rdv {
+    padding: 5px;
+    width: 250px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+   gap: 10px;
+   border-radius: 4px;
+   border: 3px solid #4DA1A9;
+   background-color: transparent;
+   }
+   .btn-consultation  {
+    padding: 5px;
+    width: 250px;
+    height: 70px;
+    border-radius: 4px;
+    border: 3px solid #4DA1A9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+   gap: 10px;
+   background-color: transparent;
+   }
+   .btn-rdv, .btn-consultation {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  
+  .btn-rdv:hover {
+   
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  }
+  
+  .btn-consultation:hover {
+   
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
+   .btn-consultation p , .btn-rdv p {
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #2E5077;
+    font-weight: 500;
+
+   } 
+   .btn-consultation p  {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #2E5077;
+    font-weight: 500;
+   }
+   .SiGoogledocs {
+    width: 25px;
+    height: 25px;
+    color :#4DA1A9;
+   }
+  .BsCalendarPlusFill {
+    width: 22px;
+    height: 22px;
+    color :#4DA1A9;
+  }
+  
+    
+  @keyframes fadeIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
   
