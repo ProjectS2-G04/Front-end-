@@ -14,6 +14,7 @@ function SideBareDocs({ activeTab, setActiveTab, disableDropdown }) {
 
   const handleInboxClick = () => {
     console.log('Inbox clicked');
+    navigate('/Demandes');
   };
 
   const handleDropdownChange = (e) => {

@@ -1,0 +1,205 @@
+/* Conteneur principal */
+.demandes-annulation {
+    display: flex;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f9fafa;
+    color: #2E5077;
+  }
+  
+  /* Zone de contenu des colonnes */
+  .content {
+    display: flex;
+    margin-left: 250px;
+    flex: 1;
+    justify-content: space-around;
+    gap: 2rem;
+    padding: 2rem;
+  }
+  
+  /* Colonne */
+  .column {
+    background-color: white;
+    padding: 1.5rem;
+    border: 3px solid #4DA1A9;
+    border-radius: 10px;
+    min-height: 100vh;
+    width: 45%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* Titres */
+  .column h2 {
+    text-align: center;
+    color: #2E5077;
+    width: 50%;
+    place-self: center;
+    border-radius: 8px;
+    border: 2px solid #4DA1A9;
+    padding: 10px 15px;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Carte demande */
+  .card {
+    border: 1px solid #b8dbe5;
+    border-left: 5px solid #4DA1A9;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background-color: #fdfefe;
+    transition: box-shadow 0.2s;
+    position: relative;
+  }
+  
+  .card:hover {
+    box-shadow: 0 4px 12px rgba(22, 138, 173, 0.2);
+  }
+  
+  /* Contenu du haut */
+  .card-header {
+    font-weight: bold;
+    color: #2E5077;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Description symptôme ou date */
+  .card-body {
+    font-size: 0.95rem;
+    color: #495057;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    color: #2E5077;
+    
+  }
+  
+  /* Mot urgent */
+  .card-body span {
+    color: red;
+    font-weight: bold;
+  }
+  
+  /* Lien de notification */
+  .card-link {
+    color: #33bfa6;
+    font-weight: 500;
+    text-decoration: none;
+    float: right;
+    font-size: 0.95rem;
+    
+  }
+  
+  .card-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* Heure */
+  .time {
+    color: #d9534f;
+    font-weight: bold;
+    margin-left: 0.3rem;
+  }
+  
+  /* Icône d'annulation */
+  .icon-cancel {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    color: #8ecae6;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  .modal-overlay1 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    text-align: left;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .confirm {
+    background-color:#4DA1A9;
+    color:white;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: 500;
+   border: none;
+    width: 120px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .reschedule {
+    background-color:transparent;
+    color: #2E5077;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 2px solid #4DA1A9;
+    width: 120px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .close-button {
+    margin-top: 1rem;
+   
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    float: right;
+  }
+  .Motifmladie {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 18px;
+   padding: 10px;
+    border: 2px solid #2E5077;
+  }
+  .Motifmladie strong{
+    color: #4DA1A9;
+  }
+  .nom {
+    font-size: 18px;
+  }
+  .date-picker {
+    display: flex;
+    flex-direction: row;
+    align-items:flex-start;
+    gap: 10px;
+  }
+  .date-picker input {
+    padding: 10px 15px;
+    border: 1px solid #4DA1A9;
+    font-size: 16px;
+
+  }
+  .date-picker label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 10px;
+    color: #4DA1A9;
+  }

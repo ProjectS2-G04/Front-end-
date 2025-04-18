@@ -31,8 +31,6 @@
   text-align: center;
   gap: 5px;
 }
-
-<<<<<<< HEAD
 .republic h3 {
   font-size: 23px;
   color: #4BA0A8;
@@ -96,6 +94,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 100px;
   max-width: 100vw;
+  width: 100%;
   margin-top: 40px;
 }
 
@@ -164,9 +163,12 @@
   box-shadow: 0 0 8px rgba(69, 194, 169, 0.5);
   transform: scale(1.01);
 }
-
+.form-field {
+  max-width:100vw;
+  width: 93%;
+}
 .form-field input {
-  width: 100%;
+  width:100%;
 }
 
 .toggle-group {
@@ -287,7 +289,7 @@
   font-size: 0.8em;
   margin-top: 0.2em;
 }
-=======
+
   .toggle-group {
     display: flex;
     flex-direction: column;
@@ -325,7 +327,7 @@
     border: 2px solid red;
   }
   
-<<<<<<< HEAD
+
   .error-message {
     color: red;
     font-size: 0.9em;
@@ -348,7 +350,7 @@
     }
   }
   
-=======
+
     
   .imc-underweight {
     background-color: #d1ecf1;
@@ -395,5 +397,4 @@
     font-size: 0.8em;
     margin-top: 0.2em;
   }
->>>>>>> 66a744e24e2845f2347da3dcc603e6fdf4c528db
->>>>>>> 474fda4e2199be7eec1c465913f834753df1845d
+ 

@@ -24,11 +24,15 @@ import ModifyFormEtudiant from './components/ModifyFormEtudiant';
 import ModifyFormEnseignant from './components/ModifyFormEnseignant';
 import ModifyFormATS from './components/ModifyFormATS';
 import PatientList from './components/PatientList.jsx';
+import Demandes from './components/Demandes.jsx';
 
 
 const App = () => {
   return (
     <>
+    
+   
+  
         <Routes>
 
           <Route path="/" element={<SeConnecter />} />
@@ -59,7 +63,7 @@ const App = () => {
           <Route path="/ReadOnlyTeacher/:id" element={<ReadOnlyTeacher />} />
           <Route path="/ReadOnlyAts/:id" element={<ReadOnlyAts />} />
           <Route path="/PatientList" element={<PatientList/>} />
-          
+          <Route path="/Demandes" element={<Demandes/>} />
         </Routes>
         
     </>
