@@ -97,44 +97,65 @@ function PatientList() {
     setShowModal(true);
   };
 
-  const handleConsultDossier = async () => {
-    if (!selectedPatient) return;
+  // const handleConsultDossier = async () => {
+  //   if (!selectedPatient) return;
 
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No authentication token found.');
-      }
+  //   try {
+  //     const token = localStorage.getItem('token');
+  //     if (!token) {
+  //       throw new Error('No authentication token found.');
+  //     }
 
-      const response = await fetch(`http://127.0.0.1:8000/api/dossier-medicale/dossiers/${selectedPatient.id}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+  //     const response = await fetch(`http://127.0.0.1:8000/api/dossier-medicale/dossiers/${selectedPatient.id}/`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch dossier: ${response.status}`);
-      }
+  //     if (!response.ok) {
+  //       throw new Error(`Failed to fetch dossier: ${response.status}`);
+  //     }
 
-      const data = await response.json();
-      let rolePath;
-      if (data.Filiere) {
-        rolePath = 'student';
-      } else if (data.grade && data.specialite) {
-        rolePath = 'teacher';
-      } else if (data.grade) {
-        rolePath = 'ats';
-      } else {
-        throw new Error('Unknown role');
-      }
+  //     const data = await response.json();
+  //     let rolePath;
+  //     if (data.Filiere) {
+  //       rolePath = 'student';
+  //     } else if (data.grade && data.specialite) {
+  //       rolePath = 'teacher';
+  //     } else if (data.grade) {
+  //       rolePath = 'ats';
+  //     } else {
+  //       throw new Error('Unknown role');
+  //     }
 
-      console.log('Navigating to:', `/dossier/${selectedPatient.id}/${rolePath}`, 'with state:', { activeTab: selectedPatient.activeTab });
-      navigate(`/dossier/${selectedPatient.id}/${rolePath}`, { state: { activeTab: selectedPatient.activeTab } });
-    } catch (err) {
-      console.error('Error fetching dossier:', err);
-      setError(err.message || 'Failed to load dossier. Please try again.');
+  //     console.log('Navigating to:', `/dossier/${selectedPatient.id}/${rolePath}`, 'with state:', { activeTab: selectedPatient.activeTab });
+  //     navigate(`/dossier/${selectedPatient.id}/${rolePath}`, { state: { activeTab: selectedPatient.activeTab } });
+  //   } catch (err) {
+  //     console.error('Error fetching dossier:', err);
+  //     setError(err.message || 'Failed to load dossier. Please try again.');
+  //   }
+  // };
+
+  const handleConsultationClick = () => {
+    const userRole = localStorage.getItem('role'); 
+  
+    if (!userRole) {
+      console.error('User role not found. Please log in.');
+      return;
     }
+  
+    if (userRole === 'DOCTOR') {
+      navigate('/PrescriptionList');
+    } else if (userRole === 'ASSISTANT') {
+      navigate('/PrescriptionListAssistant'); 
+    } else {
+      console.error('Unknown user role:', userRole);
+    }
+  };
+
+  const handleAppointmentClick = () => {
+    navigate('/Appointment');
   };
 
   return (
@@ -206,8 +227,10 @@ function PatientList() {
                 <label>Nom</label>
                 <input type="text" value={selectedPatient.nom} readOnly />
               </div>
-              <button className="btn-consultation" onClick={handleConsultDossier}>
-                <SiGoogledocs className="SiGoogledocs" /> <p>Consulter le dossier</p>
+              <button className="btn-consultation" onClick={
+                // handleConsultDossier
+                handleConsultationClick}>
+                <SiGoogledocs className="SiGoogledocs" /> <p>Consultation</p>
               </button>
             </div>
             <div className="modal-buttons">
@@ -215,7 +238,7 @@ function PatientList() {
                 <label>Prénom</label>
                 <input type="text" value={selectedPatient.prenom} readOnly />
               </div>
-              <button className="btn-rdv">
+              <button className="btn-rdv" onClick={handleAppointmentClick}>
                 <BsCalendarPlusFill className="BsCalendarPlusFill" /> <p>Ajouter un rendez-vous</p>
               </button>
             </div>

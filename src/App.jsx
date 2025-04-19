@@ -28,6 +28,7 @@ import VerifyEmail from './components/VerifyEmail';
 import Demandes from './components/Demandes.jsx';
 import Appointment from './components/Appointment';
 import PrescriptionList from './components/PrescriptionList';
+import PrescriptionListAssistant from './components/PrescriptionListAssistant';
 import MedicalPrescription from './components/MedicalPrescription';
 import PrescriptionPrint from './components/PrescriptionPrint';
 import Calendar from './components/Calender';
@@ -67,6 +68,7 @@ const App = () => {
         <Route path="/Demandes" element={<Demandes />} />
         <Route path="/Appointment" element={<Appointment />} />
         <Route path="/PrescriptionList" element={<PrescriptionList />} />
+        <Route path="/PrescriptionListAssistant" element={<PrescriptionListAssistant />} />
         <Route path="/MedicalPrescription" element={<MedicalPrescription />} />
         <Route path="/PrescriptionPrint" element={<PrescriptionPrint />} />
         <Route path="/Calendar" element={<Calendar />} />
