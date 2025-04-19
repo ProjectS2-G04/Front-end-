@@ -1,9 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
-import user from '../assets/user.png';
 import './SideBareDocs.css';
-
+import user from '../assets/user.png';
 function SideBareDocs({ activeTab, setActiveTab, disableDropdown }) {
   const navigate = useNavigate();
  

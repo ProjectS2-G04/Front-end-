@@ -10,32 +10,57 @@ const Profile = () => {
     const [lastName, setLastName] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [profilePic , setProfilePic ] = useState ('')
+ 
 
-    // Fetch user profile data when the component loads
     useEffect(() => {
         const fetchProfile = async () => {
-            try {
-                const response = await fetch('http://127.0.0.1:8000/api/profile/', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                    },
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setFirstName(data.first_name);
-                    setLastName(data.last_name);
-                } else {
-                    console.error('Erreur lors de la récupération du profil');
-                }
-            } catch (error) {
-                console.error('Erreur de connexion au serveur', error);
+          try {
+       
+      
+            const token = localStorage.getItem('token');
+            console.log(token)
+            if (!token) {
+              throw new Error('No authentication token found. Please log in.');
             }
+      
+            const response = await fetch('http://127.0.0.1:8000/api/profile/', {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            });
+      
+            if (!response.ok) {
+              console.log('Response:', response.status, response.statusText);
+              const errorData = await response.text();
+              console.error('Error response:', errorData);
+      
+              if (response.status === 403) {
+                throw new Error('Access forbidden. Please check your credentials.');
+              } else if (response.status === 500) {
+                throw new Error('Server error. Please try again later or contact support.');
+              }
+      
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+      
+            const data = await response.json();
+            console.log("le role", data);
+            setFirstName(data.first_name);
+            setLastName(data.last_name);
+            setProfilePic(data.image)
+          } catch (error) {
+            console.error('Erreur de connexion au serveur', error);
+            setError(error.message || 'Une erreur est survenue.');
+          } finally {
+            setIsLoading(false);
+          }
         };
-
+      
         fetchProfile();
-    }, []);
+      }, []);
+      
 
     const handleSave = async (e) => {
         e.preventDefault();
@@ -104,7 +129,7 @@ const Profile = () => {
             <div className="profile-content">
                 <h2>Paramètres du compte</h2>
                 <div className="profile-image-text">
-                    <img src={profileUser} alt='' />
+                    <img src={profilePic} alt='' />
                     <p>Téléchargez votre image</p>
                 </div>
                 <form className="parametres-form" onSubmit={handleSave}>

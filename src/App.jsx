@@ -65,9 +65,9 @@ const App = () => {
         <Route path="/dossier/:id/ats" element={<ReadOnlyATS />} />
         <Route path="/Demandes" element={<Demandes />} />
         <Route path="/Appointment" element={<Appointment />} />
-        <Route path="/PrescriptionList" element={<PrescriptionList />} />
+        <Route path="/PrescriptionList/:id/" element={<PrescriptionList />} />
         <Route path="/MedicalPrescription" element={<MedicalPrescription />} />
-        <Route path="/PrescriptionPrint" element={<PrescriptionPrint />} />
+        <Route path="/PrescriptionPrint/:id/" element={<PrescriptionPrint />} />
       </Routes>
     </>
   );
