@@ -71,7 +71,7 @@ const App = () => {
         <Route path="/MedicalPrescription" element={<MedicalPrescription />} />
         <Route path="/PrescriptionPrint/:id/" element={<PrescriptionPrint />} />
         <Route path="/PrescriptionList" element={<PrescriptionList />} />
-        <Route path="/PrescriptionListAssistant" element={<PrescriptionListAssistant />} />
+        <Route path="/PrescriptionListAssistant/:id/" element={<PrescriptionListAssistant />} />
         <Route path="/MedicalPrescription" element={<MedicalPrescription />} />
         <Route path="/PrescriptionPrint" element={<PrescriptionPrint />} />
         <Route path="/Calendar" element={<Calendar />} />
