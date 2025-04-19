@@ -1,0 +1,125 @@
+.calendar-container {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    font-family: 'Arial';
+  }
+  .calender-wrapper{
+    margin-left: 15rem;
+    color: #2E5077;
+  }
+  
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .calendar-header button {
+    padding: 4px 12px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: #6bd0b2;
+    border: none;
+  }
+  .calendar-header span {
+    font-weight: bolder;
+  }
+  
+  .calendar {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .calendar th,
+  .calendar td {
+    border: 1px solid #29b8cf;
+    text-align: center;
+    padding: 10px;
+    height: 50px;
+  }
+  
+  .calendar th {
+    background-color: #f7f7f7;
+    font-weight: bold;
+  }
+  
+  .reserved {
+    background-color: #e96363;
+  }
+  
+  .done {
+    background-color: #6bd0b2;
+  }
+  
+  .weekend {
+    background-color: #d3d3d3;
+  }
+  
+  .legend {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .legend .box {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 5px;
+  }
+  
+  .legend .reserved {
+    background-color: #e96363;
+  }
+  
+  .legend .done {
+    background-color: #6bd0b2;
+  }
+  
+  .legend .weekend {
+    background-color: #d3d3d3;
+  }
+  .popup {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 6px;
+    border-radius: 6px;
+    z-index: 999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    animation: fadeIn 0.2s ease-in-out;
+  }
+  
+  .popup-option {
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .popup-option:hover {
+    background-color: #f0f0f0;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .weekend {
+    background-color: #d3d3d3;
+    pointer-events: none; /* light grey */
+  }
+  
+  .lunch {
+    background-color: #f1f1f1; /* a different grey shade for lunch */
+    pointer-events: none; /* optional: prevents clicking */
+    color: #aaa;
+  }
+  .past {
+    background-color: #d3d3d3; /* light gray for past days */
+    pointer-events: none; /* disable clicking on past days */
+    color: #aaa; /* make the text color lighter */
+  }  
+    
+  

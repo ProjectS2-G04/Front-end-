@@ -22,7 +22,7 @@ function SideBareDocs({ activeTab, setActiveTab, disableDropdown }) {
   };
   const handleCalendrierClick = () => {
     console.log('Inbox clicked');
-    navigate('/Calender');
+    navigate('/Calendar');
   };
 
   const handleDropdownChange = (e) => {
