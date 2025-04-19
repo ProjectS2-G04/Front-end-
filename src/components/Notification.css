@@ -1,0 +1,51 @@
+.app {
+    display: flex;
+    height: 100vh;
+  }
+  
+.notifications-container {
+    flex: 1;
+    padding: 40px;
+    background-color: #fff;
+  
+  }
+  
+  .notifications-container h2 {
+   
+    font-size: 24px;
+    margin-bottom: 20px;
+    border: 2px solid #6db0ad;
+    padding: 10px 20px;
+    display: block;
+    width: 500px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  .notification span {
+    display: block;
+    width: 1000px;
+  }
+  .notification {
+    margin-top: 20px;
+    border: 1px solid #6db0ad;
+    border-radius: 6px;
+    padding: 15px;
+    height: 70px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .delete-btn {
+    background: none;
+    border: none;
+    color: #6db0ad;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .delete-btn:hover {
+    text-decoration: underline;
+  }
