@@ -20,6 +20,10 @@ function SideBareDocs({ activeTab, setActiveTab, disableDropdown }) {
     console.log('Inbox clicked');
     navigate('/Demandes');
   };
+  const handleCalendrierClick = () => {
+    console.log('Inbox clicked');
+    navigate('/Calender');
+  };
 
   const handleDropdownChange = (e) => {
     const newTab = e.target.value;
@@ -58,6 +62,10 @@ function SideBareDocs({ activeTab, setActiveTab, disableDropdown }) {
             <option value="enseignants">Dossier médical d'enseignants</option>
             <option value="ats">Dossier médical d'ATS</option>
           </select>
+          <button onClick={handleCalendrierClick} className="sidebar-button">
+            calendrier
+          </button>
+          
           <button onClick={handleInboxClick} className="sidebar-button">
             Inbox
           </button>
@@ -66,6 +74,7 @@ function SideBareDocs({ activeTab, setActiveTab, disableDropdown }) {
           <img src={user} alt="Profile" />
           <p>Mon profil</p>
         </button>
+        
       </nav>
     </div>
   );

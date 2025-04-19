@@ -30,6 +30,7 @@ import Appointment from './components/Appointment';
 import PrescriptionList from './components/PrescriptionList';
 import MedicalPrescription from './components/MedicalPrescription';
 import PrescriptionPrint from './components/PrescriptionPrint';
+import Calendar from './components/Calender';
 
 
 const App = () => {
@@ -68,6 +69,8 @@ const App = () => {
         <Route path="/PrescriptionList" element={<PrescriptionList />} />
         <Route path="/MedicalPrescription" element={<MedicalPrescription />} />
         <Route path="/PrescriptionPrint" element={<PrescriptionPrint />} />
+        <Route path="/Calendar" element={<Calendar />} />
+
       </Routes>
     </>
   );
