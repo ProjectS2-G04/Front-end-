@@ -18,7 +18,7 @@ import ModifyFormEtudiant from './components/ModifyFormEtudiant';
 import PatientHome from './components/PatientHome';
 import PatientList from './components/PatientList.jsx';
 import Profile from "./components/profile";
-import ReadOnlyATS from './components/ReadOnlyATS';
+import ReadOnlyATS from './components/ReadOnlyAts';
 import ReadOnlyStudent from './components/ReadOnlyStudent';
 import ReadOnlyTeacher from './components/ReadOnlyTeacher';
 import SeConnecter from "./components/seConnecter";
@@ -63,11 +63,11 @@ const App = () => {
         <Route path="/dossier/:id/student" element={<ReadOnlyStudent />} />
         <Route path="/dossier/:id/teacher" element={<ReadOnlyTeacher />} />
         <Route path="/dossier/:id/ats" element={<ReadOnlyATS />} />
-        <Route path="/Demandes"element={<Demandes/>} />
+        <Route path="/Demandes" element={<Demandes />} />
         <Route path="/Appointment" element={<Appointment />} />
-          <Route path="/PrescriptionList" element={<PrescriptionList />} />
-          <Route path="/MedicalPrescription" element={<MedicalPrescription />} />
-          <Route path="/PrescriptionPrint" element={<PrescriptionPrint />} />
+        <Route path="/PrescriptionList" element={<PrescriptionList />} />
+        <Route path="/MedicalPrescription" element={<MedicalPrescription />} />
+        <Route path="/PrescriptionPrint" element={<PrescriptionPrint />} />
       </Routes>
     </>
   );
