@@ -15,7 +15,7 @@ function Demandes() {
   useEffect(() => {
     fetch('http://127.0.0.1:8000/api/rendez-vous/demandes/rdv/', {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`, 
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
       .then((response) => response.json())
@@ -24,19 +24,19 @@ function Demandes() {
 
     fetch('http://127.0.0.1:8000/api/rendez-vous/demandes/annulation/', {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`, 
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
       .then((response) => response.json())
       .then((data) => setAnnulations(data))
       .catch((error) => console.error('Error fetching annulations:', error));
   }, []);
-  
+
   const openModal = (demande) => {
     setSelectedDemande(demande);
-    setNouvelleDate(demande.date);
+    setNouvelleDate(demande.date_demandee);
     setShowModal(true);
-    setModeReport(false); // on remet à false à chaque ouverture
+    setModeReport(false); 
   };
 
   const closeModal = () => {
@@ -46,18 +46,63 @@ function Demandes() {
     setModeReport(false);
   };
 
-  const confirmerRdv = () => {
-    alert(`✅ Rendez-vous confirmé pour ${selectedDemande.nom} le ${selectedDemande.date}`);
+  const confirmerRdv = (demandeId) => {
+    console.log('ID de la demande:', demandeId);
+    fetch(`http://127.0.0.1:8000/api/rendez-vous/demande/${demandeId}/confirmer/`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          alert(`Rendez-vous confirmé pour ${selectedDemande.nom} le ${selectedDemande.date_demandee}`);
+          setDemandesEnAttente((prev) => prev.filter((demande) => demande.id !== demandeId));
+        } else {
+          response.json().then((data) => {
+            console.error('Error confirming demande:', data);
+            alert(`Erreur lors de la confirmation de la demande`);
+          });
+        }
+      })
+      .catch((error) => console.error('Error confirming demande:', error));
     closeModal();
   };
 
   const reporterRdv = () => {
     if (!modeReport) {
-      setModeReport(true); // Affiche le champ date
+      setModeReport(true);
     } else {
-      // Valider la nouvelle date ici
-      alert(`🔁 Nouveau rendez-vous pour ${selectedDemande.nom} fixé au ${nouvelleDate}`);
-      closeModal(); // Tu peux aussi envoyer au backend plus tard
+      if (!nouvelleDate) {
+        alert("Veuillez sélectionner une nouvelle date.");
+        return;
+      }
+
+      fetch(`http://127.0.0.1:8000/api/rendez-vous/demande/${selectedDemande.id}/reporter/`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nouvelle_date: nouvelleDate }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            alert(`Nouveau rendez-vous pour ${selectedDemande.nom} fixé au ${nouvelleDate}`);
+            setDemandesEnAttente((prev) =>
+              prev.filter((demande) => demande.id !== selectedDemande.id)
+            );
+          } else {
+            response.json().then((data) => {
+              console.error('Error reporting demande:', data);
+              alert(`Erreur lors du report de la demande`);
+            });
+          }
+        })
+        .catch((error) => console.error('Error reporting demande:', error));
+
+      closeModal();
     }
   };
 
@@ -97,7 +142,7 @@ function Demandes() {
               </div>
               <div className="card-body">
                 <p>
-                  Rendez-vous {annul.date}
+                  Rendez-vous {annul.date_demandee}
                   <span className="time"> ({annul.heure})</span>
                 </p>
                 <a href="#" className="card-link" onClick={(e) => {
@@ -121,8 +166,8 @@ function Demandes() {
               <p><strong>Motif       :</strong> {selectedDemande.motif}</p>
               <p><strong>Description :</strong>{selectedDemande.description}</p>
 
-              {selectedDemande.date && (
-                <p><strong>Date choisie :</strong> {selectedDemande.date}</p>
+              {selectedDemande.date_demandee && (
+                <p><strong>Date choisie :</strong> {selectedDemande.date_demandee}</p>
               )}
 
               {modeReport && (
@@ -142,7 +187,9 @@ function Demandes() {
               <button onClick={reporterRdv} className='reschedule' >
                 {modeReport ? 'Valider la date' : 'Reporter'}
               </button>
-              <button onClick={confirmerRdv} className='confirm '>Confirmer</button>
+              <button onClick={() => confirmerRdv(selectedDemande.id)} className='confirm'>
+                Confirmer
+              </button>
 
             </div>
           </div>
