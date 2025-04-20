@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import PatientHome from './components/PatientHome';
+
 import AdminPage from './components/Admin_Page.jsx';
 import AssistantList from './components/AssistantList';
 import AssitantHome from './components/AssitantHome';
@@ -83,8 +83,7 @@ const App = () => {
         <Route path="/CancelAppointment" element={<CancelAppointment />} />
         <Route path="/TAkeAppointment" element={<TAkeAppointment />} />
         <Route path="/PatientSideBare" element={<PatientSideBare />} />
-        <Route path="/Patienthome" element={<PatientHome />} />
-
+       
 
 
       </Routes>
