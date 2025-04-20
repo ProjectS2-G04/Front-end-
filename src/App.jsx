@@ -31,6 +31,7 @@ import PrescriptionList from './components/PrescriptionList';
 import MedicalPrescription from './components/MedicalPrescription';
 import PrescriptionPrint from './components/PrescriptionPrint';
 import Calendar from './components/Calender';
+import CancelAppointment from './components/CancelAppointment.jsx';
 
 
 const App = () => {
@@ -70,6 +71,8 @@ const App = () => {
         <Route path="/MedicalPrescription" element={<MedicalPrescription />} />
         <Route path="/PrescriptionPrint" element={<PrescriptionPrint />} />
         <Route path="/Calendar" element={<Calendar />} />
+        <Route path="/CancelAppointment" element={<CancelAppointment />} />
+
 
       </Routes>
     </>
