@@ -1,0 +1,78 @@
+.app {
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+  }
+  
+  .rendezvous-container {
+    flex: 1;
+    padding: 30px 60px;
+  }
+  
+  .rendezvous-container h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 30px;
+    border: 2px solid #4DA1A9;
+    border-radius: 5px;
+    padding: 10px;
+    border-radius: 8px;
+    color: #2E5077;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .rendezvous-form {
+    border: 2px solid #4DA1A9;
+    border-radius: 6px;
+    padding: 30px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .rendezvous-form label {
+    font-weight: 600;
+    color: #2E5077;
+  }
+  
+  .rendezvous-form input{
+    padding: 10px 15px;
+    border: 2px solid #479a91;
+    border-radius: 6px;
+    width: 600px;
+    height: 50px;
+    outline: none;
+    font-size: 16px;
+  }
+  .rendezvous-form textarea {
+    padding: 10px 15px;
+    border: 2px solid #479a91;
+    border-radius: 6px;
+    width: 1500px;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+  }
+  
+  .submit-btn {
+    margin-top: 20px;
+   margin-left: 1500px;
+    background-color: #5cb8b2;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    width: 250px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit-btn:hover {
+    background-color: #479a91;
+  }
+  

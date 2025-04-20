@@ -137,8 +137,8 @@ function PatientList() {
   //   }
   // };
 
-  const handleConsultationClick = () => {
-    const userRole = localStorage.getItem('role'); 
+  const handleConsultationClick = (patientId) => {
+    const userRole = localStorage.getItem('role');
   
     if (!userRole) {
       console.error('User role not found. Please log in.');
@@ -146,13 +146,14 @@ function PatientList() {
     }
   
     if (userRole === 'DOCTOR') {
-      navigate('/PrescriptionList');
+      navigate(`/PrescriptionList/${patientId}`);
     } else if (userRole === 'ASSISTANT') {
-      navigate('/PrescriptionListAssistant'); 
+      navigate(`/PrescriptionListAssistant/${patientId}`);
     } else {
       console.error('Unknown user role:', userRole);
     }
   };
+  
 
   const handleAppointmentClick = (patientId) => {
     navigate('/Appointment', { state: { idPatient: patientId } });  
@@ -227,11 +228,12 @@ function PatientList() {
                 <label>Nom</label>
                 <input type="text" value={selectedPatient.nom} readOnly />
               </div>
-              <button className="btn-consultation" onClick={
-                // handleConsultDossier
-                handleConsultationClick}>
-                <SiGoogledocs className="SiGoogledocs" /> <p>Consultation</p>
-              </button>
+              <button
+  className="btn-consultation"
+  onClick={() => handleConsultationClick(selectedPatient.id)}
+>
+  <SiGoogledocs className="SiGoogledocs" /> <p>Consultation</p>
+</button>
             </div>
             <div className="modal-buttons">
               <div className="modal-field">

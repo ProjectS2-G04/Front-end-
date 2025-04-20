@@ -1,19 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import './PrescriptionPrint.css';
 import logo from '../assets/logo.png';
 
-function OrdonnancePrint({
-  patient = {},
-  medications = [
-    { name: '', dosage: '', duration: '' },
-  ],
-}) {
+function OrdonnancePrint() {
+  const { id } = useParams();
+  const [ordonnance, setOrdonnance] = useState(null);
+
+  useEffect(() => {
+    const fetchOrdonnance = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://127.0.0.1:8000/api/rendez-vous/list/${id}/`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch ordonnance');
+        }
+
+        const data = await response.json();
+        setOrdonnance(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchOrdonnance();
+  }, [id]);
+
+  if (!ordonnance) {
+    return <div>Chargement...</div>;
+  }
+
   const {
-    lastName = '',
-    firstName = '',
-    age = '',
-    date = new Date().toLocaleDateString('fr-FR'),
-  } = patient;
+    patient_prenom,
+    patient_nom,
+    age,
+    date,
+    medicaments,
+  } = ordonnance;
 
   return (
     <div className="ordonnance-print">
@@ -23,14 +52,12 @@ function OrdonnancePrint({
           <h1 className="ordonnance-title">Ordonnance médicale</h1>
         </div>
         <section className="patient-info">
-        <p><strong>Nom :</strong> {lastName}</p>
-        <p><strong>Prénom :</strong> {firstName}</p>
-        <p><strong>Âge :</strong> {age} ans</p>
-        <p><strong>Date :</strong> {date}</p>
-      </section>
+          <p><strong>Nom :</strong> {patient_nom}</p>
+          <p><strong>Prénom :</strong> {patient_prenom}</p>
+          <p><strong>Âge :</strong> {age} ans</p>
+          <p><strong>Date :</strong> {new Date(date).toLocaleDateString('fr-FR')}</p>
+        </section>
       </header>
-
-     
 
       <section className="medication-table">
         <table>
@@ -42,11 +69,11 @@ function OrdonnancePrint({
             </tr>
           </thead>
           <tbody>
-            {medications.map((med, index) => (
+            {medicaments.map((med, index) => (
               <tr key={index}>
-                <td>{med.name}</td>
-                <td>{med.dosage}</td>
-                <td>{med.duration}</td>
+                <td>{med.nom}</td>
+                <td>{med.posologie}</td>
+                <td>{med.duree}</td>
               </tr>
             ))}
           </tbody>
@@ -58,3 +85,4 @@ function OrdonnancePrint({
 }
 
 export default OrdonnancePrint;
+
