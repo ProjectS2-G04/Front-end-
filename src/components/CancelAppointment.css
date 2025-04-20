@@ -1,0 +1,58 @@
+.cancel-container {
+    padding: 40px;
+    flex: 1;
+    background-color: #ffffff;
+  }
+  .app-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  
+  .cancel-header {
+    color: #2E5077;
+    margin-left: 25rem;
+    border: 1px solid #92ecd4;
+    padding: 10px 20px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 30px;
+    width: 35%;
+    text-align: center;
+  }
+  
+  .cancel-form {
+    max-width: 800px;
+    margin: 30px auto;
+    border: 1px solid #92ecd4;
+    border-radius: 8px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .cancel-input,
+  .cancel-textarea {
+    margin: 10px 0 20px;
+    padding: 10px;
+    border: 1px solid #92ecd4;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .cancel-submit {
+    align-self: flex-end;
+    background-color: #4DA1A9;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+ 
+  
+  .cancel-submit:hover {
+    background-color: #cbebee;
+  }
+  

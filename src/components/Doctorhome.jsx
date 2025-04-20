@@ -19,18 +19,18 @@ function Doctorhome() {
 
   return (
     <div className='home-container'>
-      <header className="home-header"> {/* Fixed typo: "heder" → "header" */}
+      <header className="home-header"> 
         <img src={homeLogo} alt="Medeciel Logo" />
         <nav>
           <img
             src={homeUser}
             alt="Profile Icon"
-            onClick={handleProfile} // Using onClick for programmatic navigation
-            style={{ cursor: 'pointer' }} // Add cursor pointer for UX
+            onClick={handleProfile} 
+            style={{ cursor: 'pointer' }} 
           />
           <button
             className="deconnexion-button"
-            onClick={handleLogout} // Using onClick for consistency
+            onClick={handleLogout} 
           >
             Déconnexion
           </button>

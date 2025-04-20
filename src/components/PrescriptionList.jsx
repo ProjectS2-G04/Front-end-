@@ -9,17 +9,32 @@ function PrescriptionList() {
   useEffect(() => {
     // Mocking a fetch call here — replace with real API later
     const fetchPrescriptions = async () => {
-      // Simulate backend data structure
-      const response = [
-        { id: 'n/oa/2025/001', date: '2025-04-20' },
-        { id: 'n/oa/2025/002', date: '2025-10-31' },
-        { id: 'n/oa/2025/003', date: '2025-12-01' }
-      ];
-
-      // Optional: Sort by date
-      const sorted = response.sort((a, b) => new Date(a.date) - new Date(b.date));
-      setPrescriptions(sorted);
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('No authentication token found.');
+        }
+    
+        const response = await fetch('http://127.0.0.1:8000/api/rendez-vous/list/', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+    
+        if (!response.ok) {
+          throw new Error(`Failed to fetch prescriptions: ${response.status}`);
+        }
+    
+        const data = await response.json();
+    
+        const sorted = data.sort((a, b) => new Date(a.date) - new Date(b.date));
+        setPrescriptions(sorted);
+      } catch (error) {
+        console.error('Error fetching prescriptions:', error);
+      }
     };
+    
 
     fetchPrescriptions();
   }, []);
@@ -39,7 +54,9 @@ function PrescriptionList() {
                     {new Date(prescription.date).toLocaleDateString('fr-FR')}
                   </span>
                 </div>
-                <button className="view-btn" onClick={() => navigate('/PrescriptionPrint')} >Voir ordonnance</button>
+                <button className="view-btn" onClick={() => navigate(`/PrescriptionPrint/${prescription.id}`)}>
+                   Voir ordonnance
+                    </button>
               </div>
             ))}
           </div>

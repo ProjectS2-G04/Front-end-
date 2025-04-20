@@ -15,7 +15,7 @@ import Forgot_Password2 from './components/Forgot_Password2';
 import ModifyFormATS from './components/ModifyFormATS';
 import ModifyFormEnseignant from './components/ModifyFormEnseignant';
 import ModifyFormEtudiant from './components/ModifyFormEtudiant';
-import PatientHome from './components/PatientHome';
+import Notification from './components/Notification.jsx';
 import PatientList from './components/PatientList.jsx';
 import Profile from "./components/profile";
 import ReadOnlyATS from './components/ReadOnlyAts';
@@ -28,15 +28,20 @@ import VerifyEmail from './components/VerifyEmail';
 import Demandes from './components/Demandes.jsx';
 import Appointment from './components/Appointment';
 import PrescriptionList from './components/PrescriptionList';
+import PrescriptionListAssistant from './components/PrescriptionListAssistant';
 import MedicalPrescription from './components/MedicalPrescription';
 import PrescriptionPrint from './components/PrescriptionPrint';
 import Calendar from './components/Calender';
 import CancelAppointment from './components/CancelAppointment.jsx';
+import PatientSideBare from './components/PatientSideBare.jsx';
+import TAkeAppointment from './components/TAkeAppointment.jsx';
 
 
 const App = () => {
   return (
     <>
+    
+      
       <Routes>
         <Route path="/" element={<SeConnecter />} />
         <Route path="/home" element={<Doctorhome />} />
@@ -50,7 +55,7 @@ const App = () => {
         <Route path="/Admin_Page" element={<AdminPage />} />
         <Route path="/signup_user" element={<Signup_User />} />
         <Route path="/Assitanthome" element={<AssitantHome />} />
-        <Route path="/Patienthome" element={<PatientHome />} />
+        <Route path="/Notification" element={<Notification />} />
         <Route path="/AssistantList" element={<AssistantList />} />
         <Route path="/DoctorList" element={<DoctorList />} />
         <Route path="/CreateFormPatient" element={<CreateFormPatient />} />
@@ -67,11 +72,18 @@ const App = () => {
         <Route path="/dossier/:id/ats" element={<ReadOnlyATS />} />
         <Route path="/Demandes" element={<Demandes />} />
         <Route path="/Appointment" element={<Appointment />} />
+        <Route path="/PrescriptionList/:id/" element={<PrescriptionList />} />
+        <Route path="/MedicalPrescription" element={<MedicalPrescription />} />
+        <Route path="/PrescriptionPrint/:id/" element={<PrescriptionPrint />} />
         <Route path="/PrescriptionList" element={<PrescriptionList />} />
+        <Route path="/PrescriptionListAssistant/:id/" element={<PrescriptionListAssistant />} />
         <Route path="/MedicalPrescription" element={<MedicalPrescription />} />
         <Route path="/PrescriptionPrint" element={<PrescriptionPrint />} />
         <Route path="/Calendar" element={<Calendar />} />
         <Route path="/CancelAppointment" element={<CancelAppointment />} />
+        <Route path="/TAkeAppointment" element={<TAkeAppointment />} />
+        <Route path="/PatientSideBare" element={<PatientSideBare />} />
+
 
 
       </Routes>

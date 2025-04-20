@@ -42,7 +42,7 @@ const SeConnecter = () => {
           password: formData.password,
         }),
       });
-
+      console.log(response.data)
       if (!response.ok) {
         const errorData = await response.json();
         const errorMessage = errorData.detail || errorData.error || "Échec de la connexion";
@@ -50,6 +50,7 @@ const SeConnecter = () => {
       }
 
       const data = await response.json();
+      console.log(data)
 
       // Store tokens and user info
       localStorage.setItem('token', data.access);
@@ -58,6 +59,7 @@ const SeConnecter = () => {
       localStorage.setItem('sub_role', data.sub_role || '');
       localStorage.setItem('email', data.email);
       localStorage.setItem('name', `${data.first_name} ${data.last_name}`);
+      localStorage.setItem ('image',data.image);
 
       
       switch (data.role) {
