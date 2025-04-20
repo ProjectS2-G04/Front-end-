@@ -154,8 +154,8 @@ function PatientList() {
     }
   };
 
-  const handleAppointmentClick = () => {
-    navigate('/Appointment');
+  const handleAppointmentClick = (patientId) => {
+    navigate('/Appointment', { state: { idPatient: patientId } });  
   };
 
   return (
@@ -238,7 +238,12 @@ function PatientList() {
                 <label>Prénom</label>
                 <input type="text" value={selectedPatient.prenom} readOnly />
               </div>
-              <button className="btn-rdv" onClick={handleAppointmentClick}>
+              <button
+                className="btn-rdv"
+                onClick={() => handleAppointmentClick(selectedPatient.id)
+                  
+                }
+              >
                 <BsCalendarPlusFill className="BsCalendarPlusFill" /> <p>Ajouter un rendez-vous</p>
               </button>
             </div>

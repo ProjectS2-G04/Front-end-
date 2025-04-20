@@ -15,7 +15,6 @@ function DoctorList() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Handle navigation state from PatientList
   useEffect(() => {
     if (location.state) {
       const { activeTab: newTab, patientId } = location.state;
@@ -80,7 +79,7 @@ function DoctorList() {
     `${record.nom} ${record.prenom}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  console.log('filteredRecords:', filteredRecords); // Debug log
+  console.log('filteredRecords:', filteredRecords);
 
   const handleDownload = async (doc, recordName) => {
     if (!doc || !doc.id) {

@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './Appointment.css';
 import SideBareDocs from './SideBareDocs';
 
 function AppointmentForm() {
+  const location = useLocation();
+  const idPatient = location.state?.idPatient;
+  const navigate = useNavigate(); 
+
   const [formData, setFormData] = useState({
     description: '',
     date: '',
-    startTime: '',
-    endTime: ''
+    heure_debut: '',
+    heure_fin: ''
   });
 
   const [errors, setErrors] = useState({});
@@ -24,53 +29,114 @@ function AppointmentForm() {
     const newErrors = {};
     const today = new Date();
     const selectedDate = new Date(formData.date);
-    
-    // Reset time parts for comparison
+
     today.setHours(0, 0, 0, 0);
     selectedDate.setHours(0, 0, 0, 0);
-    
-    // Validate date
+
     if (!formData.date) {
       newErrors.date = 'La date est requise';
     } else if (selectedDate < today) {
       newErrors.date = 'La date doit être aujourd\'hui ou dans le futur';
     }
-    
-    // Validate start time
-    if (!formData.startTime) {
-      newErrors.startTime = 'L\'heure de début est requise';
+
+    if (!formData.heure_debut) {
+      newErrors.heure_debut = 'L\'heure de début est requise';
     } else {
-      const [hours, minutes] = formData.startTime.split(':').map(Number);
+      const [hours, minutes] = formData.heure_debut.split(':').map(Number);
       if (hours < 8) {
-        newErrors.startTime = 'L\'heure de début doit être après 8h du matin';
+        newErrors.heure_debut = 'L\'heure de début doit être après 8h du matin';
       }
     }
-    
-    // Validate end time
-    if (!formData.endTime) {
-      newErrors.endTime = 'L\'heure de fin est requise';
+
+    if (!formData.heure_fin) {
+      newErrors.heure_fin = 'L\'heure de fin est requise';
     } else {
-      const [hours, minutes] = formData.endTime.split(':').map(Number);
+      const [hours, minutes] = formData.heure_fin.split(':').map(Number);
       if (hours >= 17) {
-        newErrors.endTime = 'L\'heure de fin doit être avant 17h';
+        newErrors.heure_fin = 'L\'heure de fin doit être avant 17h';
       }
     }
-    
-    // Validate end time is after start time
-    if (formData.startTime && formData.endTime && formData.startTime >= formData.endTime) {
-      newErrors.endTime = 'L\'heure de fin doit être après l\'heure de début';
+
+    if (formData.heure_debut && formData.heure_fin && formData.heure_debut >= formData.heure_fin) {
+      newErrors.heure_fin = 'L\'heure de fin doit être après l\'heure de début';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      // Handle form submission logic here
-      console.log('Appointment data:', formData);
-      // Ajoutez ici votre logique pour envoyer les données au serveur
+      try {
+        if (!idPatient) {
+          alert('ID Patient is missing.');
+          return;
+        }
+
+        const userResponse = await fetch(`http://127.0.0.1:8000/api/dossier-medicale/dossiers/`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (!userResponse.ok) {
+          alert('Failed to fetch user information.');
+          return;
+        }
+
+        const dossiers = await userResponse.json();
+        const dossier = dossiers.find((d) => d.id === idPatient);
+
+        if (!dossier) {
+          alert('No dossier found for the given user ID.');
+          return;
+        }
+
+        const userId = dossier.user;
+        console.log('User ID:', userId);
+
+        const formattedHeureDebut = `${formData.heure_debut}:00`;
+        const formattedHeureFin = `${formData.heure_fin}:00`;
+
+        const requestBody = {
+          description: formData.description,
+          date: formData.date,
+          heure_debut: formattedHeureDebut,
+          heure_fin: formattedHeureFin,
+        };
+
+        console.log('Request Body:', requestBody);
+
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/rendez-vous/createrenderVous/${userId}/`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify(requestBody),
+          }
+        );
+
+        const responseText = await response.text();
+        console.log('Raw Response:', responseText);
+
+        if (response.ok) {
+          const data = responseText ? JSON.parse(responseText) : {};
+          console.log('Rendez-vous created successfully:', data);
+          alert('Rendez-vous créé avec succès!');
+          handleCancel();
+        } else {
+          console.error('Error creating rendez-vous:', responseText);
+          alert('Erreur lors de la création du rendez-vous.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Une erreur s\'est produite lors de la création du rendez-vous. Veuillez réessayer.', error);
+      }
     }
   };
 
@@ -78,20 +144,20 @@ function AppointmentForm() {
     setFormData({
       description: '',
       date: '',
-      startTime: '',
-      endTime: ''
+      heure_debut: '',
+      heure_fin: ''
     });
     setErrors({});
+    navigate('/PatientList'); 
   };
 
-  // Set minimum date for date picker (today)
   const today = new Date().toISOString().split('T')[0];
 
   return (
     <div className="medeciel-container">
       <div className="app-layout">
         <SideBareDocs />
-        
+
         <main className="appointment-form">
           <h1>Rendez-vous</h1>
           <form onSubmit={handleSubmit}>
@@ -122,33 +188,33 @@ function AppointmentForm() {
 
             <div className="time-inputs">
               <div className="form-group">
-                <label htmlFor="startTime">Heure de début (après 8h)</label>
+                <label htmlFor="heure_debut">Heure de début (après 8h)</label>
                 <input
                   type="time"
-                  id="startTime"
-                  name="startTime"
-                  value={formData.startTime}
+                  id="heure_debut"
+                  name="heure_debut"
+                  value={formData.heure_debut}
                   onChange={handleChange}
                   min="08:00"
                   max="16:59"
                   required
                 />
-                {errors.startTime && <span className="error-message">{errors.startTime}</span>}
+                {errors.heure_debut && <span className="error-message">{errors.heure_debut}</span>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="endTime">Heure de fin (avant 17h)</label>
+                <label htmlFor="heure_fin">Heure de fin (avant 17h)</label>
                 <input
                   type="time"
-                  id="endTime"
-                  name="endTime"
-                  value={formData.endTime}
+                  id="heure_fin"
+                  name="heure_fin"
+                  value={formData.heure_fin}
                   onChange={handleChange}
                   min="08:01"
                   max="17:00"
                   required
                 />
-                {errors.endTime && <span className="error-message">{errors.endTime}</span>}
+                {errors.heure_fin && <span className="error-message">{errors.heure_fin}</span>}
               </div>
             </div>
 
