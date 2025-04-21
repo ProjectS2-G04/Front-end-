@@ -11,7 +11,7 @@ function PatientList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('etudiants');
+  const [activeTab, setActiveTab] = useState(null); // Changed to null
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
@@ -97,46 +97,6 @@ function PatientList() {
     setShowModal(true);
   };
 
-  // const handleConsultDossier = async () => {
-  //   if (!selectedPatient) return;
-
-  //   try {
-  //     const token = localStorage.getItem('token');
-  //     if (!token) {
-  //       throw new Error('No authentication token found.');
-  //     }
-
-  //     const response = await fetch(`http://127.0.0.1:8000/api/dossier-medicale/dossiers/${selectedPatient.id}/`, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error(`Failed to fetch dossier: ${response.status}`);
-  //     }
-
-  //     const data = await response.json();
-  //     let rolePath;
-  //     if (data.Filiere) {
-  //       rolePath = 'student';
-  //     } else if (data.grade && data.specialite) {
-  //       rolePath = 'teacher';
-  //     } else if (data.grade) {
-  //       rolePath = 'ats';
-  //     } else {
-  //       throw new Error('Unknown role');
-  //     }
-
-  //     console.log('Navigating to:', `/dossier/${selectedPatient.id}/${rolePath}`, 'with state:', { activeTab: selectedPatient.activeTab });
-  //     navigate(`/dossier/${selectedPatient.id}/${rolePath}`, { state: { activeTab: selectedPatient.activeTab } });
-  //   } catch (err) {
-  //     console.error('Error fetching dossier:', err);
-  //     setError(err.message || 'Failed to load dossier. Please try again.');
-  //   }
-  // };
-
   const handleConsultationClick = (patientId) => {
     const userRole = localStorage.getItem('role');
   
@@ -153,7 +113,6 @@ function PatientList() {
       console.error('Unknown user role:', userRole);
     }
   };
-  
 
   const handleAppointmentClick = (patientId) => {
     navigate('/Appointment', { state: { idPatient: patientId } });  
@@ -229,11 +188,11 @@ function PatientList() {
                 <input type="text" value={selectedPatient.nom} readOnly />
               </div>
               <button
-  className="btn-consultation"
-  onClick={() => handleConsultationClick(selectedPatient.id)}
->
-  <SiGoogledocs className="SiGoogledocs" /> <p>Consultation</p>
-</button>
+                className="btn-consultation"
+                onClick={() => handleConsultationClick(selectedPatient.id)}
+              >
+                <SiGoogledocs className="SiGoogledocs" /> <p>Consultation</p>
+              </button>
             </div>
             <div className="modal-buttons">
               <div className="modal-field">
@@ -242,9 +201,7 @@ function PatientList() {
               </div>
               <button
                 className="btn-rdv"
-                onClick={() => handleAppointmentClick(selectedPatient.id)
-                  
-                }
+                onClick={() => handleAppointmentClick(selectedPatient.id)}
               >
                 <BsCalendarPlusFill className="BsCalendarPlusFill" /> <p>Ajouter un rendez-vous</p>
               </button>

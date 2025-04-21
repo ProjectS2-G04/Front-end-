@@ -1,13 +1,13 @@
-import React from 'react'
-import './TakeAppointment.css'
+import React from 'react';
+import './TakeAppointment.css';
+import PatientSideBare from './PatientSideBare'; 
+
 export default function TAkeAppointment() {
   return (
     <div className="app">
       <PatientSideBare />
-
       <div className="rendezvous-container">
         <h2 className="title">Demande de rendez vous</h2>
-
         <form className="rendezvous-form">
           <label htmlFor="date">Date demandée</label>
           <input type="date" id="date" name="date" />
@@ -22,5 +22,5 @@ export default function TAkeAppointment() {
         </form>
       </div>
     </div>
-  )
+  );
 }

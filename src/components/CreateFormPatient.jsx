@@ -296,7 +296,7 @@ function CreateFormPatient() {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch("http://127.0.0.1:8000/api/dossier-medicale/dossiers/etudiants/", {
+      const response = await fetch("http://127.0.0.1:8000/api/dossier-medicale/dossiers/etudiants/create/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

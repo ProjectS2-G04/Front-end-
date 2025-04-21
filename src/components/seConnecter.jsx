@@ -42,7 +42,7 @@ const SeConnecter = () => {
           password: formData.password,
         }),
       });
-      console.log(response.data)
+
       if (!response.ok) {
         const errorData = await response.json();
         const errorMessage = errorData.detail || errorData.error || "Échec de la connexion";
@@ -50,18 +50,28 @@ const SeConnecter = () => {
       }
 
       const data = await response.json();
-      console.log(data)
+      console.log('Login response:', data); // Debug API response
 
       // Store tokens and user info
       localStorage.setItem('token', data.access);
       localStorage.setItem('refresh_token', data.refresh);
-      localStorage.setItem('role', data.role);
-      localStorage.setItem('sub_role', data.sub_role || '');
+      localStorage.setItem('role', data.role || 'PATIENT');
+      localStorage.setItem('sub_role', data.sub_role || 'student'); // Default to 'student' for patient
       localStorage.setItem('email', data.email);
       localStorage.setItem('name', `${data.first_name} ${data.last_name}`);
-      localStorage.setItem ('image',data.image);
+      localStorage.setItem('image', data.image || '');
 
-      
+      // Debug localStorage
+      console.log('localStorage after login:', {
+        token: localStorage.getItem('token'),
+        sub_role: localStorage.getItem('sub_role'),
+        role: localStorage.getItem('role'),
+        email: localStorage.getItem('email'),
+        name: localStorage.getItem('name'),
+        image: localStorage.getItem('image'),
+      });
+
+      // Redirect based on role
       switch (data.role) {
         case 'DOCTOR':
           navigate('/PatientList');
@@ -70,20 +80,20 @@ const SeConnecter = () => {
           navigate('/PatientList');
           break;
         case 'PATIENT':
-          navigate('/Patienthome');
+          navigate('/Notification'); 
           break;
         case 'ADMIN':
           navigate('/Admin_Page');
           break;
         case 'DIRECTOR':
-          navigate('/profile'); 
+          navigate('/profile');
           break;
         default:
           navigate('/profile');
           break;
       }
-
     } catch (error) {
+      console.error('Login error:', error);
       alert(error.message || "Une erreur est survenue");
     }
   };
@@ -94,7 +104,7 @@ const SeConnecter = () => {
         <img src={seConnecterLogo} alt="" />
         <p>
           Médeciel est une plateforme de gestion médicale de l’École Supérieure
-          de l’Informatique ESI au Sidi BEL Abbesse , facilitant l’accès aux
+          de l’Informatique ESI au Sidi BEL Abbesse, facilitant l’accès aux
           soins pour les étudiants, les enseignants et le personnel ATS.
           Bienvenue sur la plateforme médicale dédiée à l’École Supérieure
           d’Informatique. Connectez-vous pour accéder à vos ressources.

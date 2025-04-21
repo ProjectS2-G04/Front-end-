@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './Calender.css';
 import SideBareDocs from './SideBareDocs';
 
-
 const timeSlots = [
   "8-9 Am", "9-10 Am", "10-11 Am", "11-12 Am", "12-1 Pm",
   "1-2 Pm", "2-3 Pm", "3-4 Pm", "4-5 Pm"
@@ -26,6 +25,7 @@ const Calendar = () => {
   const [weekOffset, setWeekOffset] = useState(0);
   const [appointments, setAppointments] = useState({});
   const [popup, setPopup] = useState(null); // { x, y, day, time }
+  const [activeTab, setActiveTab] = useState(null); // Added for SideBareDocs
 
   const today = new Date();
   const currentWeek = new Date(today.setDate(today.getDate() + weekOffset * 7));
@@ -49,7 +49,6 @@ const Calendar = () => {
       time: timeIndex,
     });
   };
-  
 
   const setStatus = (status) => {
     const key = `${popup.day}-${popup.time}`;
@@ -64,7 +63,7 @@ const Calendar = () => {
     const key = `${day}-${time}`;
     const status = appointments[key];
   
-    // Handle weekend and lunch slots (same as before)
+    // Handle weekend and lunch slots
     if (status === 'terminée') return 'done';
     if (status === 'réservée') return 'reserved';
     if (time === 4) return 'lunch'; // Lunch break (12-1)
@@ -83,68 +82,65 @@ const Calendar = () => {
   
     return '';
   };
-  
 
   return (
-    
     <div className="calendar-container">
+      <SideBareDocs
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        disableDropdown={false} // Added props
+      />
+      <div className="calender-wrapper">
+        <div className="legend">
+          <div><span className="box reserved"></span> Réservée</div>
+          <div><span className="box done"></span> Terminée</div>
+          <div><span className="box weekend"></span> hors travail</div>
+        </div>
+        <div className="calendar-header">
+          <button onClick={() => setWeekOffset(weekOffset - 1)}>‹</button>
+          <span>{weekDates[0].toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</span>
+          <button onClick={() => setWeekOffset(weekOffset + 1)}>›</button>
+        </div>
 
-                <SideBareDocs />
-<div className="calender-wrapper">
-<div className="legend">
-        <div><span className="box reserved"></span> Réservée</div>
-        <div><span className="box done"></span> Terminée</div>
-        <div><span className="box weekend"></span> hors travail</div>
-       
-      </div>
-<div className="calendar-header">
-        <button onClick={() => setWeekOffset(weekOffset - 1)}>‹</button>
-        <span>{weekDates[0].toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</span>
-        <button onClick={() => setWeekOffset(weekOffset + 1)}>›</button>
-      </div>
-
-      <table className="calendar">
-        <thead>
-          <tr>
-            <th>Temps</th>
-            {weekDates.map((date, index) => (
-              <th key={index}>
-                {dayNames[index]} <br />
-                {date.getDate()}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {timeSlots.map((slot, timeIdx) => (
-            <tr key={timeIdx}>
-              <td>{slot}</td>
-              {weekDates.map((_, dayIdx) => (
-                <td
-                  key={`${dayIdx}-${timeIdx}`}
-                  className={getCellClass(dayIdx, timeIdx)}
-                  onClick={(e) => handleCellClick(dayIdx, timeIdx, e)}
-                ></td>
+        <table className="calendar">
+          <thead>
+            <tr>
+              <th>Temps</th>
+              {weekDates.map((date, index) => (
+                <th key={index}>
+                  {dayNames[index]} <br />
+                  {date.getDate()}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {timeSlots.map((slot, timeIdx) => (
+              <tr key={timeIdx}>
+                <td>{slot}</td>
+                {weekDates.map((_, dayIdx) => (
+                  <td
+                    key={`${dayIdx}-${timeIdx}`}
+                    className={getCellClass(dayIdx, timeIdx)}
+                    onClick={(e) => handleCellClick(dayIdx, timeIdx, e)}
+                  ></td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-      {popup && (
-        <div
-          className="popup"
-          style={{ top: popup.y + 30, left: popup.x }}
-        >
-          <div onClick={() => setStatus('réservée')} className="popup-option reserved">Réservée</div>
-          <div onClick={() => setStatus('terminée')} className="popup-option done">Terminée</div>
-          <div onClick={() => setStatus('clear')} className="popup-option">Effacer</div>
-        </div>
-      )}
-
-     
-</div>
-   
+        {popup && (
+          <div
+            className="popup"
+            style={{ top: popup.y + 30, left: popup.x }}
+          >
+            <div onClick={() => setStatus('réservée')} className="popup-option reserved">Réservée</div>
+            <div onClick={() => setStatus('terminée')} className="popup-option done">Terminée</div>
+            <div onClick={() => setStatus('clear')} className="popup-option">Effacer</div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
