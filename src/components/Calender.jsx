@@ -51,16 +51,47 @@ const Calendar = () => {
   };
 
   const setStatus = async (status) => {
+    if (!popup) return;
+
     const key = `${popup.day}-${popup.time}`;
     const clickedDate = new Date(weekDates[popup.day]);
     const dateString = clickedDate.toISOString().split("T")[0];
     const hour = 8 + popup.time;
     const heureDebut = `${hour.toString().padStart(2, '0')}:00:00`;
-  
+    const token = localStorage.getItem("token");
+
     try {
-      const token = localStorage.getItem("token");
-      if (status === 'clear') {
-        await fetch("http://127.0.0.1:8000/api/rendez-vous/plages_horaires/delete_and_cancel/", {
+      const isEmptySlot = !appointments[key];
+
+      // CREATE if it's a new empty slot
+      if (isEmptySlot && status === 'grise') {
+        const res = await fetch("http://127.0.0.1:8000/api/rendez-vous/plages_horaires/create/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            date: dateString,
+            heure_debut: heureDebut,
+            heure_fin: `${hour + 1}:00:00`,
+            statut: status
+          }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          console.error("Backend error (create):", err);
+        } else {
+          setAppointments((prev) => ({
+            ...prev,
+            [key]: status,
+          }));
+        }
+
+      } else if (status === 'clear') {
+        // DELETE/CANCEL
+        const res = await fetch("http://127.0.0.1:8000/api/rendez-vous/plages_horaires/delete_and_cancel/", {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -68,15 +99,23 @@ const Calendar = () => {
           },
           body: JSON.stringify({
             date: dateString,
-            heure_debut: heureDebut
+            heure_debut: heureDebut,
+            statut: status
           }),
         });
-      
-        setAppointments((prev) => ({
-          ...prev,
-          [key]: undefined,
-        }));
+
+        if (!res.ok) {
+          const err = await res.json();
+          console.error("Backend error (delete):", err);
+        } else {
+          setAppointments((prev) => ({
+            ...prev,
+            [key]: undefined,
+          }));
+        }
+
       } else {
+        // UPDATE
         const res = await fetch("http://127.0.0.1:8000/api/rendez-vous/plages_horaires/update/", {
           method: "PATCH",
           headers: {
@@ -89,10 +128,10 @@ const Calendar = () => {
             statut: status
           }),
         });
-      
+
         if (!res.ok) {
           const err = await res.json();
-          console.error("Backend error:", err);
+          console.error("Backend error (update):", err);
         } else {
           setAppointments((prev) => ({
             ...prev,
@@ -100,24 +139,12 @@ const Calendar = () => {
           }));
         }
       }
-      
-  
-      if (!res.ok) {
-        const err = await res.json();
-        console.error("Backend error:", err);
-      } else {
-        setAppointments((prev) => ({
-          ...prev,
-          [key]: status === 'clear' ? undefined : status,
-        }));
-      }
     } catch (err) {
       console.error("Request failed:", err);
     }
-  
+
     setPopup(null);
   };
-  
 
   const getCellClass = (day, time) => {
     const key = `${day}-${time}`;
@@ -235,13 +262,18 @@ const Calendar = () => {
 
         {popup && (
           <div className="popup" style={{ top: popup.y + 30, left: popup.x }}>
-            <div onClick={() => setStatus('reserve')} className="popup-option reserved">Réservée</div>
-            <div onClick={() => setStatus('termine')} className="popup-option done">Terminée</div>
-            <div onClick={() => setStatus('grise')} className="popup-option lunch">Grisée</div>
-            <div onClick={() => setStatus('clear')} className="popup-option">Effacer</div>
+            {appointments[`${popup.day}-${popup.time}`] ? (
+              <>
+                <div onClick={() => setStatus('reserve')} className="popup-option reserved">Réservée</div>
+                <div onClick={() => setStatus('termine')} className="popup-option done">Terminée</div>
+                <div onClick={() => setStatus('grise')} className="popup-option lunch">Grisée</div>
+                <div onClick={() => setStatus('clear')} className="popup-option">Effacer</div>
+              </>
+            ) : (
+              <div onClick={() => setStatus('grise')} className="popup-option lunch">Grisée</div>
+            )}
           </div>
         )}
-
 
       </div>
     </div>
