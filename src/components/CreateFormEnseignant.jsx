@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { IoArrowBackCircle } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 import "./CreateForm.css";
 
 function CreateFormEnseignant() {
@@ -239,7 +239,7 @@ function CreateFormEnseignant() {
       }
 
       const response = await fetch(
-        "http://127.0.0.1:8000/api/dossier-medicale/dossiers/enseignants/",
+        "http://127.0.0.1:8000/api/dossier-medicale/dossiers/enseignants/create/",
         {
           method: "POST",
           headers: {

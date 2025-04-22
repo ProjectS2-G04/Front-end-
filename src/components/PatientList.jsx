@@ -11,7 +11,7 @@ function PatientList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('etudiants');
+  const [activeTab, setActiveTab] = useState(null); 
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
@@ -116,7 +116,6 @@ const [name , setname ]= useState("")
       console.error('Unknown user role:', userRole);
     }
   };
-  
 
   const handleAppointmentClick = (patientId) => {
     navigate('/Appointment', { state: { idPatient: patientId } });  
@@ -205,9 +204,7 @@ const [name , setname ]= useState("")
               </div>
               <button
                 className="btn-rdv"
-                onClick={() => handleAppointmentClick(selectedPatient.id)
-                  
-                }
+                onClick={() => handleAppointmentClick(selectedPatient.id)}
               >
                 <BsCalendarPlusFill className="BsCalendarPlusFill" /> <p>Ajouter un rendez-vous</p>
               </button>

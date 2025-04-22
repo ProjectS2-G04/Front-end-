@@ -1,15 +1,11 @@
-
-import React, { useRef, useState, useEffect } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
 import { IoArrowBackCircle } from "react-icons/io5";
+import { useNavigate, useParams } from "react-router-dom";
 import "./CreateForm.css";
 
 function ReadOnlyStudent() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  const activeTab = location.state?.activeTab || "etudiants";
-
   const [formData, setFormData] = useState({
     numero_dossier: "",
     nom: "",
@@ -46,17 +42,18 @@ function ReadOnlyStudent() {
     interventions_chirurgicales: "",
     reactions_allergiques: "",
   });
-
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem("token");
         if (!token) {
-          throw new Error("No authentication token found. Please log in.");
+          throw new Error("Veuillez vous connecter pour accéder au dossier.");
         }
 
         const res = await fetch(`http://127.0.0.1:8000/api/dossier-medicale/dossiers/${id}/`, {
@@ -67,9 +64,10 @@ function ReadOnlyStudent() {
         });
 
         if (!res.ok) {
-          if (res.status === 404) throw new Error("Dossier not found.");
-          if (res.status === 403) throw new Error("Access forbidden.");
-          throw new Error(`Failed to fetch data: ${res.status}`);
+          const errorData = await res.json();
+          if (res.status === 404) throw new Error("Dossier non trouvé.");
+          if (res.status === 403) throw new Error("Accès interdit.");
+          throw new Error(errorData.error || `Échec de la récupération des données: ${res.status}`);
         }
 
         const data = await res.json();
@@ -123,9 +121,11 @@ function ReadOnlyStudent() {
           photoUrl = `http://127.0.0.1:8000${photoUrl}`;
         }
         setImagePreview(photoUrl);
+        setLoading(false);
       } catch (err) {
         console.error("Erreur de chargement:", err);
-        setError(err.message || "Failed to load dossier.");
+        setError(err.message || "Échec du chargement du dossier.");
+        setLoading(false);
       }
     };
 
@@ -133,9 +133,19 @@ function ReadOnlyStudent() {
   }, [id]);
 
   const handleBack = () => {
-    console.log("Navigating back with activeTab:", activeTab);
-    navigate("/PatientList", { state: { activeTab } });
+    console.log("Navigating back to PatientSideBare");
+    navigate("/Notification");
   };
+
+  if (loading) {
+    return (
+      <div className="patient-container full-page">
+        <div className="container-infosdocs">
+          <p>Chargement...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (

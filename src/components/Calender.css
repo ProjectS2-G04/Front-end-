@@ -113,7 +113,7 @@
   
   .lunch {
     background-color: #f1f1f1; /* a different grey shade for lunch */
-    pointer-events: none; /* optional: prevents clicking */
+    /* pointer-events: none; optional: prevents clicking */
     color: #aaa;
   }
   .past {
