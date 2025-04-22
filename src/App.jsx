@@ -35,12 +35,12 @@ import Calendar from './components/Calender';
 import CancelAppointment from './components/CancelAppointment.jsx';
 import PatientSideBare from './components/PatientSideBare.jsx';
 import TAkeAppointment from './components/TAkeAppointment.jsx';
+import PatientListeDemandes from './components/PatientListeDemandes.jsx';
 
 
 const App = () => {
   return (
     <>
-    
       
       <Routes>
         <Route path="/" element={<SeConnecter />} />
@@ -83,9 +83,8 @@ const App = () => {
         <Route path="/CancelAppointment" element={<CancelAppointment />} />
         <Route path="/TAkeAppointment" element={<TAkeAppointment />} />
         <Route path="/PatientSideBare" element={<PatientSideBare />} />
+        <Route path="/PatientListeDemandes" element={<PatientListeDemandes />} />
        
-
-
       </Routes>
     </>
   );

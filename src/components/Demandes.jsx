@@ -115,7 +115,7 @@ function Demandes() {
       <SideBareDocs
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        disableDropdown={false} // Added props
+        disableDropdown={false} 
       />
       <div className="content">
         {/* Colonne des demandes en attente */}
@@ -151,8 +151,9 @@ function Demandes() {
                   e.preventDefault();
                   handleDelete(annul.id);
                 }}>
-                  Supprimer
-                </a>
+                  Supprimer 
+                </a> 
+                {/* corrct this later */}
               </div>
             </div>
           ))}
