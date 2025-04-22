@@ -50,38 +50,98 @@ const Calendar = () => {
     });
   };
 
-  const setStatus = (status) => {
+  const setStatus = async (status) => {
     const key = `${popup.day}-${popup.time}`;
-    setAppointments((prev) => ({
-      ...prev,
-      [key]: status === 'clear' ? undefined : status,
-    }));
+    const clickedDate = new Date(weekDates[popup.day]);
+    const dateString = clickedDate.toISOString().split("T")[0];
+    const hour = 8 + popup.time;
+    const heureDebut = `${hour.toString().padStart(2, '0')}:00:00`;
+  
+    try {
+      const token = localStorage.getItem("token");
+      if (status === 'clear') {
+        await fetch("http://127.0.0.1:8000/api/rendez-vous/plages_horaires/delete_and_cancel/", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            date: dateString,
+            heure_debut: heureDebut
+          }),
+        });
+      
+        setAppointments((prev) => ({
+          ...prev,
+          [key]: undefined,
+        }));
+      } else {
+        const res = await fetch("http://127.0.0.1:8000/api/rendez-vous/plages_horaires/update/", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            date: dateString,
+            heure_debut: heureDebut,
+            statut: status
+          }),
+        });
+      
+        if (!res.ok) {
+          const err = await res.json();
+          console.error("Backend error:", err);
+        } else {
+          setAppointments((prev) => ({
+            ...prev,
+            [key]: status,
+          }));
+        }
+      }
+      
+  
+      if (!res.ok) {
+        const err = await res.json();
+        console.error("Backend error:", err);
+      } else {
+        setAppointments((prev) => ({
+          ...prev,
+          [key]: status === 'clear' ? undefined : status,
+        }));
+      }
+    } catch (err) {
+      console.error("Request failed:", err);
+    }
+  
     setPopup(null);
   };
+  
 
   const getCellClass = (day, time) => {
     const key = `${day}-${time}`;
     const status = appointments[key];
-  
-    if (status === 'termine') return 'done';
-    if (status === 'reserve') return 'reserved';
-    if (status === 'grise') return 'lunch';
-  
-    // Handle lunch and weekend
+    if (status) {
+      if (status === 'termine') return 'done';
+      if (status === 'reserve') return 'reserved';
+      if (status === 'grise') return 'lunch';
+    }
+
     if (time === 4) return 'lunch';
     if (day === 5 || day === 6) return 'weekend';
-  
+
     const clickedDate = new Date(weekDates[day]);
     clickedDate.setHours(time + 8);
     if (clickedDate < new Date()) return 'past';
-  
+
     return '';
   };
-        
+
 
   const fetchPlagesHoraires = async (startDate, endDate) => {
     try {
-      const token = localStorage.getItem("token"); 
+      const token = localStorage.getItem("token");
       const res = await fetch(`http://127.0.0.1:8000/api/rendez-vous/plages_horaires/?start=${startDate}&end=${endDate}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +150,7 @@ const Calendar = () => {
       });
       console.log("Fetching plages horaires from:", `/api/rendez-vous/plages-horaires?start=${startDate}&end=${endDate}`);
 
-      const text = await res.text(); 
+      const text = await res.text();
       console.log("Raw response:", text);
 
       return JSON.parse(text);
@@ -136,6 +196,7 @@ const Calendar = () => {
         <div className="legend">
           <div><span className="box reserved"></span> Réservée</div>
           <div><span className="box done"></span> Terminée</div>
+          <div><span className="box lunch"></span> Grisée</div>
           <div><span className="box weekend"></span> hors travail</div>
         </div>
         <div className="calendar-header">
@@ -173,15 +234,15 @@ const Calendar = () => {
         </table>
 
         {popup && (
-          <div
-            className="popup"
-            style={{ top: popup.y + 30, left: popup.x }}
-          >
-            <div onClick={() => setStatus('réservée')} className="popup-option reserved">Réservée</div>
-            <div onClick={() => setStatus('terminée')} className="popup-option done">Terminée</div>
+          <div className="popup" style={{ top: popup.y + 30, left: popup.x }}>
+            <div onClick={() => setStatus('reserve')} className="popup-option reserved">Réservée</div>
+            <div onClick={() => setStatus('termine')} className="popup-option done">Terminée</div>
+            <div onClick={() => setStatus('grise')} className="popup-option lunch">Grisée</div>
             <div onClick={() => setStatus('clear')} className="popup-option">Effacer</div>
           </div>
         )}
+
+
       </div>
     </div>
   );
