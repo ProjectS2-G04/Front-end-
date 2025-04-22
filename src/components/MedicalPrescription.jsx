@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 import './MedicalPrescription.css';
 import SideBareDocs from './SideBareDocs';
+import axios from 'axios';
+
+import { useLocation, useNavigate ,  useParams } from 'react-router-dom';
 
 function MedicalPrescription() {
+  const { id } = useParams();
+  const location = useLocation();
+  const nom = location.state?.nom;
+  
+  const prenom = location.state?.prenom;
+
   const [formData, setFormData] = useState({
-    lastName: '',
-    firstName: '',
+    lastName: nom,
+    firstName: prenom,
     age: '',
     date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
     medications: [
@@ -16,6 +25,7 @@ function MedicalPrescription() {
     newDosage: '',
     newDuration: ''
   });
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -37,8 +47,91 @@ function MedicalPrescription() {
       }));
     }
   };
-
   const handlePrint = () => window.print();
+
+
+  const handleSave = async () => {
+    if (!id) {
+      alert("Aucun patient fourni !");
+      return;
+    }
+  
+    // Ajout du dernier médicament saisi s'il est complet
+    let medicationsToSend = [...formData.medications];
+    if (formData.newMedication && formData.newDosage && formData.newDuration) {
+      medicationsToSend.push({
+        name: formData.newMedication,
+        dosage: formData.newDosage,
+        duration: formData.newDuration
+      });
+    }
+  
+    const data = {
+      age: formData.age,
+      medicaments: medicationsToSend.map(med => ({
+        nom: med.name,
+        posologie: med.dosage,
+        duree: med.duration
+      }))
+    };
+  
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/rendez-vous/create-ordonnance/${id}/`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+  
+      alert("Ordonnance créée avec succès !");
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+      alert("Erreur lors de la création de l'ordonnance.");
+    }
+  };
+  
+  // const handleSave = async () => {
+   
+    
+  //   if (!id) {
+  //     alert("Aucun dossier ID fourni !");
+  //     return;
+  //   }
+  
+  //   const data = {
+  //     age: formData.age,
+  //     medicaments: formData.medications.map(med => ({
+  //       nom: med.name,
+  //       posologie: med.dosage,
+  //       duree: med.duration
+  //     }))
+  //   };
+  
+  //   try {
+  //     const token = localStorage.getItem('token'); // or wherever you store your auth token
+  //     const response = await axios.post(
+  //       `http://127.0.0.1:8000/api/rendez-vous/create-ordonnance/${id}/`,
+  //       data,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`
+  //         }
+  //       }
+  //     );
+  
+  //     alert("Ordonnance créée avec succès !");
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert("Erreur lors de la création de l'ordonnance.");
+  //   }
+  // };
+
 
   return (
     <div className="medeciel-container">
@@ -50,7 +143,7 @@ function MedicalPrescription() {
           <div className="form-grid">
             <div className="form-group">
               <label>Nom</label>
-              <input name="lastName" value={formData.lastName} onChange={handleInputChange} />
+              <input name="lastName" value={formData.lastName} disabled />
             </div>
             <div className="form-group">
               <label>Âge</label>
@@ -58,7 +151,7 @@ function MedicalPrescription() {
             </div>
             <div className="form-group">
               <label>Prénom</label>
-              <input name="firstName" value={formData.firstName} onChange={handleInputChange} />
+              <input name="firstName" value={formData.firstName} readOnly />
             </div>
             <div className="form-group">
               <label>Date</label>
@@ -105,7 +198,7 @@ function MedicalPrescription() {
           </div>
 
           <div className="form-footer">
-            <button className="save-btn">Enregistrer</button>
+           <button className="save-btn" onClick={handleSave}>Enregistrer</button>
             <button className="print-btn" onClick={handlePrint}>Imprimer</button>
           </div>
         </main>

@@ -72,12 +72,10 @@ const App = () => {
         <Route path="/dossier/:id/ats" element={<ReadOnlyATS />} />
         <Route path="/Demandes" element={<Demandes />} />
         <Route path="/Appointment" element={<Appointment />} />
-        <Route path="/PrescriptionList/:id/" element={<PrescriptionList />} />
-        <Route path="/MedicalPrescription" element={<MedicalPrescription />} />
-        <Route path="/PrescriptionPrint/:id/" element={<PrescriptionPrint />} />
-        <Route path="/PrescriptionList" element={<PrescriptionList />} />
+        <Route path="/PrescriptionList/:id" element={<PrescriptionList />} />
+        <Route path="/MedicalPrescription/:id" element={<MedicalPrescription />} />
+        <Route path="/PrescriptionPrint/:id" element={<PrescriptionPrint />} />
         <Route path="/PrescriptionListAssistant/:id/" element={<PrescriptionListAssistant />} />
-        <Route path="/MedicalPrescription" element={<MedicalPrescription />} />
         <Route path="/PrescriptionPrint" element={<PrescriptionPrint />} />
         <Route path="/Calendar" element={<Calendar />} />
         <Route path="/CancelAppointment" element={<CancelAppointment />} />

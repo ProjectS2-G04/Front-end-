@@ -78,11 +78,12 @@ function PatientList() {
     );
   });
 
+  
   const handleDetailsClick = (patient) => {
     console.log('Patient:', patient);
     const role = getPatientRole(patient);
     const newActiveTab = role;
-
+    
     setSelectedPatient({
       id: patient?.id || '',
       nom: patient?.nom || '',
@@ -97,56 +98,18 @@ function PatientList() {
     setShowModal(true);
   };
 
-  // const handleConsultDossier = async () => {
-  //   if (!selectedPatient) return;
-
-  //   try {
-  //     const token = localStorage.getItem('token');
-  //     if (!token) {
-  //       throw new Error('No authentication token found.');
-  //     }
-
-  //     const response = await fetch(`http://127.0.0.1:8000/api/dossier-medicale/dossiers/${selectedPatient.id}/`, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error(`Failed to fetch dossier: ${response.status}`);
-  //     }
-
-  //     const data = await response.json();
-  //     let rolePath;
-  //     if (data.Filiere) {
-  //       rolePath = 'student';
-  //     } else if (data.grade && data.specialite) {
-  //       rolePath = 'teacher';
-  //     } else if (data.grade) {
-  //       rolePath = 'ats';
-  //     } else {
-  //       throw new Error('Unknown role');
-  //     }
-
-  //     console.log('Navigating to:', `/dossier/${selectedPatient.id}/${rolePath}`, 'with state:', { activeTab: selectedPatient.activeTab });
-  //     navigate(`/dossier/${selectedPatient.id}/${rolePath}`, { state: { activeTab: selectedPatient.activeTab } });
-  //   } catch (err) {
-  //     console.error('Error fetching dossier:', err);
-  //     setError(err.message || 'Failed to load dossier. Please try again.');
-  //   }
-  // };
-
-  const handleConsultationClick = (patientId) => {
+const [name , setname ]= useState("")
+  const handleConsultationClick = (patientId, nom, prenom) => {
     const userRole = localStorage.getItem('role');
-  
+    
     if (!userRole) {
       console.error('User role not found. Please log in.');
       return;
     }
   
     if (userRole === 'DOCTOR') {
-      navigate(`/PrescriptionList/${patientId}`);
+      navigate(`/PrescriptionList/${patientId}`, { state: { nom: nom , prenom : prenom } });
+      
     } else if (userRole === 'ASSISTANT') {
       navigate(`/PrescriptionListAssistant/${patientId}`);
     } else {
@@ -230,7 +193,7 @@ function PatientList() {
               </div>
               <button
   className="btn-consultation"
-  onClick={() => handleConsultationClick(selectedPatient.id)}
+  onClick={() => handleConsultationClick(selectedPatient.id, selectedPatient.nom, selectedPatient.prenom)}
 >
   <SiGoogledocs className="SiGoogledocs" /> <p>Consultation</p>
 </button>
