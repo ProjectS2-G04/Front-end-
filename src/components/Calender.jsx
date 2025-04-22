@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Calender.css';
 import SideBareDocs from './SideBareDocs';
 
@@ -12,7 +12,7 @@ const dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi",
 const getWeekDates = (startDate) => {
   const week = [];
   const start = new Date(startDate);
-  start.setDate(start.getDate() - start.getDay()); // start on Sunday
+  start.setDate(start.getDate() - start.getDay());
   for (let i = 0; i < 7; i++) {
     const day = new Date(start);
     day.setDate(start.getDate() + i);
@@ -35,12 +35,12 @@ const Calendar = () => {
     // Check if the clicked date and time is in the past
     const clickedDate = new Date(weekDates[day]);
     clickedDate.setHours(timeIndex + 8); // Set the time (8am to 5pm)
-  
+
     // If clicked date and time are in the past, do nothing
     if (clickedDate < new Date()) {
       return;
     }
-  
+
     const rect = event.target.getBoundingClientRect();
     setPopup({
       x: rect.left + window.scrollX,
@@ -63,32 +63,74 @@ const Calendar = () => {
     const key = `${day}-${time}`;
     const status = appointments[key];
   
-    // Handle weekend and lunch slots
-    if (status === 'terminée') return 'done';
-    if (status === 'réservée') return 'reserved';
-    if (time === 4) return 'lunch'; // Lunch break (12-1)
+    if (status === 'termine') return 'done';
+    if (status === 'reserve') return 'reserved';
+    if (status === 'grise') return 'lunch';
   
-    // Weekends (Friday = 5, Saturday = 6)
+    // Handle lunch and weekend
+    if (time === 4) return 'lunch';
     if (day === 5 || day === 6) return 'weekend';
   
-    // Handle past days and times
     const clickedDate = new Date(weekDates[day]);
-    clickedDate.setHours(time + 8); // Set the time (8am to 5pm)
-  
-    // Disable past days (grey out the entire day)
-    if (clickedDate < new Date()) {
-      return 'past'; // Past day or past time slot
-    }
+    clickedDate.setHours(time + 8);
+    if (clickedDate < new Date()) return 'past';
   
     return '';
   };
+        
+
+  const fetchPlagesHoraires = async (startDate, endDate) => {
+    try {
+      const token = localStorage.getItem("token"); 
+      const res = await fetch(`http://127.0.0.1:8000/api/rendez-vous/plages_horaires/?start=${startDate}&end=${endDate}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      console.log("Fetching plages horaires from:", `/api/rendez-vous/plages-horaires?start=${startDate}&end=${endDate}`);
+
+      const text = await res.text(); 
+      console.log("Raw response:", text);
+
+      return JSON.parse(text);
+    } catch (error) {
+      console.error("Failed to fetch plages horaires:", error);
+      return [];
+    }
+  };
+
+
+  useEffect(() => {
+    const loadAppointments = async () => {
+      const start = weekDates[0].toISOString().split("T")[0];
+      const end = weekDates[6].toISOString().split("T")[0];
+      const data = await fetchPlagesHoraires(start, end);
+
+      const newAppointments = {};
+
+      data.forEach(plage => {
+        const date = new Date(plage.date);
+        const day = date.getDay();
+        const startHour = parseInt(plage.heure_debut.split(":")[0]);
+        const timeIndex = startHour - 8;
+
+        const key = `${day}-${timeIndex}`;
+        newAppointments[key] = plage.statut;
+      });
+
+      setAppointments(newAppointments);
+    };
+
+    loadAppointments();
+  }, [weekOffset]);
 
   return (
     <div className="calendar-container">
       <SideBareDocs
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        disableDropdown={false} // Added props
+        disableDropdown={false}
       />
       <div className="calender-wrapper">
         <div className="legend">
@@ -144,5 +186,7 @@ const Calendar = () => {
     </div>
   );
 };
+
+
 
 export default Calendar;
