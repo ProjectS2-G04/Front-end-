@@ -50,18 +50,17 @@ const SeConnecter = () => {
       }
 
       const data = await response.json();
-      console.log('Login response:', data); // Debug API response
+      console.log('Login response:', data); 
+      
 
-      // Store tokens and user info
       localStorage.setItem('token', data.access);
       localStorage.setItem('refresh_token', data.refresh);
       localStorage.setItem('role', data.role || 'PATIENT');
-      localStorage.setItem('sub_role', data.sub_role || 'student'); // Default to 'student' for patient
+      localStorage.setItem('sub_role', data.sub_role || 'student'); 
       localStorage.setItem('email', data.email);
       localStorage.setItem('name', `${data.first_name} ${data.last_name}`);
       localStorage.setItem('image', data.image || '');
 
-      // Debug localStorage
       console.log('localStorage after login:', {
         token: localStorage.getItem('token'),
         sub_role: localStorage.getItem('sub_role'),
@@ -71,7 +70,6 @@ const SeConnecter = () => {
         image: localStorage.getItem('image'),
       });
 
-      // Redirect based on role
       switch (data.role) {
         case 'DOCTOR':
           navigate('/PatientList');

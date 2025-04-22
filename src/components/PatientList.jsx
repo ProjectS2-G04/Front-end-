@@ -11,7 +11,7 @@ function PatientList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState(null); // Changed to null
+  const [activeTab, setActiveTab] = useState(null); 
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
