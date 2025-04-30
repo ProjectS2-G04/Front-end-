@@ -1,14 +1,14 @@
-import React, { useRef, useState, useEffect } from "react";
-import { IoArrowBackCircle } from 'react-icons/io5';
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { IoArrowBackCircle } from "react-icons/io5";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./CreateForm.css";
 
 function CreateFormATS() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const patientId = location.state?.patientId;
 
-  
   const [formData, setFormData] = useState({
-    numero_dossier: "",
     nom: "",
     prenom: "",
     date_naissance: "",
@@ -16,9 +16,10 @@ function CreateFormATS() {
     adresse: "",
     numero_telephone: "",
     email: "",
-    service: "",
     situation_familiale: "",
+    admission_etablissement: "Oui",
     grade: "",
+    service: "",
     numero_securite_sociale: "",
     groupe_sanguin: "",
     sexe: "",
@@ -36,22 +37,64 @@ function CreateFormATS() {
     nombre_boites_autre: "",
     ancien_fumeur: "Non",
     nombre_boites_fumeur: "",
+    age_premiere_prise: "",
     affections_congenitales: "",
     maladies_generales: "",
     interventions_chirurgicales: "",
     reactions_allergiques: "",
-    admission_etablissement: "Oui",
   });
 
-  // Validation states
+  const [photo, setPhoto] = useState(null);
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [secuError, setSecuError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
-
-  // Photo upload
+  const [fetchError, setFetchError] = useState(null);
   const fileInputRef = useRef(null);
   const [imagePreview, setImagePreview] = useState(null);
+
+  // Fetch patient data to prefill form
+  useEffect(() => {
+    if (patientId) {
+      const fetchPatientData = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            throw new Error("No authentication token found");
+          }
+
+          const response = await fetch("http://127.0.0.1:8000/api/groups/patient/", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          const patient = data.members?.find(p => p.id === patientId);
+          if (patient) {
+            setFormData(prev => ({
+              ...prev,
+              nom: patient.last_name || "",
+              prenom: patient.first_name || "",
+              email: patient.email || "",
+            }));
+          } else {
+            setFetchError("Patient not found");
+          }
+        } catch (error) {
+          console.error("Error fetching patient data:", error);
+          setFetchError("Failed to load patient data");
+        }
+      };
+
+      fetchPatientData();
+    }
+  }, [patientId]);
 
   const handleImageClick = () => {
     fileInputRef.current.click();
@@ -60,13 +103,13 @@ function CreateFormATS() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setPhoto(file);
       const reader = new FileReader();
       reader.onloadend = () => setImagePreview(reader.result);
       reader.readAsDataURL(file);
     }
   };
 
-  // IMC calculation
   useEffect(() => {
     const t = parseFloat(formData.taille);
     const p = parseFloat(formData.poids);
@@ -108,13 +151,11 @@ function CreateFormATS() {
     }
   }, [formData.taille, formData.poids, formData.sexe]);
 
-  // Input handling
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Validation
   const validatePhone = (value) => {
     const phoneRegex = /^0[5-7][0-9]{8}$/;
     setFormData((prev) => ({ ...prev, numero_telephone: value }));
@@ -135,7 +176,6 @@ function CreateFormATS() {
     }
   };
 
-  // Tobacco radio buttons
   const handleRadioChange = (name, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -146,10 +186,15 @@ function CreateFormATS() {
          name === "prise_autre" ? "nombre_boites_autre" : "" ||
          name === "ancien_fumeur" ? "nombre_boites_fumeur" : ""]: "",
       }),
+      ...(value === "Non" &&
+      prev.fumeur === "Non" &&
+      prev.chiqueur === "Non" &&
+      prev.prise_autre === "Non" &&
+      prev.ancien_fumeur === "Non" &&
+      name !== "ancien_fumeur" ? { age_premiere_prise: "" } : {}),
     }));
   };
 
-  // Textarea auto-resize
   const textareasRef = useRef([]);
   const handleInput = (e, index) => {
     const { name, value } = e.target;
@@ -161,7 +206,6 @@ function CreateFormATS() {
     }
   };
 
-  // Wilayas
   const wilayas = [
     { numero: "01", nom: "Adrar" },
     { numero: "02", nom: "Chlef" },
@@ -223,7 +267,6 @@ function CreateFormATS() {
     { numero: "58", nom: "El Menia" },
   ];
 
-  // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -235,9 +278,9 @@ function CreateFormATS() {
       "adresse",
       "numero_telephone",
       "email",
-      "service",
       "situation_familiale",
       "grade",
+      "service",
       "numero_securite_sociale",
       "groupe_sanguin",
       "sexe",
@@ -263,24 +306,33 @@ function CreateFormATS() {
 
     setFieldErrors({});
 
-    const submissionData = {
-      ...formData,
-      taille: formData.taille ? parseFloat(formData.taille) : null,
-      poids: formData.poids ? parseFloat(formData.poids) : null,
-      frequence_cardiaque: formData.frequence_cardiaque ? parseFloat(formData.frequence_cardiaque) : null,
-      pression_arterielle: formData.pression_arterielle || null,
-      nombre_cigarettes: formData.fumeur === "Oui" && formData.nombre_cigarettes ? parseInt(formData.nombre_cigarettes) : null,
-      nombre_boites_chique: formData.chiqueur === "Oui" && formData.nombre_boites_chique ? parseInt(formData.nombre_boites_chique) : null,
-      nombre_boites_autre: formData.prise_autre === "Oui" && formData.nombre_boites_autre ? parseInt(formData.nombre_boites_autre) : null,
-      nombre_boites_fumeur: formData.ancien_fumeur === "Oui" && formData.nombre_boites_fumeur ? parseInt(formData.nombre_boites_fumeur) : null,
-      fumeur: formData.fumeur === "Oui",
-      chiqueur: formData.chiqueur === "Oui",
-      prise_autre: formData.prise_autre === "Oui",
-      ancien_fumeur: formData.ancien_fumeur === "Oui",
-      admission_etablissement: "Oui",
-    };
+    const submissionData = new FormData();
+    submissionData.append("user", patientId || "");
+    Object.entries(formData).forEach(([key, value]) => {
+      submissionData.append(key, value);
+    });
+    if (photo) {
+      submissionData.append("photo", photo);
+    }
 
-    console.log("Submitting data:", submissionData);
+    submissionData.set("taille", formData.taille ? parseFloat(formData.taille) : "");
+    submissionData.set("poids", formData.poids ? parseFloat(formData.poids) : "");
+    submissionData.set("imc", formData.imc ? parseFloat(formData.imc) : "");
+    submissionData.set("categorie_imc", formData.categorie_imc || "");
+    submissionData.set("frequence_cardiaque", formData.frequence_cardiaque ? parseFloat(formData.frequence_cardiaque) : "");
+    submissionData.set("pression_arterielle", formData.pression_arterielle || "");
+    submissionData.set("nombre_cigarettes", formData.fumeur === "Oui" && formData.nombre_cigarettes ? parseInt(formData.nombre_cigarettes) : "");
+    submissionData.set("nombre_boites_chique", formData.chiqueur === "Oui" && formData.nombre_boites_chique ? parseInt(formData.nombre_boites_chique) : "");
+    submissionData.set("nombre_boites_autre", formData.prise_autre === "Oui" && formData.nombre_boites_autre ? parseInt(formData.nombre_boites_autre) : "");
+    submissionData.set("nombre_boites_fumeur", formData.ancien_fumeur === "Oui" && formData.nombre_boites_fumeur ? parseInt(formData.nombre_boites_fumeur) : "");
+    submissionData.set("age_premiere_prise", formData.age_premiere_prise ? parseInt(formData.age_premiere_prise) : "");
+    submissionData.set("fumeur", formData.fumeur === "Oui" ? "true" : "false");
+    submissionData.set("chiqueur", formData.chiqueur === "Oui" ? "true" : "false");
+    submissionData.set("prise_autre", formData.prise_autre === "Oui" ? "true" : "false");
+    submissionData.set("ancien_fumeur", formData.ancien_fumeur === "Oui" ? "true" : "false");
+    submissionData.set("admission_etablissement", formData.admission_etablissement || "Oui");
+
+    console.log("Submitting data:", Object.fromEntries(submissionData));
 
     try {
       const token = localStorage.getItem("token");
@@ -291,10 +343,9 @@ function CreateFormATS() {
       const response = await fetch("http://127.0.0.1:8000/api/dossier-medicale/dossiers/ats/", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(submissionData),
+        body: submissionData,
       });
 
       if (!response.ok) {
@@ -325,8 +376,15 @@ function CreateFormATS() {
     }
   };
 
+  const isAgeDisabled =
+    formData.fumeur === "Non" &&
+    formData.chiqueur === "Non" &&
+    formData.prise_autre === "Non" &&
+    formData.ancien_fumeur === "Non";
+
   return (
     <div className="container-infosdocs">
+      {fetchError && <p className="error-message">{fetchError}</p>}
       <div className="header">
         <div className="republic">
           <h3>République Algérienne Démocratique & Populaire</h3>
@@ -354,7 +412,6 @@ function CreateFormATS() {
       </div>
 
       <div className="form-sections">
-        {/* Informations personnelles */}
         <section className="form-column">
           <h4>Informations personnelles</h4>
           <div className="nom-prenom">
@@ -410,7 +467,8 @@ function CreateFormATS() {
                 type="tel"
                 placeholder="Numéro téléphone"
                 value={formData.numero_telephone}
-                onChange={(e) => validatePhone(e.target.value)}
+                onChange={handleChange}
+                onInput={(e) => validatePhone(e.target.value)}
                 className={phoneError || fieldErrors.numero_telephone ? "input-error" : ""}
               />
               {phoneError && <p className="error-message">{phoneError}</p>}
@@ -420,20 +478,13 @@ function CreateFormATS() {
                 type="email"
                 placeholder="Email"
                 value={formData.email}
-                onChange={(e) => validateEmail(e.target.value)}
+                onChange={handleChange}
+                onInput={(e) => validateEmail(e.target.value)}
                 className={emailError || fieldErrors.email ? "input-error" : ""}
               />
               {emailError && <p className="error-message">{emailError}</p>}
             </div>
           </div>
-          <input
-            type="text"
-            placeholder="Service"
-            name="service"
-            value={formData.service}
-            onChange={handleChange}
-            className={fieldErrors.service ? "input-error" : ""}
-          />
           <select
             name="situation_familiale"
             value={formData.situation_familiale}
@@ -453,6 +504,14 @@ function CreateFormATS() {
             value={formData.grade}
             onChange={handleChange}
             className={fieldErrors.grade ? "input-error" : ""}
+          />
+          <input
+            type="text"
+            placeholder="Service"
+            name="service"
+            value={formData.service}
+            onChange={handleChange}
+            className={fieldErrors.service ? "input-error" : ""}
           />
           <div className="form-field">
             <input
@@ -492,7 +551,6 @@ function CreateFormATS() {
           </select>
         </section>
 
-        {/* Données biométriques + Antécédents personnels */}
         <section className="form-column">
           <h4>Les Données biométriques</h4>
           <div className="nom-prenom">
@@ -623,10 +681,21 @@ function CreateFormATS() {
                 />
               </div>
             ))}
+            <div className="toggle-group">
+              <label>Âge à la première prise</label>
+              <input
+                type="number"
+                placeholder="Âge"
+                name="age_premiere_prise"
+                value={formData.age_premiere_prise}
+                onChange={handleChange}
+                disabled={isAgeDisabled}
+                className={fieldErrors.age_premiere_prise ? "input-error" : ""}
+              />
+            </div>
           </div>
         </section>
 
-        {/* Antécédents médico-chirurgicaux */}
         <section className="form-column">
           <h4>Antécédents médico-chirurgicaux</h4>
           <div className="text-area">
@@ -653,17 +722,17 @@ function CreateFormATS() {
           </div>
         </section>
       </div>
+
       <div className="addreturn">
         <div className="back-container" onClick={() => navigate("/DoctorList")}>
           <IoArrowBackCircle className="IoArrowBackCircle" />
           <span className="back-text">Retour</span>
         </div>
-      <button className="save-button" onClick={handleSubmit}>
+        <button className="save-button" onClick={handleSubmit}>
           Sauvegarder
         </button>
-     </div> 
+      </div>
     </div>
-    
   );
 }
 
