@@ -255,7 +255,7 @@ const handlePaquetsChange = (item, value) => {
     <div className="ml-[250px] p-6">
  <div className="flex justify-between items-center mb-8 px-6 py-4 bg-white shadow-md rounded-md">
   {/* Titre à gauche */}
-  <h1 className="text-3xl font-bold text-teal-700">Dossier Médical Enseignant</h1>
+  <h1 className="text-3xl font-bold text-teal-700">Dossier Médical Ats</h1>
 
   {/* Cercle upload photo stylé à droite */}
 <div className="relative w-32 h-32 rounded-full bg-white border-4 border-transparent bg-clip-padding p-1 shadow-lg"
