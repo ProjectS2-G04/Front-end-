@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
- 
+
 import AdminPage from './components/Admin_Page.jsx';
 import AssistantList from './components/AssistantList';
 import AssitantHome from './components/AssitantHome';
@@ -38,11 +38,13 @@ import TAkeAppointment from './components/TAkeAppointment.jsx';
 import PatientListeDemandes from './components/PatientListeDemandes.jsx';
 
 
+
 const App = () => {
   return (
     <>
+    <CreateFormPatient/>
       
-      <Routes>
+     {/* <Routes>
         <Route path="/" element={<SeConnecter />} />
         <Route path="/home" element={<Doctorhome />} />
         <Route path="/profile" element={<Profile />} />
@@ -85,7 +87,7 @@ const App = () => {
         <Route path="/PatientSideBare" element={<PatientSideBare />} />
         <Route path="/PatientListeDemandes" element={<PatientListeDemandes />} />
        
-      </Routes>
+      </Routes> */}
     </>
   );
 };
