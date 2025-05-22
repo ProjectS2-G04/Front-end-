@@ -43,6 +43,8 @@ const App = () => {
   return (
     <>
     <CreateFormPatient/>
+    <CreateFormEnseignant />
+    <CreateFormATS />
       
      {/* <Routes>
         <Route path="/" element={<SeConnecter />} />
