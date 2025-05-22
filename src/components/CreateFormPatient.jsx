@@ -811,6 +811,15 @@ const handlePaquetsChange = (item, value) => {
     </div>
       )}
     </div>
+<div className="pt-6 px-4">
+  <button
+    type="submit"
+    style={{ backgroundColor: '#79D7BE' }}
+    className="w-1/2 mx-auto py-4 px-6 text-lg font-semibold text-white rounded-xl hover:brightness-90 transition shadow-md block"
+  >
+    Ajouter
+  </button>
+</div>
   </div>
   )
 }
