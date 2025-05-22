@@ -45,6 +45,9 @@ const App = () => {
     <CreateFormPatient/>
     <CreateFormEnseignant />
     <CreateFormATS />
+    <ModifyFormATS />
+    <ModifyFormEnseignant />
+    <ModifyFormEtudiant />
       
      {/* <Routes>
         <Route path="/" element={<SeConnecter />} />
