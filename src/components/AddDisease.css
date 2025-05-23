@@ -1,0 +1,89 @@
+.disease-container {
+    display: flex;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.disease-content {
+    flex: 1;
+    padding: 2rem;
+    margin-left: 14rem;
+}
+
+.disease-card {
+    display: flex;
+    border: 1px solid #4DA1A9;
+    border-radius: 5px;
+    padding: 25px;
+    background-color: white;
+    margin: 0 auto;
+    max-width: 90%;
+    gap: 40px;
+}
+
+.column {
+    flex: 1;
+}
+
+.column h3 {
+    color: #2e5077;
+    font-size: 18px;
+    margin-bottom: 20px;
+    padding: 5px;
+    border: 1px solid #4DA1A9;
+}
+
+.column h4 {
+    font-size: 15px;
+    color: #2e5077;
+    margin: 15px 0 8px 0;
+    font-weight: 600;
+}
+
+.checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    color: #2E5077;
+    gap: 6px;
+    white-space: nowrap;
+    padding: 0;
+    margin: 2px 0;
+    text-align: left;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin: 0;
+    transform: scale(1.1);
+    accent-color: #2E5077;
+}
+
+.maladies {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Ensures left alignment */
+    padding: 0;
+}
+
+
+.disease-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 25px;
+    margin-right: 5%;
+}
+
+.save-btn {
+    background-color: #2E5077;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.save-btn:hover {
+    background-color: #3a6291;
+}

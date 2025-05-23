@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-
 import AdminPage from './components/Admin_Page.jsx';
 import AssistantList from './components/AssistantList';
 import AssitantHome from './components/AssitantHome';
@@ -35,6 +34,12 @@ import Calendar from './components/Calender';
 import CancelAppointment from './components/CancelAppointment.jsx';
 import PatientSideBare from './components/PatientSideBare.jsx';
 import TAkeAppointment from './components/TAkeAppointment.jsx';
+import ConsultationList from './components/ConsultationList.jsx';
+import ConsultationView from './components/ConsultationView.jsx';
+import AddConsultation from './components/AddConsultation.jsx';
+import AddDisease from './components/AddDisease.jsx';
+
+
 
 
 const App = () => {
@@ -43,7 +48,7 @@ const App = () => {
     
       
       <Routes>
-        <Route path="/" element={<SeConnecter />} />
+        <Route path="/seConnecter" element={<SeConnecter />} />
         <Route path="/home" element={<Doctorhome />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/sinscrire" element={<Sinscrire />} />
@@ -83,6 +88,14 @@ const App = () => {
         <Route path="/CancelAppointment" element={<CancelAppointment />} />
         <Route path="/TAkeAppointment" element={<TAkeAppointment />} />
         <Route path="/PatientSideBare" element={<PatientSideBare />} />
+        <Route path="/ConsultationList" element={<ConsultationList />} />
+        <Route path="/AddConsultation" element={<AddConsultation />} />
+        <Route path="/ConsultationView" element={<ConsultationView />} />
+        <Route path="/AddDisease" element={<AddDisease />} />
+
+
+
+
        
 
 
