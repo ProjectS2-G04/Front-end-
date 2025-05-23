@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import './Demandes.css'
+import React, { useState, useEffect } from 'react';
+import './Demandes.css';
 import SideBareDocs from './SideBareDocs';
 import { IoArrowBackCircle } from "react-icons/io5";
-function Demandes() {
 
+function Demandes() {
   const [showModal, setShowModal] = useState(false);
   const [selectedDemande, setSelectedDemande] = useState(null);
   const [modeReport, setModeReport] = useState(false);
   const [nouvelleDate, setNouvelleDate] = useState('');
-
   const [demandesEnAttente, setDemandesEnAttente] = useState([]);
   const [annulations, setAnnulations] = useState([]);
+  const [activeTab, setActiveTab] = useState(null); // Added for SideBareDocs
 
   useEffect(() => {
     fetch('http://127.0.0.1:8000/api/rendez-vous/demandes/rdv/', {
@@ -36,7 +36,7 @@ function Demandes() {
     setSelectedDemande(demande);
     setNouvelleDate(demande.date_demandee);
     setShowModal(true);
-    setModeReport(false); 
+    setModeReport(false);
   };
 
   const closeModal = () => {
@@ -112,8 +112,11 @@ function Demandes() {
 
   return (
     <div className="demandes-annulation">
-      <SideBareDocs />
-
+      <SideBareDocs
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        disableDropdown={false} 
+      />
       <div className="content">
         {/* Colonne des demandes en attente */}
         <div className="column">
@@ -127,7 +130,6 @@ function Demandes() {
                 <p>{demande.motif}</p>
                 <a href="#" className="card-link" onClick={() => openModal(demande)}>Voir la notification</a>
               </div>
-
             </div>
           ))}
         </div>
@@ -146,12 +148,13 @@ function Demandes() {
                   <span className="time"> ({annul.heure})</span>
                 </p>
                 <a href="#" className="card-link" onClick={(e) => {
-                  e.preventDefault(); // Empêche le rechargement de la page
-                  handleDelete(annul.id); // Appelle la fonction de suppression
-                }}
-                >Supprimer</a>
+                  e.preventDefault();
+                  handleDelete(annul.id);
+                }}>
+                  Supprimer 
+                </a> 
+                {/* corrct this later */}
               </div>
-
             </div>
           ))}
         </div>
@@ -160,16 +163,13 @@ function Demandes() {
         <div className="modal-overlay">
           <div className="modal">
             <h2>Détails de la demande</h2>
-
-            <p className='nom'><strong>Nom         :</strong> {selectedDemande.nom}</p>
+            <p className='nom'><strong>Nom :</strong> {selectedDemande.nom}</p>
             <div className="Motifmladie">
-              <p><strong>Motif       :</strong> {selectedDemande.motif}</p>
-              <p><strong>Description :</strong>{selectedDemande.description}</p>
-
+              <p><strong>Motif :</strong> {selectedDemande.motif}</p>
+              <p><strong>Description :</strong> {selectedDemande.description}</p>
               {selectedDemande.date_demandee && (
                 <p><strong>Date choisie :</strong> {selectedDemande.date_demandee}</p>
               )}
-
               {modeReport && (
                 <div className="date-picker">
                   <label>Nouvelle date :</label>
@@ -181,24 +181,20 @@ function Demandes() {
                 </div>
               )}
             </div>
-
             <div className="modal-buttons">
-              <button onClick={closeModal} className='close-button'>< IoArrowBackCircle className='IoArrowBackCircle' /></button>
-              <button onClick={reporterRdv} className='reschedule' >
+              <button onClick={closeModal} className='close-button'><IoArrowBackCircle className='IoArrowBackCircle' /></button>
+              <button onClick={reporterRdv} className='reschedule'>
                 {modeReport ? 'Valider la date' : 'Reporter'}
               </button>
               <button onClick={() => confirmerRdv(selectedDemande.id)} className='confirm'>
                 Confirmer
               </button>
-
             </div>
           </div>
         </div>
       )}
-
     </div>
-
   );
-};
+}
 
 export default Demandes;

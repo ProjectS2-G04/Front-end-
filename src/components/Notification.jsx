@@ -1,6 +1,6 @@
 import React ,{ useState } from 'react'
 import PatientSideBare from './PatientSideBare';
-import './Notification.css'
+import './Notification.css' 
 
 function Notification() {
   const [data, setData] = useState([

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import profileLogo from "../assets/logo.png";
-import profileUser from "../assets/user.png";
 import './profile.css';
 
 const Profile = () => {
@@ -106,7 +105,7 @@ const Profile = () => {
                 navigate('/Assitanthome');
                 break;
             case 'PATIENT':
-                navigate('/Patienthome');
+                navigate('/Notification');
                 break;
             case 'ADMIN':
                 navigate('/Admin_Page');

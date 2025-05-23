@@ -40,7 +40,7 @@ function DoctorList() {
       } else if (activeTab === 'enseignants') {
         url = '/dossiers/enseignants/';
       } else if (activeTab === 'ats') {
-        url = '/dossiers/ats/';
+        url = '/dossiers/fonctionnaires/';
       }
       console.log('Fetching URL:', `http://127.0.0.1:8000/api/dossier-medicale${url}`);
 
