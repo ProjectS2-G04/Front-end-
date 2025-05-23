@@ -1,22 +1,31 @@
-import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import AdminPage from './components/Admin_Page.jsx';
+import Appointment from './components/Appointment';
 import AssistantList from './components/AssistantList';
 import AssitantHome from './components/AssitantHome';
+import Calendar from './components/Calender';
+import CancelAppointment from './components/CancelAppointment.jsx';
 import CreateFormATS from './components/CreateFormATS';
 import CreateFormEnseignant from './components/CreateFormEnseignant';
 import CreateFormPatient from './components/CreateFormPatient';
+import Demandes from './components/Demandes.jsx';
 import Doctorhome from "./components/Doctorhome";
 import DoctorList from './components/DoctorList';
 import Forgot_Password from './components/Forgot_Password';
 import Forgot_Password1 from './components/Forgot_Password1';
 import Forgot_Password2 from './components/Forgot_Password2';
+import MedicalPrescription from './components/MedicalPrescription';
 import ModifyFormATS from './components/ModifyFormATS';
 import ModifyFormEnseignant from './components/ModifyFormEnseignant';
 import ModifyFormEtudiant from './components/ModifyFormEtudiant';
 import Notification from './components/Notification.jsx';
 import PatientList from './components/PatientList.jsx';
+import PatientListeDemandes from './components/PatientListeDemandes.jsx';
+import PatientSideBare from './components/PatientSideBare.jsx';
+import PrescriptionList from './components/PrescriptionList';
+import PrescriptionListAssistant from './components/PrescriptionListAssistant';
+import PrescriptionPrint from './components/PrescriptionPrint';
 import Profile from "./components/profile";
 import ReadOnlyATS from './components/ReadOnlyAts';
 import ReadOnlyStudent from './components/ReadOnlyStudent';
@@ -24,40 +33,25 @@ import ReadOnlyTeacher from './components/ReadOnlyTeacher';
 import SeConnecter from "./components/seConnecter";
 import Signup_User from './components/Signup_User';
 import Sinscrire from "./components/sinscrire";
-import VerifyEmail from './components/VerifyEmail';
-import Demandes from './components/Demandes.jsx';
-import Appointment from './components/Appointment';
-import PrescriptionList from './components/PrescriptionList';
-import PrescriptionListAssistant from './components/PrescriptionListAssistant';
-import MedicalPrescription from './components/MedicalPrescription';
-import PrescriptionPrint from './components/PrescriptionPrint';
-import Calendar from './components/Calender';
-import CancelAppointment from './components/CancelAppointment.jsx';
-import PatientSideBare from './components/PatientSideBare.jsx';
 import TAkeAppointment from './components/TAkeAppointment.jsx';
-import PatientListeDemandes from './components/PatientListeDemandes.jsx';
+import VerifyEmail from './components/VerifyEmail';
 
 
 
 const App = () => {
   return (
     <>
-    <CreateFormPatient/>
-    <CreateFormEnseignant />
-    <CreateFormATS />
-    <ModifyFormATS />
-    <ModifyFormEnseignant />
-    <ModifyFormEtudiant />
-    <ReadOnlyATS />
-   < ReadOnlyTeacher/>
-   <ReadOnlyStudent/>
+
       
-     {/* <Routes>
+     {<Routes>
+      
         <Route path="/" element={<SeConnecter />} />
         <Route path="/home" element={<Doctorhome />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/sinscrire" element={<Sinscrire />} />
         <Route path="/PatientList" element={<PatientList />} />
+        <Route path="/ CreateFormPatient" element={<CreateFormPatient />}/>
+
         <Route path="/verify-email/:uidb64/:token" element={<VerifyEmail />} />
         <Route path="/forgot-password" element={<Forgot_Password />} />
         <Route path="/enter-code" element={<Forgot_Password1 />} />
@@ -95,7 +89,7 @@ const App = () => {
         <Route path="/PatientSideBare" element={<PatientSideBare />} />
         <Route path="/PatientListeDemandes" element={<PatientListeDemandes />} />
        
-      </Routes> */}
+      </Routes> }
     </>
   );
 };
