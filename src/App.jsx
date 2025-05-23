@@ -48,6 +48,9 @@ const App = () => {
     <ModifyFormATS />
     <ModifyFormEnseignant />
     <ModifyFormEtudiant />
+    <ReadOnlyATS />
+   < ReadOnlyTeacher/>
+   <ReadOnlyStudent/>
       
      {/* <Routes>
         <Route path="/" element={<SeConnecter />} />

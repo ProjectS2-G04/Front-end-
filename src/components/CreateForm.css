@@ -15,3 +15,14 @@
   border-color: #2c7a7b; /* plus foncé au focus */
   box-shadow: 0 0 0 3px rgba(56, 178, 172, 0.2); /* ombre douce */
 }
+.readonly-style {
+ padding: 10px 15px;
+  border: 2px solid #79D7BE; /* vert teal */
+  border-radius: 10px;
+  height: 75px;
+  width: 90%;
+  transition: all 0.3s ease-in-out;
+  outline: none;
+ 
+  font-size: 20px;
+}
