@@ -36,7 +36,7 @@ export default function DirectorDashboard() {
   const COLORS = ['#84D8D2', '#F7B3D3'];
 
   return (
-    <div className="flex">
+    <div className="flex  overflow-x-hidden" >
       <Sidebar />
 
       <div className="ml-64 p-6 w-full">

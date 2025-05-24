@@ -41,11 +41,16 @@ import AddDisease from './components/AddDisease.jsx';
 import VerifyEmail from './components/VerifyEmail'; // Assuming you have this component
 import DirectorSideBare from './components/DirectorSideBare.jsx';
 import DirectorDashboard from './components/DirectorDashboard.jsx';
+import ChronicDiseasesStats from './components/Chronic-diseases.jsx';
+import HeartSicks from './components/Heartsicks.jsx'
+import DoctorSideBare from './components/DoctorSideBare.jsx';
 
 const App = () => {
   return (
     <>
-    <DirectorDashboard />
+   
+        
+         
     {/* <Routes>
       <Route path="/" element={<SeConnecter />} />
       <Route path="/home" element={<Doctorhome />} />
@@ -89,6 +94,7 @@ const App = () => {
       <Route path="/AddConsultation" element={<AddConsultation />} />
       <Route path="/ConsultationView" element={<ConsultationView />} />
       <Route path="/AddDisease" element={<AddDisease />} />
+      
     </Routes> */}
     </>
   );
