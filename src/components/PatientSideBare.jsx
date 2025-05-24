@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './PatientSideBare.css';
-import logo from '../assets/logo.png'; 
+import logo from '../assets/logo.png';
 
 const PatientSideBare = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleProfileClick = () => {
     navigate('/profile');
@@ -19,18 +20,23 @@ const PatientSideBare = () => {
   };
 
   const handleViewDossierClick = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+
     const subRole = localStorage.getItem('sub_role')?.toLowerCase();
     const token = localStorage.getItem('token');
 
     if (!token) {
       alert('Veuillez vous connecter pour consulter votre dossier.');
       navigate('/');
+      setIsLoading(false);
       return;
     }
 
     if (!subRole) {
       alert('Impossible de déterminer votre rôle. Veuillez vous reconnecter.');
       navigate('/');
+      setIsLoading(false);
       return;
     }
 
@@ -55,25 +61,29 @@ const PatientSideBare = () => {
       switch (subRole) {
         case 'student':
         case 'etudiant':
-          targetPath = `/ReadOnlyStudent/${dossierId}`;
+          targetPath = `/dossier/${dossierId}/student`;
           break;
         case 'teacher':
         case 'enseignant':
-          targetPath = `/ReadOnlyTeacher/${dossierId}`;
+          targetPath = `/dossier/${dossierId}/teacher`;
           break;
         case 'ats':
         case 'fonctionnaire':
-          targetPath = `/ReadOnlyATS/${dossierId}`;
+          targetPath = `/dossier/${dossierId}/ats`;
           break;
         default:
           alert('Rôle invalide. Veuillez contacter le support.');
+          setIsLoading(false);
           return;
       }
 
       navigate(targetPath);
     } catch (error) {
+      console.error('Erreur lors de la récupération du dossier:', error);
       alert(`Erreur: ${error.message}`);
       navigate('/');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,10 +93,16 @@ const PatientSideBare = () => {
         <img src={logo} alt="Logo" className="Patient-logo" />
       </div>
       <nav className="nav-buttons">
-        <button onClick={handleNotificationClick}>Notification</button>
-        <button onClick={handleListeDemandesClick}>Liste des demandes</button>
-        <button onClick={handleViewDossierClick}>Consulter mon dossier</button>
-        <button className="profile-btn" onClick={handleProfileClick}>
+        <button onClick={handleNotificationClick} disabled={isLoading}>
+          Notification
+        </button>
+        <button onClick={handleListeDemandesClick} disabled={isLoading}>
+          Liste des demandes
+        </button>
+        <button onClick={handleViewDossierClick} disabled={isLoading}>
+          Consulter mon dossier
+        </button>
+        <button className="profile-btn" onClick={handleProfileClick} disabled={isLoading}>
           👤 Mon profil
         </button>
       </nav>
