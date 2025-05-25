@@ -92,3 +92,9 @@ button:hover {
 .enregistrer-button:hover {
   background-color: #1e3a5f;
 }
+
+.error-text {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}

@@ -1,30 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import './ConsultationList.css';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate, useParams } from 'react-router-dom'; 
 import SideBareDocs from './SideBareDocs';
 
 function ConsultationList() {
   const [consultations, setConsultations] = useState([]);
   const navigate = useNavigate();
+  const { id } = useParams(); // get patient_id from URL
 
   useEffect(() => {
-    // Mocking a fetch call here — replace with real API later
     const fetchConsultations = async () => {
-      // Simulate backend data structure
-      const response = [
-        { id: '1', date: '2025-03-03', patient: 'Patient 1' },
-        { id: '2', date: '2025-04-20', patient: 'Patient 2' },
-        { id: '3', date: '2025-10-31', patient: 'Patient 3' },
-        { id: '4', date: '2025-12-02', patient: 'Patient 4' }
-      ];
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/consultation/patient/${id}/`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch consultations");
+        }
 
-      // Sort by date
-      const sorted = response.sort((a, b) => new Date(a.date) - new Date(b.date));
-      setConsultations(sorted);
+        const data = await response.json();
+
+        // Sort by date
+        const sorted = data.sort((a, b) => new Date(a.date) - new Date(b.date));
+        setConsultations(sorted);
+      } catch (error) {
+        console.error("Error fetching consultations:", error);
+      }
     };
 
     fetchConsultations();
-  }, []);
+  }, [id]);
+
 
   return (
     <div className="medeciel-container">
@@ -47,11 +51,10 @@ function ConsultationList() {
                   <span className="consultation-patient">{consultation.patient}</span>
                 </div>
                 <button 
-                  className="view-btn" 
-                  onClick={() => navigate('/ConsultationView')}
-                >
-                  Voir consultation
-                </button>
+                        className="view-btn" 
+                         onClick={() => navigate(`/ConsultationView/${consultation.consultation_id}`)}>
+                              Voir consultation
+                                 </button>
               </div>
             ))}
           </div>
@@ -60,7 +63,7 @@ function ConsultationList() {
           <div className="add-consultation">
             <button 
               className="add-btn" 
-              onClick={() => navigate('/AddConsultation')}
+              onClick={() => navigate(`/AddConsultation/${id}/`)}
             >
               Ajouter une consultation
             </button>

@@ -3,14 +3,19 @@ import './MedicalPrescription.css';
 import SideBareDocs from './SideBareDocs';
 import axios from 'axios';
 
+
+
 import { useLocation, useNavigate ,  useParams } from 'react-router-dom';
 
 function MedicalPrescription() {
-  const { id } = useParams();
+  // const { id } = useParams();
+  const navigate = useNavigate();
   const location = useLocation();
-  const nom = location.state?.nom;
-  
-  const prenom = location.state?.prenom;
+  const nom = location.state?.patientLastName;
+  const prenom = location.state?.patientFirstName;
+  const id = location.state?.consultationId;
+  const [medicationSuggestions, setMedicationSuggestions] = useState([]);
+  const [medicationSearchTimeout, setMedicationSearchTimeout] = useState(null);
 
   const [formData, setFormData] = useState({
     lastName: nom,
@@ -48,13 +53,38 @@ function MedicalPrescription() {
     }
   };
   const handlePrint = () => window.print();
+  const fetchMedicationSuggestions = async (query) => {
+  if (query.length < 3) {
+    setMedicationSuggestions([]);
+    return;
+  }
+
+  try {
+    const response = await axios.get(`https://api.fda.gov/drug/label.json`, {
+      params: {
+        search: `openfda.brand_name:${query}`,
+        limit: 100
+      }
+    });
+
+    const results = response.data.results || [];
+    const names = results
+      .map(item => item.openfda?.brand_name?.[0])
+      .filter(Boolean);
+      
+    // Enlever doublons
+    const uniqueNames = [...new Set(names)];
+
+    setMedicationSuggestions(uniqueNames);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des médicaments :", error);
+    setMedicationSuggestions([]);
+  }
+};
 
 
   const handleSave = async () => {
-    if (!id) {
-      alert("Aucun patient fourni !");
-      return;
-    }
+    
   
     // Ajout du dernier médicament saisi s'il est complet
     let medicationsToSend = [...formData.medications];
@@ -66,74 +96,45 @@ function MedicalPrescription() {
       });
     }
   
-    const data = {
-      age: formData.age,
-      medicaments: medicationsToSend.map(med => ({
+     const payload = {
+    age: Number(formData.age), // Convert to number just in case
+    date: formData.date, // Already in YYYY-MM-DD
+    medicaments: medicationsToSend
+      .filter(med => med.name && med.dosage && med.duration)
+      .map(med => ({
         nom: med.name,
         posologie: med.dosage,
         duree: med.duration
       }))
-    };
-  
+  };
+    console.log("Payload to send:", JSON.stringify(payload, null, 2));
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/rendez-vous/create-ordonnance/${id}/`,
-        data,
+        `http://127.0.0.1:8000/api/rendez-vous/create/${id}/`,
+        payload,
         {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
           }
         }
       );
   
       alert("Ordonnance créée avec succès !");
+      //navigate('/AddConsultation');
       console.log(response.data);
     } catch (error) {
       console.error(error);
-      alert("Erreur lors de la création de l'ordonnance.");
+      if (error.response && error.response.data.message === "Cette consultation a déjà une ordonnance.") {
+  alert("⚠ Cette consultation a déjà une ordonnance.");
+} else {
+  alert("Erreur lors de la création de l'ordonnance.");
+}
+
     }
   };
-  
-  // const handleSave = async () => {
-   
-    
-  //   if (!id) {
-  //     alert("Aucun dossier ID fourni !");
-  //     return;
-  //   }
-  
-  //   const data = {
-  //     age: formData.age,
-  //     medicaments: formData.medications.map(med => ({
-  //       nom: med.name,
-  //       posologie: med.dosage,
-  //       duree: med.duration
-  //     }))
-  //   };
-  
-  //   try {
-  //     const token = localStorage.getItem('token'); // or wherever you store your auth token
-  //     const response = await axios.post(
-  //       `http://127.0.0.1:8000/api/rendez-vous/create-ordonnance/${id}/`,
-  //       data,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`
-  //         }
-  //       }
-  //     );
-  
-  //     alert("Ordonnance créée avec succès !");
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert("Erreur lors de la création de l'ordonnance.");
-  //   }
-  // };
-
-
-  return (
+    return (
     <div className="medeciel-container">
       <div className="app-layout">
         <SideBareDocs />
@@ -175,11 +176,35 @@ function MedicalPrescription() {
 
             <div className="table-row add-row">
               <input
-                type="text"
-                placeholder="Médicament"
-                value={formData.newMedication}
-                onChange={(e) => setFormData({ ...formData, newMedication: e.target.value })}
-              />
+  type="text"
+  placeholder="Médicament"
+  value={formData.newMedication}
+  onChange={(e) => {
+    const value = e.target.value;
+    setFormData({ ...formData, newMedication: value });
+
+    if (medicationSearchTimeout) {
+      clearTimeout(medicationSearchTimeout);
+    }
+
+    const timeout = setTimeout(() => {
+      fetchMedicationSuggestions(value);
+    }, 400); // délai pour éviter les appels trop rapides
+    setMedicationSearchTimeout(timeout);
+  }}
+/> <ul className="suggestions-list">
+  {medicationSuggestions.map((suggestion, index) => (
+    <li
+      key={index}
+      onClick={() => {
+        setFormData({ ...formData, newMedication: suggestion });
+        setMedicationSuggestions([]);
+      }}
+    >
+      {suggestion}
+    </li>
+  ))}
+</ul>
               <input
                 type="text"
                 placeholder="Posologie"

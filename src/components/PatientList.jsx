@@ -141,10 +141,10 @@ const [name , setname ]= useState("")
     }
 
     if (userRole === 'DOCTOR') {
-      navigate(`/PrescriptionList/${patientId}`, { state: { nom: nom , prenom : prenom } });
+      navigate(`/ConsultationList/${patientId}`, { state: { nom: nom , prenom : prenom } });
       
     } else if (userRole === 'ASSISTANT') {
-      navigate(`/PrescriptionListAssistant/${patientId}`);
+      navigate(`/ConsultationList/${patientId}`);
     } else {
       console.error('Unknown user role:', userRole);
       setError('Unknown user role.');
@@ -247,7 +247,7 @@ const [name , setname ]= useState("")
   className="btn-consultation"
   onClick={() => handleConsultationClick(selectedPatient.id, selectedPatient.nom, selectedPatient.prenom)}
 >
-  <SiGoogledocs className="SiGoogledocs" /> <p>Consultation</p>
+  <SiGoogledocs className="SiGoogledocs" /> <p> Consultation  </p>
 </button>
             </div>
             <div className="modal-buttons">

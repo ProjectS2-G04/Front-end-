@@ -6,6 +6,8 @@ import logo from '../assets/logo.png';
 function OrdonnancePrint() {
   const { id } = useParams();
   const [ordonnance, setOrdonnance] = useState(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchOrdonnance = async () => {
@@ -18,23 +20,29 @@ function OrdonnancePrint() {
           },
         });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch ordonnance');
-        }
-
         const data = await response.json();
-        setOrdonnance(data);
+
+        if (!response.ok) {
+          setError(data.message || 'Ordonnance non trouvée pour cette consultation.');
+        } else {
+          setOrdonnance(data);
+        }
       } catch (error) {
+        setError('Erreur lors de la récupération de l\'ordonnance.');
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchOrdonnance();
   }, [id]);
 
-  if (!ordonnance) {
-    return <div>Chargement...</div>;
-  }
+  if (loading) return <div>Chargement...</div>;
+
+  if (error) return <div style={{ color: 'red', textAlign: 'center' }}>{error}</div>;
+
+  if (!ordonnance) return <div>chargement ....</div>;
 
   const {
     patient_prenom,
@@ -85,4 +93,5 @@ function OrdonnancePrint() {
 }
 
 export default OrdonnancePrint;
+
 

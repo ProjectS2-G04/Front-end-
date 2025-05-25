@@ -81,9 +81,9 @@ const App = () => {
       <Route path="/CancelAppointment" element={<CancelAppointment />} />
       <Route path="/TAkeAppointment" element={<TAkeAppointment />} />
       <Route path="/PatientSideBare" element={<PatientSideBare />} />
-      <Route path="/ConsultationList" element={<ConsultationList />} />
-      <Route path="/AddConsultation" element={<AddConsultation />} />
-      <Route path="/ConsultationView" element={<ConsultationView />} />
+      <Route path="/ConsultationList/:id/" element={<ConsultationList />} />
+      <Route path="/AddConsultation/:id/" element={<AddConsultation />} />
+      <Route path="/ConsultationView/:id/" element={<ConsultationView />} />
       <Route path="/AddDisease" element={<AddDisease />} />
     </Routes>
   );
