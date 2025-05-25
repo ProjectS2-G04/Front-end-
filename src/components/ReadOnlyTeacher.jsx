@@ -297,9 +297,7 @@ function ReadOnlyTeacher() {
       </div>
 
       <div className="ml-[250px] p-6">
-        <button className="btn-back flex items-center gap-2 mb-4" onClick={handleBack}>
-          <IoArrowBackCircle className="text-2xl" /> Retour
-        </button>
+        
 
         <div className="flex justify-between items-center mb-8 px-6 py-4 bg-white shadow-md rounded-md">
           <h1 className="text-3xl font-bold text-teal-700">Dossier Médical Enseignant</h1>
@@ -387,7 +385,7 @@ function ReadOnlyTeacher() {
                 <input
                   type="text"
                   className="input-style w-full bg-gray-100 cursor-not-allowed"
-                  value={wilayas.find((w) => w.number === formData.lieu_naissance)?.name || ""}
+                  value={formData.lieu_naissance || ""}
                   disabled
                 />
               </div>

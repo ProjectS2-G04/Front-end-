@@ -27,6 +27,7 @@ import ModifyFormATS from './components/ModifyFormATS';
 import ModifyFormEnseignant from './components/ModifyFormEnseignant';
 import ModifyFormEtudiant from './components/ModifyFormEtudiant';
 import Notification from './components/Notification.jsx';
+import Notifications from './components/Notifications';
 import PatientList from './components/PatientList.jsx';
 import PatientSideBare from './components/PatientSideBare.jsx';
 import PrescriptionList from './components/PrescriptionList';
@@ -40,12 +41,8 @@ import SeConnecter from './components/seConnecter';
 import Signup_User from './components/Signup_User';
 import Sinscrire from './components/sinscrire';
 import TAkeAppointment from './components/TAkeAppointment.jsx';
-import ConsultationList from './components/ConsultationList.jsx';
-import ConsultationView from './components/ConsultationView.jsx';
-import AddConsultation from './components/AddConsultation.jsx';
-import AddDisease from './components/AddDisease.jsx';
 import VerifyEmail from './components/VerifyEmail';
-import Notifications from './components/Notifications';
+import PatientListeDemandes from './components/PatientListeDemandes.jsx';
 const App = () => {
   return (
     <>
@@ -96,6 +93,11 @@ const App = () => {
       <Route path="/ConsultationView/:id/" element={<ConsultationView />} />
       <Route path="/AddDisease" element={<AddDisease />} />
       <Route path="/Notifications" element={<Notifications />}/>
+      <Route path="/chroniques" element={<ChronicDiseasesStats />} />
+      <Route path="/contagieuses" element={<Heartsicks />} />
+      <Route path="/dashboarddirector" element={<DirectorDashboard />} />
+      <Route path="/PatientListeDemandes" element={<PatientListeDemandes />} />
+      
     </Routes>
     </>
   );

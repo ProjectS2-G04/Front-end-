@@ -1014,8 +1014,8 @@ function CreateFormPatient() {
 
         <div className="addreturn pt-6 px-4 flex justify-between">
           <div className="back-container" onClick={() => navigate('/DoctorList')}>
-            <IoArrowBackCircle className="IoArrowBackCircle" />
-            <span className="back-text">Retour</span>
+            {/* <IoArrowBackCircle className="IoArrowBackCircle" />
+            <span className="back-text">Retour</span> */}
           </div>
           <button
             type="submit"
