@@ -1,27 +1,33 @@
 import { Route, Routes } from 'react-router-dom';
 
+import AddConsultation from './components/AddConsultation.jsx';
+import AddDisease from './components/AddDisease.jsx';
 import AdminPage from './components/Admin_Page.jsx';
 import Appointment from './components/Appointment';
 import AssistantList from './components/AssistantList';
 import AssitantHome from './components/AssitantHome';
 import Calendar from './components/Calender';
 import CancelAppointment from './components/CancelAppointment.jsx';
+import ChronicDiseasesStats from './components/Chronic-diseases.jsx';
+import ConsultationList from './components/ConsultationList.jsx';
+import ConsultationView from './components/ConsultationView.jsx';
 import CreateFormATS from './components/CreateFormATS';
 import CreateFormEnseignant from './components/CreateFormEnseignant';
 import CreateFormPatient from './components/CreateFormPatient';
 import Demandes from './components/Demandes.jsx';
+import DirectorDashboard from './components/DirectorDashboard.jsx';
 import Doctorhome from './components/Doctorhome';
 import DoctorList from './components/DoctorList';
 import Forgot_Password from './components/Forgot_Password';
 import Forgot_Password1 from './components/Forgot_Password1';
 import Forgot_Password2 from './components/Forgot_Password2';
+import Heartsicks from './components/Heartsicks.jsx';
 import MedicalPrescription from './components/MedicalPrescription';
 import ModifyFormATS from './components/ModifyFormATS';
 import ModifyFormEnseignant from './components/ModifyFormEnseignant';
 import ModifyFormEtudiant from './components/ModifyFormEtudiant';
 import Notification from './components/Notification.jsx';
 import PatientList from './components/PatientList.jsx';
-import PatientListeDemandes from './components/PatientListeDemandes.jsx';
 import PatientSideBare from './components/PatientSideBare.jsx';
 import PrescriptionList from './components/PrescriptionList';
 import PrescriptionListAssistant from './components/PrescriptionListAssistant';
@@ -34,14 +40,14 @@ import SeConnecter from './components/seConnecter';
 import Signup_User from './components/Signup_User';
 import Sinscrire from './components/sinscrire';
 import TAkeAppointment from './components/TAkeAppointment.jsx';
-import ConsultationList from './components/ConsultationList.jsx';
-import ConsultationView from './components/ConsultationView.jsx';
-import AddConsultation from './components/AddConsultation.jsx';
-import AddDisease from './components/AddDisease.jsx';
 import VerifyEmail from './components/VerifyEmail'; // Assuming you have this component
 
 const App = () => {
   return (
+    <>
+   
+        
+         
     <Routes>
       <Route path="/" element={<SeConnecter />} />
       <Route path="/home" element={<Doctorhome />} />
@@ -85,7 +91,14 @@ const App = () => {
       <Route path="/AddConsultation/:id/" element={<AddConsultation />} />
       <Route path="/ConsultationView/:id/" element={<ConsultationView />} />
       <Route path="/AddDisease" element={<AddDisease />} />
+      <Route path="/chroniques" element={<ChronicDiseasesStats />} />
+      <Route path="/contagieuses" element={<Heartsicks />} />
+      <Route path="/dashboarddirector" element={<DirectorDashboard />} />
+     
+
+      
     </Routes>
+    </>
   );
 };
 
