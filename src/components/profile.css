@@ -89,28 +89,30 @@ h2 {
 }
 
 .contenue-input {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  align-items: center;
+  gap: 10px;
   width: 100%;
   margin-bottom: 15px;
 }
 
+
 .contenue-input label {
   font-weight: bold;
-  white-space: nowrap;
-  margin: 15px;
   font-size: 1rem;
+  text-align: right;
+  padding-right: 10px;
 }
 
 .contenue-input input {
   width: 100%;
-  padding: 8px;
-  margin-left: 20px;
+  padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 1rem;
 }
+
 
 .contenue-input input:focus {
   border-color: #4BA0A8;

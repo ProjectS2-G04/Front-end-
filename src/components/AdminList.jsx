@@ -139,6 +139,28 @@ const filteredItems = users.filter((item) => {
     );
   }
 });
+const toggleUserActivation = async (user) => {
+  const action = user.is_active ? "desactivate" : "activate";
+  const endpoint = `http://127.0.0.1:8000/api/dossier-medicale/${action}/${user.id}/`;
+
+  try {
+    const res = await axios.post(endpoint, {}, { withCredentials: true });
+    alert(res.data.message);
+    
+    // Update local user state
+    setUsers((prevUsers) =>
+      prevUsers.map((u) =>
+        u.id === user.id ? { ...u, is_active: !u.is_active } : u
+      )
+    );
+  } catch (error) {
+    if (error.response?.status === 400) {
+      alert(error.response.data.message);
+    } else {
+      alert("Une erreur s'est produite lors de l'action.");
+    }
+  }
+};
 
   return (
     <div className="admin-content">
@@ -232,9 +254,12 @@ const filteredItems = users.filter((item) => {
                     <td>{item.email}</td>
                     <td>
 
-                      <button className="activate-btn" onClick={() => activateUser(item.id, 'activate')}>Activer</button>
-                      <button className="deactivate-btn" onClick={() => activateUser(item.id, 'desactivate')}>Désactiver</button>
-                      
+                     <button
+  className={item.is_active ? "deactivate-btn" : "activate-btn"}
+  onClick={() => toggleUserActivation(item)}
+>
+  {item.is_active ? "Désactivé" : "Activé"}
+</button>
 
                     
 
@@ -252,7 +277,7 @@ const filteredItems = users.filter((item) => {
             
           </table>
           <div className="ajouter-button">
-        <button>Ajouter</button>
+        <button className="AjouterBtn">Ajouter</button>
       </div>
         </div>
       )}
