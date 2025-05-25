@@ -8,17 +8,20 @@ import AssistantList from './components/AssistantList';
 import AssitantHome from './components/AssitantHome';
 import Calendar from './components/Calender';
 import CancelAppointment from './components/CancelAppointment.jsx';
+import ChronicDiseasesStats from './components/Chronic-diseases.jsx';
 import ConsultationList from './components/ConsultationList.jsx';
 import ConsultationView from './components/ConsultationView.jsx';
 import CreateFormATS from './components/CreateFormATS';
 import CreateFormEnseignant from './components/CreateFormEnseignant';
 import CreateFormPatient from './components/CreateFormPatient';
 import Demandes from './components/Demandes.jsx';
+import DirectorDashboard from './components/DirectorDashboard.jsx';
 import Doctorhome from './components/Doctorhome';
 import DoctorList from './components/DoctorList';
 import Forgot_Password from './components/Forgot_Password';
 import Forgot_Password1 from './components/Forgot_Password1';
 import Forgot_Password2 from './components/Forgot_Password2';
+import Heartsicks from './components/Heartsicks.jsx';
 import MedicalPrescription from './components/MedicalPrescription';
 import ModifyFormATS from './components/ModifyFormATS';
 import ModifyFormEnseignant from './components/ModifyFormEnseignant';
@@ -88,6 +91,11 @@ const App = () => {
       <Route path="/AddConsultation" element={<AddConsultation />} />
       <Route path="/ConsultationView" element={<ConsultationView />} />
       <Route path="/AddDisease" element={<AddDisease />} />
+      <Route path="/chroniques" element={<ChronicDiseasesStats />} />
+      <Route path="/contagieuses" element={<Heartsicks />} />
+      <Route path="/dashboarddirector" element={<DirectorDashboard />} />
+     
+
       
     </Routes>
     </>
