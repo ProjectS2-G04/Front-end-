@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { FaChartBar, FaUserInjured, FaFolder, FaCalendarAlt, FaInbox, FaUserCircle } from 'react-icons/fa';
 import logo from '../assets/logo.png';
 import user from '../assets/user.png';
 import './SideBareDocs.css';
@@ -18,24 +19,26 @@ function SideBareDocs({ activeTab, setActiveTab, disableDropdown }) {
     const stateTab = location.state?.activeTab;
     console.log('useEffect - path:', path, 'stateTab:', stateTab, 'activeTab:', activeTab);
 
-    // If on DoctorList or AssistantList, sync activeTab
     if (path.includes('DoctorList') || path.includes('AssistantList')) {
       if (stateTab && stateTab !== activeTab) {
         setActiveTab(stateTab);
       } else if (!activeTab) {
-        // Initialize to 'etudiants' if activeTab is not set
         setActiveTab('etudiants');
         const targetPath = userRole === 'DOCTOR' ? '/DoctorList' : '/AssistantList';
         console.log('Initial navigation to:', targetPath, 'with activeTab: etudiants');
         navigate(targetPath, { state: { activeTab: 'etudiants' }, replace: true });
       }
-    } else if (path.includes('PatientList') || path.includes('Calendar') || path.includes('Demandes')) {
-      // Reset activeTab to null for non-Dossier routes to show placeholder
+    } else if (path.includes('PatientList') || path.includes('Calendar') || path.includes('Demandes') || path.includes('dashboarddirector')) {
       if (activeTab !== null) {
         setActiveTab(null);
       }
     }
   }, [location, activeTab, setActiveTab, navigate, userRole]);
+
+  const handleDashboardClick = () => {
+    console.log('Navigating to Dashboard');
+    navigate('/dashboarddirector');
+  };
 
   const handlePatientListClick = () => {
     console.log('Navigating to PatientList');
@@ -56,7 +59,6 @@ function SideBareDocs({ activeTab, setActiveTab, disableDropdown }) {
     const newTab = e.target.value;
     console.log('Dropdown changed to:', newTab, 'userRole:', userRole);
 
-    
     if (newTab !== 'placeholder') {
       setActiveTab(newTab);
       const targetPath = userRole === 'DOCTOR' ? '/DoctorList' : '/AssistantList';
@@ -79,6 +81,7 @@ function SideBareDocs({ activeTab, setActiveTab, disableDropdown }) {
       <nav className="sidebardocs-nav">
         <div className="options-todo">
           <button onClick={handlePatientListClick} className="sidebar-button">
+            <FaUserInjured className="inline mr-2" />
             La liste patients
           </button>
           <select
@@ -96,14 +99,22 @@ function SideBareDocs({ activeTab, setActiveTab, disableDropdown }) {
             <option value="ats">Dossier médicaux d'ATS</option>
           </select>
           <button onClick={handleCalendrierClick} className="sidebar-button">
-            calendrier
+            <FaCalendarAlt className="inline mr-2" />
+            Calendrier
           </button>
           <button onClick={handleInboxClick} className="sidebar-button">
+            <FaInbox className="inline mr-2" />
             Inbox
           </button>
+          {userRole === 'DOCTOR' && (
+            <button onClick={handleDashboardClick} className="sidebar-button">
+              <FaChartBar className="inline mr-2" />
+              Statistiques
+            </button>
+          )}
         </div>
         <button className="profile" onClick={handleProfileClick}>
-          <img src={user} alt="Profile" />
+          <img src={user} alt="Profile" className="inline mr-2" />
           <p>Mon profil</p>
         </button>
       </nav>

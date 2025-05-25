@@ -46,7 +46,7 @@ export default function DirectorDashboard() {
     fetchStats();
   }, [startDate, endDate]);
 
-  const COLORS = ['#F7B3D3', '#7ED3D1']; // Pink first, Blue second
+  const COLORS = ['#F7B3D3', '#7ED3D1']; 
 
 
   return (
