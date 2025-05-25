@@ -375,7 +375,18 @@ font-weight: bolder;
   border-radius: 5px;
   cursor: pointer;
 }
-
+.AjouterBtn{
+   background-color: #fff;
+  color: #2E5077;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid #92ecd4;
+  font-size: 1rem;
+  font-weight: bolder;
+  margin-top: 2rem;
+  transition: background-color 0.3s;
+}
 
 /* Responsive Design */
 @media (max-width: 1024px) {
