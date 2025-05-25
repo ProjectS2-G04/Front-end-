@@ -106,6 +106,7 @@ function PatientList() {
     );
   });
 
+  
   const handleDetailsClick = (patient) => {
     console.log('Patient:', patient);
     const role = getPatientRole(patient);
@@ -130,9 +131,9 @@ function PatientList() {
     setShowModal(true);
   };
 
-  const handleConsultationClick = (patientId) => {
+const [name , setname ]= useState("")
+  const handleConsultationClick = (patientId, nom, prenom) => {
     const userRole = localStorage.getItem('role');
-
     if (!userRole) {
       console.error('User role not found. Please log in.');
       setError('User role not found. Please log in.');
@@ -140,9 +141,10 @@ function PatientList() {
     }
 
     if (userRole === 'DOCTOR') {
-      navigate(`/PrescriptionList/${patientId}`);
+      navigate(`/ConsultationList/${patientId}`, { state: { nom: nom , prenom : prenom } });
+      
     } else if (userRole === 'ASSISTANT') {
-      navigate(`/PrescriptionListAssistant/${patientId}`);
+      navigate(`/ConsultationList/${patientId}`);
     } else {
       console.error('Unknown user role:', userRole);
       setError('Unknown user role.');
@@ -242,11 +244,11 @@ function PatientList() {
                 <input type="text" value={selectedPatient.last_name} readOnly />
               </div>
               <button
-                className="btn-consultation"
-                onClick={() => handleConsultationClick(selectedPatient.id)}
-              >
-                <SiGoogledocs className="SiGoogledocs" /> <p>Consultation</p>
-              </button>
+  className="btn-consultation"
+  onClick={() => handleConsultationClick(selectedPatient.id, selectedPatient.nom, selectedPatient.prenom)}
+>
+  <SiGoogledocs className="SiGoogledocs" /> <p> Consultation  </p>
+</button>
             </div>
             <div className="modal-buttons">
               <div className="modal-field">

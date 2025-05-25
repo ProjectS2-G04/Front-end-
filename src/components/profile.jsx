@@ -111,7 +111,7 @@ const Profile = () => {
                 navigate('/Admin_Page');
                 break;
             case 'DIRECTOR':
-                navigate('/profile');
+                navigate('/dashboarddirector');
                 break;
             default:
                 navigate('/profile');
