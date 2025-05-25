@@ -38,8 +38,8 @@ import ConsultationList from './components/ConsultationList.jsx';
 import ConsultationView from './components/ConsultationView.jsx';
 import AddConsultation from './components/AddConsultation.jsx';
 import AddDisease from './components/AddDisease.jsx';
-import VerifyEmail from './components/VerifyEmail'; // Assuming you have this component
-
+import VerifyEmail from './components/VerifyEmail';
+import Notifications from './components/Notifications';
 const App = () => {
   return (
     <Routes>
@@ -85,6 +85,7 @@ const App = () => {
       <Route path="/AddConsultation" element={<AddConsultation />} />
       <Route path="/ConsultationView" element={<ConsultationView />} />
       <Route path="/AddDisease" element={<AddDisease />} />
+      <Route path="/Notifications" element={<Notifications />}/>
     </Routes>
   );
 };
