@@ -40,10 +40,6 @@ import SeConnecter from './components/seConnecter';
 import Signup_User from './components/Signup_User';
 import Sinscrire from './components/sinscrire';
 import TAkeAppointment from './components/TAkeAppointment.jsx';
-import ConsultationList from './components/ConsultationList.jsx';
-import ConsultationView from './components/ConsultationView.jsx';
-import AddConsultation from './components/AddConsultation.jsx';
-import AddDisease from './components/AddDisease.jsx';
 import VerifyEmail from './components/VerifyEmail';
 import Notifications from './components/Notifications';
 const App = () => {
