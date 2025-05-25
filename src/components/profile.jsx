@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import profileLogo from "../assets/logo.png";
+import profileLogo from "../assets/face-id.png";
+import Logo from "../assets/logo.png";
+
 import './profile.css';
 
 const Profile = () => {
@@ -9,57 +11,49 @@ const Profile = () => {
     const [lastName, setLastName] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [profilePic , setProfilePic ] = useState ('')
- 
+    const [profilePic, setProfilePic] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchProfile = async () => {
-          try {
-       
-      
-            const token = localStorage.getItem('token');
-            console.log(token)
-            if (!token) {
-              throw new Error('No authentication token found. Please log in.');
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error('No authentication token found. Please log in.');
+                }
+
+                const response = await fetch('http://127.0.0.1:8000/api/profile/', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    if (response.status === 403) {
+                        throw new Error('Access forbidden. Please check your credentials.');
+                    } else if (response.status === 500) {
+                        throw new Error('Server error. Please try again later or contact support.');
+                    }
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                setFirstName(data.first_name);
+                setLastName(data.last_name);
+                setProfilePic(data.image);
+            } catch (error) {
+                console.error('Erreur de connexion au serveur', error);
+                setError(error.message || 'Une erreur est survenue.');
+            } finally {
+                setIsLoading(false);
             }
-      
-            const response = await fetch('http://127.0.0.1:8000/api/profile/', {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-            });
-      
-            if (!response.ok) {
-              console.log('Response:', response.status, response.statusText);
-              const errorData = await response.text();
-              console.error('Error response:', errorData);
-      
-              if (response.status === 403) {
-                throw new Error('Access forbidden. Please check your credentials.');
-              } else if (response.status === 500) {
-                throw new Error('Server error. Please try again later or contact support.');
-              }
-      
-              throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-      
-            const data = await response.json();
-            console.log("le role", data);
-            setFirstName(data.first_name);
-            setLastName(data.last_name);
-            setProfilePic(data.image)
-          } catch (error) {
-            console.error('Erreur de connexion au serveur', error);
-            setError(error.message || 'Une erreur est survenue.');
-          } finally {
-            setIsLoading(false);
-          }
         };
-      
+
         fetchProfile();
-      }, []);
-      
+    }, []);
 
     const handleSave = async (e) => {
         e.preventDefault();
@@ -93,10 +87,8 @@ const Profile = () => {
         setCurrentPassword('');
     };
 
-    
     const handleHomeNavigation = () => {
         const userRole = localStorage.getItem('role');
-        
         switch (userRole) {
             case 'DOCTOR':
                 navigate('/PatientList');
@@ -119,18 +111,36 @@ const Profile = () => {
         }
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setProfilePic(imageUrl);
+            // You can also handle actual upload to server here if needed.
+        }
+    };
+
     return (
         <div className='profile-container'>
             <header className='profile-header'>
-                <img src={profileLogo} alt="" />
+                <img src={Logo} alt="Logo" />
                 <nav><a onClick={handleHomeNavigation}>Home</a></nav>
             </header>
             <div className="profile-content">
                 <h2>Paramètres du compte</h2>
+
                 <div className="profile-image-text">
-                    <img src={profilePic} alt='' />
-                    <p>Téléchargez votre image</p>
-                </div>
+    <img src={profilePic || profileLogo} alt="profile" />
+    <label htmlFor="image-upload" className="upload-label">Téléchargez votre image</label>
+    <input
+        id="image-upload"
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={handleImageChange}
+    />
+</div>
+
                 <form className="parametres-form" onSubmit={handleSave}>
                     <div className='contenue-input'>
                         <label>Nom :</label>
