@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+
+import { useEffect, useState } from "react";
 import { IoArrowBackCircle } from "react-icons/io5";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import TextareaAutosize from "react-textarea-autosize";
-import PatientSideBare from "./PatientSideBare";
 import "./CreateForm.css";
+import PatientSideBare from "./PatientSideBare";
 
 function ReadOnlyStudent() {
   const { id } = useParams();
@@ -19,7 +20,7 @@ function ReadOnlyStudent() {
     nom: "",
     prenom: "",
     date_naissance: "",
-    lieu_naissance: "",
+    lieu_naissance: "", 
     adresse: "",
     numero_telephone: "",
     email: "",
@@ -74,57 +75,6 @@ function ReadOnlyStudent() {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [afficherDepistage, setAfficherDepistage] = useState(true);
 
-  const wilayas = [
-    { number: "01", name: "Adrar" },
-    { number: "02", name: "Chlef" },
-    { number: "03", name: "Laghouat" },
-    { number: "04", name: "Oum El Bouaghi" },
-    { number: "05", name: "Batna" },
-    { number: "06", name: "Béjaïa" },
-    { number: "07", name: "Biskra" },
-    { number: "08", name: "Béchar" },
-    { number: "09", name: "Blida" },
-    { number: "10", name: "Bouira" },
-    { number: "11", name: "Tamanrasset" },
-    { number: "12", name: "Tébessa" },
-    { number: "13", name: "Tlemcen" },
-    { number: "14", name: "Tiaret" },
-    { number: "15", name: "Tizi Ouzou" },
-    { number: "16", name: "Alger" },
-    { number: "17", name: "Djelfa" },
-    { number: "18", name: "Jijel" },
-    { number: "19", name: "Sétif" },
-    { number: "20", name: "Saïda" },
-    { number: "21", name: "Skikda" },
-    { number: "22", name: "Sidi Bel Abbès" },
-    { number: "23", name: "Annaba" },
-    { number: "24", name: "Guelma" },
-    { number: "25", name: "Constantine" },
-    { number: "26", name: "Médéa" },
-    { number: "27", name: "Mostaganem" },
-    { number: "28", name: "MSila" },
-    { number: "29", name: "Mascara" },
-    { number: "30", name: "Ouargla" },
-    { number: "31", name: "Oran" },
-    { number: "32", name: "El Bayadh" },
-    { number: "33", name: "Illizi" },
-    { number: "34", name: "Bordj Bou Arréridj" },
-    { number: "35", name: "Boumerdès" },
-    { number: "36", name: "El Tarf" },
-    { number: "37", name: "Tindouf" },
-    { number: "38", name: "Tissemsilt" },
-    { number: "39", name: "El Oued" },
-    { number: "40", name: "Khenchela" },
-    { number: "41", name: "Souk Ahras" },
-    { number: "42", name: "Tipaza" },
-    { number: "43", name: "Mila" },
-    { number: "44", name: "Aïn Defla" },
-    { number: "45", name: "Naâma" },
-    { number: "46", name: "Aïn Témouchent" },
-    { number: "47", name: "Ghardaïa" },
-    { number: "48", name: "Relizane" },
-  ];
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -149,6 +99,7 @@ function ReadOnlyStudent() {
 
         const data = await res.json();
         console.log("Fetched dossier:", data);
+        console.log("API lieu_naissance:", data.lieu_naissance); 
 
         const updatedFormData = {
           ...formData,
@@ -160,6 +111,9 @@ function ReadOnlyStudent() {
           prise_autre: data.prise_autre ? "Oui" : "Non",
           ancien_fumeur: data.ancien_fumeur ? "Oui" : "Non",
         };
+
+        console.log("Updated formData:", updatedFormData); 
+        console.log("formData.lieu_naissance:", updatedFormData.lieu_naissance); 
 
         const t = parseFloat(updatedFormData.taille);
         const p = parseFloat(updatedFormData.poids);
@@ -297,9 +251,7 @@ function ReadOnlyStudent() {
       </div>
 
       <div className="ml-[250px] p-6">
-        <button className="btn-back flex items-center gap-2 mb-4" onClick={handleBack}>
-          <IoArrowBackCircle className="text-2xl" /> Retour
-        </button>
+      
 
         <div className="flex justify-between items-center mb-8 px-6 py-4 bg-white shadow-md rounded-md">
           <h1 className="text-3xl font-bold text-teal-700">Dossier Médical Étudiant</h1>
@@ -387,7 +339,7 @@ function ReadOnlyStudent() {
                 <input
                   type="text"
                   className="input-style w-full bg-gray-100 cursor-not-allowed"
-                  value={wilayas.find((w) => w.number === formData.lieu_naissance)?.name || ""}
+                  value={formData.lieu_naissance || "Non spécifié"} // Changed from lieu_de_naissance
                   disabled
                 />
               </div>
@@ -634,7 +586,7 @@ function ReadOnlyStudent() {
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block font-semibold text-teal-700">Intévaluation auditive</label>
+                        <label className="block font-semibold text-teal-700">Évaluation auditive</label>
                         <select
                           value={depistage.evaluation_auditive || ""}
                           className="input-style w-full bg-gray-100 cursor-not-allowed"
