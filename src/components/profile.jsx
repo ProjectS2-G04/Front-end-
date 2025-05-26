@@ -6,6 +6,7 @@ import Logo from "../assets/logo.png";
 import './profile.css';
 
 const Profile = () => {
+    
     const navigate = useNavigate();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import "./Admin_Page.css";
 import PermissionsTable from "./PermissionTable";
+import { useNavigate } from "react-router-dom";
 
 const AdminList = ({ title, listType }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -10,6 +11,7 @@ const AdminList = ({ title, listType }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   // Fetch users data based on groupName
   const fetchUsers = (groupName) => {
@@ -27,7 +29,7 @@ const AdminList = ({ title, listType }) => {
       })
       .catch((error) => {
         console.error('Error fetching users:', error);
-        setErrorMessage("Une erreur s'est produite. Veuillez réessayer.");
+        //setErrorMessage("Une erreur s'est produite. Veuillez réessayer.");
       })
       .finally(() => setLoading(false));
   };
@@ -45,10 +47,10 @@ const AdminList = ({ title, listType }) => {
       else if (selectedCategory === "Enseignants") url = "/enseignants/";
       else if (selectedCategory === "ATS") url = "/fonctionnaires/";
   
-      console.log("Full fetch URL:", `http://127.0.0.1:8000/api/dossier-medicale${url}`);
+   
   
-      let token = localStorage.getItem("token");
-      if (!token) throw new Error("No authentication token found.");
+      //let token = localStorage.getItem("token");
+      //if (!token) throw new Error("No authentication token found.");
   
       let response = await fetch(`http://127.0.0.1:8000/api/dossier-medicale${url}`, {
         headers: {
@@ -100,22 +102,7 @@ const AdminList = ({ title, listType }) => {
   }, [listType, selectedCategory]); // Added selectedCategory as a dependency for dossier fetching
 
   // Merged activateUser using axios (from your friend's version)
-  const activateUser = async (userId, action) => {
-    const endpoint = `http://127.0.0.1:8000/api/dossier-medicale/${action}/${userId}/`;
-    try {
-      const res = await axios.post(endpoint, {}, {
-        withCredentials: true,
-      });
-      alert(res.data.message);
-      fetchUsers(listType); // Refresh the list after action
-    } catch (error) {
-      if (error.response?.status === 400) {
-        alert(error.response.data.message);
-      } else {
-        alert("Une erreur s'est produite lors de l'action.");
-      }
-    }
-  };
+
   const archiveDossier = async (id) => {
     try {
       const res = await axios.post(`http://127.0.0.1:8000/api/dossier-medicale/archive/${id}/`);
@@ -140,19 +127,15 @@ const filteredItems = users.filter((item) => {
   }
 });
 const toggleUserActivation = async (user) => {
-  const action = user.is_active ? "desactivate" : "activate";
-  const endpoint = `http://127.0.0.1:8000/api/dossier-medicale/${action}/${user.id}/`;
+  const endpoint = `http://127.0.0.1:8000/api/dossier-medicale/toggle-activation/${user.id}/`;
 
   try {
     const res = await axios.post(endpoint, {}, { withCredentials: true });
     alert(res.data.message);
-    
-    // Update local user state
-    setUsers((prevUsers) =>
-      prevUsers.map((u) =>
-        u.id === user.id ? { ...u, is_active: !u.is_active } : u
-      )
-    );
+
+    // Option 1: Refresh users (best for consistency)
+    await fetchUsers(listType);
+
   } catch (error) {
     if (error.response?.status === 400) {
       alert(error.response.data.message);
@@ -277,7 +260,9 @@ const toggleUserActivation = async (user) => {
             
           </table>
           <div className="ajouter-button">
-        <button className="AjouterBtn">Ajouter</button>
+       <button className="AjouterBtn" onClick={() => navigate("/Signup_User")}>
+                            Ajouter
+</button>
       </div>
         </div>
       )}

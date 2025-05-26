@@ -47,7 +47,7 @@ function SideBareDocs({ activeTab, setActiveTab, disableDropdown }) {
 
   const handleInboxClick = () => {
     console.log('Inbox clicked');
-    navigate('/Demandes');
+    navigate('/Notifications');
   };
 
   const handleCalendrierClick = () => {
