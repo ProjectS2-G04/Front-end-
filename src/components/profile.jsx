@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import profileLogo from "../assets/face-id.png";
 import Logo from "../assets/logo.png";
@@ -88,7 +88,7 @@ const Profile = () => {
         setCurrentPassword('');
     };
 
-    const handleHomeNavigation = () => {
+    const handleBackNavigation = () => {
         const userRole = localStorage.getItem('role');
         switch (userRole) {
             case 'DOCTOR':
@@ -111,6 +111,14 @@ const Profile = () => {
                 break;
         }
     };
+    
+    // i changed it to navigte the user to loogin page psq it doesnt make sense to go back to home + we dont have deconnecion btton 😑
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        navigate('/');
+    };
+
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -125,7 +133,14 @@ const Profile = () => {
         <div className='profile-container'>
             <header className='profile-header'>
                 <img src={Logo} alt="Logo" />
-                <nav><a onClick={handleHomeNavigation}>Home</a></nav>
+                <nav className="nav-buttons">
+                    <button className="nav-button" onClick={handleBackNavigation}>
+                        ← Retour
+                    </button>
+                    <button className="nav-button logout" onClick={handleLogout}>
+                        Déconnexion
+                    </button>
+                </nav>
             </header>
             <div className="profile-content">
                 <h2>Paramètres du compte</h2>
