@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './Appointment.css';
 import SideBareDocs from './SideBareDocs';
@@ -65,81 +65,81 @@ function AppointmentForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      try {
-        if (!idPatient) {
-          alert('ID Patient is missing.');
-          return;
+        try {
+            if (!idPatient) {
+                console.error('idPatient is missing:', idPatient);
+                alert('ID Patient is missing.');
+                return;
+            }
+
+            const userResponse = await fetch(`http://127.0.0.1:8000/api/dossier-medicale/dossiers/`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            if (!userResponse.ok) {
+                const errorText = await userResponse.text();
+                console.error('Failed to fetch dossiers:', errorText);
+                alert(`Failed to fetch user information: ${errorText}`);
+                return;
+            }
+
+            const dossiers = await userResponse.json();
+            const dossier = dossiers.find((d) => d.user === idPatient);
+
+            if (!dossier) {
+                console.error('No dossier found for idPatient:', idPatient);
+                alert('No dossier found for the given user ID. Please create a medical dossier first.');
+                navigate('/CreateFormPatient', { state: { patientId: idPatient } });
+                return;
+            }
+
+            const userId = dossier.user;
+            const requestBody = {
+                description: formData.description,
+                date: formData.date,
+                heure_debut: formData.heure_debut,
+                heure_fin: formData.heure_fin,
+            };
+
+            const response = await fetch(
+                `http://127.0.0.1:8000/api/rendez-vous/createrenderVousMedAss/${userId}/`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify(requestBody),
+                }
+            );
+
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const errorText = await response.text();
+                console.error('Non-JSON response:', errorText);
+                alert(`Server returned an unexpected response: ${errorText.substring(0, 200)}...`);
+                return;
+            }
+
+            const data = await response.json();
+            if (response.ok) {
+                alert('Rendez-vous créé avec succès!');
+                handleCancel();
+            } else {
+                alert(`Erreur lors de la création du rendez-vous: ${JSON.stringify(data, null, 2)}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert(`Une erreur s'est produite: ${error.message}`);
         }
-
-        const userResponse = await fetch(`http://127.0.0.1:8000/api/dossier-medicale/dossiers/`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-
-        if (!userResponse.ok) {
-          alert('Failed to fetch user information.');
-          return;
-        }
-
-        const dossiers = await userResponse.json();
-        const dossier = dossiers.find((d) => d.id === idPatient);
-
-        if (!dossier) {
-          alert('No dossier found for the given user ID.');
-          return;
-        }
-
-        const userId = dossier.user;
-        console.log('User ID:', userId);
-
-        const formattedHeureDebut = `${formData.heure_debut}:00`;
-        const formattedHeureFin = `${formData.heure_fin}:00`;
-
-        const requestBody = {
-          description: formData.description,
-          date: formData.date,
-          heure_debut: formattedHeureDebut,
-          heure_fin: formattedHeureFin,
-        };
-
-        console.log('Request Body:', requestBody);
-
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/rendez-vous/createrenderVous/${userId}/`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-            body: JSON.stringify(requestBody),
-          }
-        );
-
-        const responseText = await response.text();
-        console.log('Raw Response:', responseText);
-
-        if (response.ok) {
-          const data = responseText ? JSON.parse(responseText) : {};
-          console.log('Rendez-vous created successfully:', data);
-          alert('Rendez-vous créé avec succès!');
-          handleCancel();
-        } else {
-          console.error('Error creating rendez-vous:', responseText);
-          alert('Erreur lors de la création du rendez-vous.');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Une erreur s\'est produite lors de la création du rendez-vous. Veuillez réessayer.', error);
-      }
     }
-  };
-
+};
   const handleCancel = () => {
     setFormData({
       description: '',
