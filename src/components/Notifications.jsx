@@ -6,7 +6,6 @@ import { Calendar } from 'lucide-react';
 function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const fetchNotifications = async () => {
     const token = localStorage.getItem('token');
     try {
