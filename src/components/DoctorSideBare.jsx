@@ -1,3 +1,4 @@
+
 import { 
   FaChartBar,
   FaUserInjured, 
@@ -8,8 +9,9 @@ import {
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
-export default function DoctorSideBare()  {
-    const navigate = useNavigate();
+
+export default function DoctorSideBare() {
+  const navigate = useNavigate();
   return (
     <div 
       className="flex flex-col w-64 h-screen p-4"
@@ -19,7 +21,7 @@ export default function DoctorSideBare()  {
     >
       {/* Logo */}
       <div className="text-2xl font-bold mb-8 p-4 border-b border-gray-300 text-gray-800">
-       <img src={logo} alt="Logo" />
+        <img src={logo} alt="Logo" />
       </div>
       
       {/* Menu principal */}
@@ -29,7 +31,7 @@ export default function DoctorSideBare()  {
           <ul>
             <li className="mb-2">
               <button 
-                onClick={() => navigate('/dashboarddirector')}
+                onClick={() => navigate('/dashboarddoctor')}
                 className="flex items-center w-full p-2 rounded hover:bg-gray-200 text-gray-700 hover:text-gray-900 text-left"
               >
                 <FaChartBar className="mr-3 text-gray-600" />
@@ -47,8 +49,8 @@ export default function DoctorSideBare()  {
                 onClick={() => navigate('/chroniques')}
                 className="flex items-center w-full p-2 rounded hover:bg-gray-200 text-gray-700 hover:text-gray-900 text-left"
               >
-                <FaSkull className="mr-3 text-gray-600" />
-                Maladies criminales
+                <FaHeartbeat className="mr-3 text-gray-600" /> {/* Replaced FaSkull */}
+                Maladies chroniques
               </button>
             </li>
             <li className="mb-2">
@@ -81,7 +83,7 @@ export default function DoctorSideBare()  {
                 className="flex items-center w-full p-2 rounded hover:bg-gray-200 text-gray-700 hover:text-gray-900 text-left"
               >
                 <FaFolder className="mr-3 text-gray-600" />
-                Dossier medicules
+                Dossier médicaux
               </button>
             </li>
           </ul>
@@ -124,5 +126,4 @@ export default function DoctorSideBare()  {
       </div>
     </div>
   );
-};
-
+}

@@ -1,3 +1,4 @@
+
 .profile-container {
   display: flex;
   flex-direction: column;
@@ -21,8 +22,7 @@
   height: 80px;
   padding: 10px 20px;
   background: transparent;
-  border-bottom: 2px solid #4DA1A9; /* Blue border at the bottom */
-
+  border-bottom: 2px solid #4DA1A9;
 }
 
 .profile-header img {
@@ -31,17 +31,47 @@
   padding: 10px;
 }
 
-.profile-header nav a {
-  text-decoration: none;
-  font-weight: bold;
-  margin-right: 30px;
-  color: #2E5077;
-  cursor: pointer;
-  font-size: 1.2rem;
+.profile-header nav {
+  display: flex;
+  flex-direction: row; 
+  align-items: center;
+  gap: 15px; 
+  flex-wrap: nowrap; 
 }
 
-.profile-header nav a:hover {
-  text-decoration: underline;
+.profile-header nav a,
+.profile-header nav button {
+  display: inline-flex; 
+  align-items: center;
+  background-color: #ffffff;
+  color: #2E5077;
+  font-weight: bold;
+  border: 2px solid #4BA0A8;
+  padding: 8px 16px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.profile-header nav a:hover,
+.profile-header nav button:hover {
+  background-color: #4BA0A8;
+  color: white;
+  transform: scale(1.05);
+}
+
+.profile-header nav a.logout,
+.profile-header nav button.logout {
+  background-color: #ff4d4d;
+  border-color: #ff4d4d;
+  color: white;
+}
+
+.profile-header nav a.logout:hover,
+.profile-header nav button.logout:hover {
+  background-color: #e03e3e;
 }
 
 .profile-content {
@@ -97,7 +127,6 @@ h2 {
   margin-bottom: 15px;
 }
 
-
 .contenue-input label {
   font-weight: bold;
   font-size: 1rem;
@@ -112,7 +141,6 @@ h2 {
   border: 1px solid #ccc;
   font-size: 1rem;
 }
-
 
 .contenue-input input:focus {
   border-color: #4BA0A8;
@@ -154,8 +182,10 @@ h2 {
     width: 120px;
   }
 
-  .profile-header nav a {
-    font-size: 1rem;
+  .profile-header nav a,
+  .profile-header nav button {
+    font-size: 0.9rem;
+    padding: 6px 12px;
   }
 
   .profile-image-text img {
@@ -187,8 +217,10 @@ h2 {
     width: 100px;
   }
 
-  .profile-header nav a {
-    font-size: 0.9rem;
+  .profile-header nav a,
+  .profile-header nav button {
+    font-size: 0.8rem;
+    padding: 5px 10px;
   }
 
   .profile-image-text img {
@@ -210,15 +242,14 @@ h2 {
     max-width: 160px;
   }
 }
-/* Add these styles to your profile.css */
 
+/* Kept for other components, unused in header */
 .nav-buttons {
   display: flex;
   gap: 15px;
   align-items: center;
 }
 
-/* Shared button style */
 .nav-button {
   background-color: #ffffff;
   color: #2E5077;
@@ -237,7 +268,6 @@ h2 {
   transform: scale(1.05);
 }
 
-/* Logout-specific button */
 .nav-button.logout {
   background-color: #ff4d4d;
   border-color: #ff4d4d;

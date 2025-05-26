@@ -42,7 +42,7 @@ import Signup_User from './components/Signup_User';
 import Sinscrire from './components/sinscrire';
 import TAkeAppointment from './components/TAkeAppointment.jsx';
 import VerifyEmail from './components/VerifyEmail';
-
+import DoctorDashboard from './components/DoctorDashboard.jsx'
 import PatientListeDemandes from './components/PatientListeDemandes.jsx';
 const App = () => {
   return (
@@ -98,6 +98,7 @@ const App = () => {
       <Route path="/contagieuses" element={<Heartsicks />} />
       <Route path="/dashboarddirector" element={<DirectorDashboard />} />
       <Route path="/PatientListeDemandes" element={<PatientListeDemandes />} />
+      <Route path="/dashboarddoctor" element={<DoctorDashboard />} />
       
     </Routes>
 
